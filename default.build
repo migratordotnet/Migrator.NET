@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="migrator" default="build">
+	<property name="dir.bin" value="bin" />
+	<property name="dir.lib" value="lib" />
+	<property name="dir.lib.mysql" value="${dir.lib}" />
+	<property name="dir.lib.postgre" value="${dir.lib}/Npgsql/${framework::get-target-framework()}" />
+	<property name="defines" value="DOTNET2" if="${framework::get-target-framework() == 'net-2.0'}" />
+	<property name="defines" value="MONO2" if="${framework::get-target-framework() == 'mono-2.0'}" />
+	<property name="debug" value="true" />
+
+	<target name="build" description="Builds the app" depends="prepare">
+		<csc target="library" output="${dir.bin}/Migrator.dll" define="${defines}" debug="${debug}">
+			<sources>
+			  <include name="config/AssemblyInfo.cs" />
+				<include name="app/core/**/*.cs" />
+			</sources>
+			<references>
+				<include name="System.dll" />
+				<include name="System.Data.dll" />
+				<include name="System.XML.dll" />
+				<include name="System.Configuration.dll" if="${framework::get-target-framework() == 'net-2.0'}" />
+				<include name="${dir.bin}/log4net.dll" />
+				<include name="${dir.bin}/MySql.Data.dll" />
+				<include name="${dir.bin}/Npgsql.dll" />
+				<include name="${dir.lib}/SQLite.NET.dll" />
+				<include name="${dir.lib}/Castle/Castle.ActiveRecord.dll" />
+				<include name="${dir.lib}/Castle/NHibernate.dll" />
+				<include name="${dir.lib}/Castle/Castle.MonoRail.Framework.dll" />
+				<include name="${dir.lib}/CsvReader/LumenWorks.Framework.IO.dll" />
+			</references>
+		</csc>
+		<csc target="library" output="${dir.bin}/Migrator.NAnt.dll" define="${defines}" debug="${debug}">
+			<sources>
+			  <include name="config/AssemblyInfo.cs" />
+				<include name="app/nant/**/*.cs" />
+			</sources>
+			<references>
+				<include name="System.dll" />
+				<include name="${dir.bin}/NAnt.Core.dll" />
+				<include name="${dir.bin}/log4net.dll" />
+				<include name="${dir.bin}/Migrator.dll" />
+				<include name="${dir.lib}/Castle/Castle.ActiveRecord.dll" />
+				<include name="${dir.lib}/Castle/NHibernate.dll" />
+				<include name="${dir.lib}/Castle/Castle.MonoRail.Framework.dll" />
+				<include name="${dir.lib}/CsvReader/LumenWorks.Framework.IO.dll" />
+				</references>
+		</csc>
+		<csc target="exe" output="${dir.bin}/Migrator.Console.exe" define="${defines}" debug="${debug}">
+			<sources>
+			  <include name="config/AssemblyInfo.cs" />
+				<include name="app/console/**/*.cs" />
+			</sources>
+			<references>
+				<include name="System.dll" />
+				<include name="${dir.bin}/Migrator.dll" />
+				<include name="${dir.lib}/Castle/Castle.ActiveRecord.dll" />
+				<include name="${dir.lib}/Castle/NHibernate.dll" />
+				<include name="${dir.lib}/Castle/Castle.MonoRail.Framework.dll" />
+				<include name="${dir.lib}/CsvReader/LumenWorks.Framework.IO.dll" />
+			</references>
+		</csc>
+	</target>
+	
+	<target name="rebuild" description="Rebuilds the app from scratch" depends="clean build" />
+	
+	<target name="build.tests" description="Builds the tests" depends="build, prepare.tests">
+		<copy file="config/test.config" tofile="${dir.bin}/Migrator.Tests.dll.config" />
+		<csc target="library" output="${dir.bin}/Migrator.Tests.dll" define="${defines}" debug="${debug}">
+			<sources basedir="test">
+				<include name="**/*.cs" />
+			</sources>
+			<references>
+				<include name="System.dll" />
+				<include name="System.Data.dll" />
+				<include name="System.Configuration.dll" if="${framework::get-target-framework() == 'net-2.0'}" />
+				<include name="${dir.bin}/Migrator.dll" />
+				<include name="${dir.lib}/nmock.dll" />
+				<include name="${dir.lib}/nunit.framework.dll" />
+			</references>
+		</csc>
+	</target>
+	
+	<target name="prepare">
+		<mkdir dir="${dir.bin}" />
+		<copy todir="${dir.bin}" flatten="true">
+			<fileset>
+				<include name="${dir.lib}/NAnt.Core.dll" />
+				<include name="${dir.lib}/log4net.dll" />
+				<include name="${dir.lib.mysql}/MySql.Data.dll" />
+				<include name="${dir.lib.postgre}/Npgsql.dll" />
+				<include name="${dir.lib.postgre}/Mono.Security.dll" />
+				<include name="${dir.lib}/SQLite*.dll" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="prepare.tests">
+		<mkdir dir="${dir.bin}" />
+		<copy todir="${dir.bin}" flatten="true">
+			<fileset>
+				<include name="${dir.lib}/nmock.dll" />
+				<include name="${dir.lib}/nunit.framework.dll" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="clean" description="Sweep it yeah!">
+		<delete>
+			<fileset>
+				<include name="bin/**" />
+			</fileset>
+		</delete>
+	</target>
+	
+	<target name="test" description="Run tests" depends="build.tests">
+	  <!-- Jump out the Windows -->
+		<nunit2 if="${platform::is-win32()}"> 
+			<formatter type="Plain" />
+			<test
+				assemblyname="${dir.bin}\Migrator.Tests.dll"
+				appconfig="config\test.config">
+				<categories>
+					<exclude name="Postgre" />
+					<exclude name="MySql" />
+				</categories>
+			</test>
+		</nunit2>	
+		<!-- You're on unix, you're cool! -->
+		<property name="exclude" value="SqlServer,Postgre" overwrite="false" />
+		<exec program="nunit-console" if="${platform::is-unix()}">
+			<arg value="${dir.bin}/Migrator.Tests.dll" />
+			<arg value="/nologo" />
+			<arg value="/config=config/test.config" />
+			<arg value="/exclude=${exclude}" />
+		</exec>
+	</target>
+  
+</project>

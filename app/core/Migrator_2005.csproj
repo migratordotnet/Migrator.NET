@@ -1,0 +1,85 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1FEE70A4-AAD7-4C60-BE60-3F7DC03A8C4D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Migrator</RootNamespace>
+    <AssemblyName>Migrator</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Migrator\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Migrator\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="log4net">
+      <HintPath>..\..\lib\log4net.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>..\..\lib\Npgsql\net-2.0\Mono.Security.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="MySql.Data">
+      <HintPath>..\..\lib\MySql.Data.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Npgsql">
+      <HintPath>..\..\lib\Npgsql\net-2.0\Npgsql.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Column.cs" />
+    <Compile Include="Columns\DecimalColumn.cs" />
+    <Compile Include="DuplicatedVersionException.cs" />
+    <Compile Include="IrreversibleMigrationException.cs" />
+    <Compile Include="Loggers\ConsoleLogger.cs" />
+    <Compile Include="Loggers\ILogger.cs" />
+    <Compile Include="Loggers\NullLogger.cs" />
+    <Compile Include="Migration.cs" />
+    <Compile Include="MigrationAttribute.cs" />
+    <Compile Include="MigrationComparer.cs" />
+    <Compile Include="MigrationException.cs" />
+    <Compile Include="Migrator.cs" />
+    <Compile Include="Providers\ColumnPropertiesMappers\ColumnPropertiesMapper.cs" />
+    <Compile Include="Providers\ColumnPropertiesMappers\IColumnPropertiesMapper.cs" />
+    <Compile Include="Providers\ColumnPropertiesMappers\MysqlColumnPropertiesMapper.cs" />
+    <Compile Include="Providers\ColumnPropertiesMappers\SQLServerColumnPropertiesMapper.cs" />
+    <Compile Include="Providers\ForeignKeys\SQLServerForeignKeyConstraintMapper.cs" />
+    <Compile Include="Providers\ForeignKeys\ForeignKeyConstraint.cs" />
+    <Compile Include="Providers\ForeignKeys\ForeignKeyConstraintMapper.cs" />
+    <Compile Include="Providers\ForeignKeys\IForeignKeyConstraintMapper.cs" />
+    <Compile Include="Providers\ForeignKeys\MysqlForeignKeyConstraintMapper.cs" />
+    <Compile Include="Providers\ITransformationProvider.cs" />
+    <Compile Include="Providers\MySqlTransformationProvider.cs" />
+    <Compile Include="Providers\PostgreSQLTransformationProvider.cs" />
+    <Compile Include="Providers\ProviderFactory.cs" />
+    <Compile Include="Providers\SqlServerTransformationProvider.cs" />
+    <Compile Include="Providers\TransformationProvider.cs" />
+    <Compile Include="Providers\TypeToSqlProviders\SQLServerTypeToSqlProvider.cs" />
+    <Compile Include="Providers\TypeToSqlProviders\ITypeToSqlProvider.cs" />
+    <Compile Include="Providers\TypeToSqlProviders\MysqlTypeToSqlProvider.cs" />
+    <Compile Include="Tools\SchemaDumper.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
