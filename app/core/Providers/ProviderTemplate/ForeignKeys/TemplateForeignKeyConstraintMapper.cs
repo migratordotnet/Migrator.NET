@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Migrator.Providers.ForeignKeys
 {
-	class SQLServerForeignKeyConstraintMapper: ForeignKeyConstraintMapper
+	class TemplateForeignKeyConstraintMapper: ForeignKeyConstraintMapper
 	{
 
 		//from MYSQL driver, delete if they are not correct

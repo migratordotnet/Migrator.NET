@@ -4,10 +4,10 @@ using System.Text;
 
 namespace Migrator.Providers.ColumnPropertiesMappers
 {
-	class SQLServerColumnPropertiesMapper: ColumnPropertiesMapper
+	class TemplateColumnPropertiesMapper: ColumnPropertiesMapper
 	{
 
-		public SQLServerColumnPropertiesMapper(string type)
+		public TemplateColumnPropertiesMapper(string type)
 			: base(type)
 		{
 		}

@@ -20,11 +20,11 @@ namespace Migrator.Providers
 	/// <summary>
 	/// Migration transformations provider for Microsoft SQL Server.
 	/// </summary>
-	public class SqlServerTransformationProvider : TransformationProvider
+	public class TemplateTransformationProvider : TransformationProvider
 	{
 		private string _connectionString;
 		
-		public SqlServerTransformationProvider(string connectionString)
+		public TemplateTransformationProvider(string connectionString)
 		{
 			_connectionString = connectionString;
 			_connection = new SqlConnection();

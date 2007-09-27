@@ -5,7 +5,7 @@ using Migrator.Providers.ColumnPropertiesMappers;
 
 namespace Migrator.Providers.TypeToSqlProviders
 {
-	public class SQLServerTypeToSqlProvider: ITypeToSqlProvider
+	public class TemplateTypeToSqlProvider: ITypeToSqlProvider
 	{
 
 		#region ITypeToSqlProvider Members
