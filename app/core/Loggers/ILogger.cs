@@ -13,54 +13,62 @@ using System;
 namespace Migrator.Loggers
 {
 	/// <summary>
-	/// Interface à étendre pour définir un loggeur d'événement
-	/// du médiateur de migration.
-	/// <see cref="ConsoleLogger">ConsoleLogger</see> est le loggeur
-	/// par défaut et affiche toute les sorties à la console.
+	/// ILogger interface. 
+	/// Implicit in this interface is that the logger will delegate actual
+	/// logging to the <see cref="ISimpleWriter"/>(s) that have been attached
 	/// </summary>
 	public interface ILogger
 	{
 		/// <summary>
-		/// Informe que la migration débute.
+		/// Attach an <see cref="ISimpleWriter"/>
 		/// </summary>
-		/// <param name="currentVersion">La version actuel de la base de donnée</param>
-		/// <param name="finalVersion">La version vers laquelle migrer</param>
+		/// <param name="writer"></param>
+		void Attach(ILogWriter writer);
+
+		/// <summary>
+		/// Detach an <see cref="ISimpleWriter"/>
+		/// </summary>
+		/// <param name="writer"></param>
+		void Detach(ILogWriter writer);
+
+		/// <summary>
+		/// Log that we have started a migration
+		/// </summary>
+		/// <param name="currentVersion">Start version</param>
+		/// <param name="finalVersion">Final Version</param>
 		void Started(int currentVersion, int finalVersion);
 		
 		/// <summary>
-		/// Informe qu'une migration vers le haut s'exécute.
+		/// Log that we are migrating up
 		/// </summary>
-		/// <param name="version">La version de la migration</param>
-		/// <param name="migrationName">Le nom de la migration</param>
+		/// <param name="version">Version we are migrating to</param>
+		/// <param name="migrationName">Migration name</param>
 		void MigrateUp(int version, string migrationName);
 		
 		/// <summary>
-		/// Informe qu'une migration vers le bas s'exécute.
+		/// Log that we are migrating down
 		/// </summary>
-		/// <param name="version">La version de la migration</param>
-		/// <param name="migrationName">Le nom de la migration</param>
+		/// <param name="version">Version we are migrating to</param>
+		/// <param name="migrationName">Migration name</param>
 		void MigrateDown(int version, string migrationName);
 		
 		/// <summary>
-		/// Informe qu'une migration correspondant au numéro de
-		/// version est introuvable et sera ignorée.
+		/// Inform that a migration corresponding to the number of
+		/// version is untraceable (not found?) and will be ignored.
 		/// </summary>
-		/// <param name="version">La version introuvable</param>
+		/// <param name="version">Version we couldnt find</param>
 		void Skipping(int version);
 		
 		/// <summary>
-		/// Informe que les modifications à la base de données
-		/// seront annulées.
+		/// Log that we are rolling back to version
 		/// </summary>
 		/// <param name="originalVersion">
-		/// Version initiale de la base de données.
-		/// Vers laquelle on retourne.
+		/// version
 		/// </param>
 		void RollingBack(int originalVersion);
 		
 		/// <summary>
-		/// Informe qu'une exception est survenue lors d'une
-		/// migration.
+		/// Log that we had an exception on a migration
 		/// </summary>
 		/// <param name="version">La version de la migration qui a produire l'exception.</param>
 		/// <param name="migrationName">Le nom de la migration qui a produire l'exception.</param>
@@ -68,28 +76,28 @@ namespace Migrator.Loggers
 		void Exception(int version, string migrationName, Exception ex);
 		
 		/// <summary>
-		/// Informe que le processus de migration s'est terminée avec succès.
+		/// Log that we have finished a migration
 		/// </summary>
 		/// <param name="originalVersion">La version intiale de la base de données</param>
 		/// <param name="currentVersion">La version actuel de la base de donnée</param>
 		void Finished(int originalVersion, int currentVersion);
 		
 		/// <summary>
-		/// Affiche un message d'information.
+		/// Log a message
 		/// </summary>
 		/// <param name="format">Le format ("{0}, blbla {1}") ou la chaîne à afficher.</param>
 		/// <param name="args">Les paramètres dans le cas d'un format au premier paramètre.</param>
 		void Log(string format, params object[] args);
 		
 		/// <summary>
-		/// Affiche un avertissement.
+		/// Log a Warning
 		/// </summary>
 		/// <param name="format">Le format ("{0}, blbla {1}") ou la chaîne à afficher.</param>
 		/// <param name="args">Les paramètres dans le cas d'un format au premier paramètre.</param>
 		void Warn(string format, params object[] args);
 		
 		/// <summary>
-		/// Affiche une information de déboguage.
+		/// Log a Trace Message
 		/// </summary>
 		/// <param name="format">Le format ("{0}, blbla {1}") ou la chaîne à afficher.</param>
 		/// <param name="args">Les paramètres dans le cas d'un format au premier paramètre.</param>

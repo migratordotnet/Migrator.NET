@@ -53,9 +53,10 @@
     <Compile Include="Columns\DecimalColumn.cs" />
     <Compile Include="DuplicatedVersionException.cs" />
     <Compile Include="IrreversibleMigrationException.cs" />
-    <Compile Include="Loggers\ConsoleLogger.cs" />
+    <Compile Include="Loggers\ConsoleWriter.cs" />
     <Compile Include="Loggers\ILogger.cs" />
-    <Compile Include="Loggers\NullLogger.cs" />
+    <Compile Include="Loggers\ISimpleWriter.cs" />
+    <Compile Include="Loggers\Logger.cs" />
     <Compile Include="Migration.cs" />
     <Compile Include="MigrationAttribute.cs" />
     <Compile Include="MigrationComparer.cs" />
@@ -74,6 +75,10 @@
     <Compile Include="Providers\MySqlTransformationProvider.cs" />
     <Compile Include="Providers\PostgreSQLTransformationProvider.cs" />
     <Compile Include="Providers\ProviderFactory.cs" />
+    <Compile Include="Providers\ProviderTemplate\ColumnPropertiesMappers\TemplateColumnPropertiesMapper.cs" />
+    <Compile Include="Providers\ProviderTemplate\ForeignKeys\TemplateForeignKeyConstraintMapper.cs" />
+    <Compile Include="Providers\ProviderTemplate\TemplateTransformationProvider.cs" />
+    <Compile Include="Providers\ProviderTemplate\TypeToSqlProviders\TemplateTypeToSqlProvider.cs" />
     <Compile Include="Providers\SqlServerTransformationProvider.cs" />
     <Compile Include="Providers\TransformationProvider.cs" />
     <Compile Include="Providers\TypeToSqlProviders\SQLServerTypeToSqlProvider.cs" />

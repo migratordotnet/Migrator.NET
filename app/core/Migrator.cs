@@ -47,7 +47,8 @@ namespace Migrator
 		{
 			_provider = provider;
 			_trace = trace;
-			_logger = new ConsoleLogger(_trace);
+			_logger = new Logger(_trace);
+			_logger.Attach(new ConsoleWriter());
 			
 			_migrationsTypes.AddRange(GetMigrationTypes(Assembly.GetExecutingAssembly()));
 			if (migrationAssembly != null)
