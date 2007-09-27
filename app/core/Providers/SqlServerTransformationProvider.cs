@@ -13,7 +13,9 @@ using System;
 using System.Collections;
 using System.Data;
 using System.Data.SqlClient;
+
 using ForeignKeyConstraint=Migrator.Providers.ForeignKeys.ForeignKeyConstraint;
+using Migrator.Providers.TypeToSqlProviders;
 
 namespace Migrator.Providers
 {
@@ -30,12 +32,6 @@ namespace Migrator.Providers
 			_connection = new SqlConnection();
 			_connection.ConnectionString = _connectionString;
 			_connection.Open();
-		}
-		
-		public override void RemoveTable(string name)
-		{
-			if (TableExists(name))
-				ExecuteNonQuery( string.Format("DROP TABLE {0}", name));
 		}
 		
 		// Not sure how SQL server handles ON UPDATRE & ON DELETE
@@ -67,17 +63,9 @@ namespace Migrator.Providers
 			}
 		}
 						
-		public override void AddColumn(string table, string column, Type type, int size, ColumnProperties property, object defaultValue)
+		public override void AddColumn(string table, string sqlColumn)
 		{
-			if (ColumnExists(table, column))
-			{
-				Logger.Warn("The column {0}.{1} already exists", table, column);
-				return;
-			}
-			
-			string sqlColumn = GetSQLForColumn(new Column(column, type, size, property, defaultValue));
-			
-			ExecuteNonQuery( string.Format("ALTER TABLE {0} ADD {1}", table, sqlColumn));
+			ExecuteNonQuery(string.Format("ALTER TABLE {0} ADD {1}", table, sqlColumn));
 		}
 		
 		public override bool ColumnExists(string table, string column)
@@ -90,30 +78,6 @@ namespace Migrator.Providers
 			                   table, column)))
 			{
 				return reader.Read();
-			}
-		}
-		
-		// Deletes all constraints linked to a column. Sql Server
-		// doesn't seems to do this.
-		private void DeleteColumnConstraints(string table, string column)
-		{
-			string sqlContrainte =
-				string.Format("SELECT cont.name FROM SYSOBJECTS cont, SYSCOLUMNS col "
-							+ "WHERE cont.parent_obj = col.id "
-							+ "AND col.name = '{1}' AND col.id = object_id('{0}')",
-							 table, column);
-			ArrayList constraints = new ArrayList();
-			
-			using (IDataReader reader = ExecuteQuery(sqlContrainte))
-			{
-				while (reader.Read())
-				{
-					constraints.Add(reader.GetString(0));
-				}
-			}
-			// Can't share the connection so two phase modif
-			foreach (string constraint in constraints) {
-				RemoveForeignKey(constraint, table);
 			}
 		}
 		
@@ -158,97 +122,50 @@ namespace Migrator.Providers
 			return (Column[])columns.ToArray(typeof(Column));
 		}
 		
-		#region Helper methods
-		private string GetSQLForColumn(Column col)
-		{
-			string sqlType = ToSqlType(col.Type, col.Size);
-			string sqlNull = col.ColumnProperty == ColumnProperties.Null ? "NULL" : "NOT NULL";
-			string sqlDefault = "";
-			string sqlIdentity = "";
-			
-			if (col.DefaultValue != null)
-			{
-				string sep = col.Type == typeof(string) ? "'" : "";
-				sqlDefault = string.Format("DEFAULT {0}{1}{0}", sep, col.DefaultValue);
-			}
-			else if (col.Type == typeof(bool)) // Boolean must always have default value
-			{
-				sqlDefault = "DEFAULT (0)";
-			}
-			
-			if (col.ColumnProperty == ColumnProperties.PrimaryKeyWithIdentity
-			    || col.ColumnProperty == ColumnProperties.Identity)
-			{
-				sqlIdentity = string.Format("IDENTITY (1, 1)");
-			}
-			
-			return string.Join(" ", new string[] { col.Name, sqlType, sqlIdentity, sqlNull, sqlDefault });
-		}
-				
-		private string ToSqlType(Type type, int size)
-		{
-			if (type == typeof(string))
-			{
-				if (size <= 255)
-					return string.Format("varchar({0})", size);
-				else
-					return "text";
-			}
-			else if (type == typeof(int))
-			{
-				if(size >= 8)
-					return "bigint";
-				else 
-					return "int";
-			}
-			else if (type == typeof(float) || type == typeof(double))
-			{
-				if (size == 0)
-					return "real";
-				else
-					return string.Format("float({0})", size);
-			}
-			else if (type == typeof(bool))
-			{
-				return "bit";
-			}
-			else if (type == typeof(DateTime))
-			{
-				return "datetime";
-			}
-			else if (type == typeof(char))
-			{
-				return string.Format("char({0})", size);
-			}
-			else if (type == typeof(Guid))
-			{
-				return "uniqueidentifier";
-			}
-			else
-			{
-				throw new NotSupportedException("Type not supported : " + type.Name);
-			}
-		}
-		#endregion
-
 		public override ForeignKeys.IForeignKeyConstraintMapper ForeignKeyMapper
 		{
-			get { throw new Exception("The method or operation is not implemented."); }
+			get { return new ForeignKeys.SQLServerForeignKeyConstraintMapper(); }
 		}
 
 		protected override void AddTable(string name, string columns)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			string sqlCreate = string.Format("CREATE TABLE {0} ({1})", name, columns);
+			ExecuteNonQuery(sqlCreate);
 		}
 
 		public override global::Migrator.Providers.TypeToSqlProviders.ITypeToSqlProvider TypeToSqlProvider
 		{
-			get { throw new Exception("The method or operation is not implemented."); }
+			get { return new SQLServerTypeToSqlProvider(); }
+		}
+		
+		public override void RemoveColumn(string table, string column)
+		{
+			DeleteColumnConstraints(table, column);
+			base.RemoveColumn(table, column);
 		}
 
-		public override void AddColumn(string table, string sqlColumn)
+		// Deletes all constraints linked to a column. Sql Server
+		// doesn't seems to do this.
+		private void DeleteColumnConstraints(string table, string column)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			string sqlContrainte =
+				string.Format("SELECT cont.name FROM SYSOBJECTS cont, SYSCOLUMNS col, SYSCONSTRAINTS cnt  "
+							+ "WHERE cont.parent_obj = col.id AND cnt.constid = cont.id AND cnt.colid=col.colid "
+							+ "AND col.name = '{1}' AND col.id = object_id('{0}')",
+							 table, column);
+			ArrayList constraints = new ArrayList();
+			
+			using (IDataReader reader = ExecuteQuery(sqlContrainte))
+			{
+				while (reader.Read())
+				{
+					constraints.Add(reader.GetString(0));
+				}
+			}
+			// Can't share the connection so two phase modif
+			foreach (string constraint in constraints) {
+				RemoveForeignKey(constraint, table);
+			}
 		}
 	}
 }

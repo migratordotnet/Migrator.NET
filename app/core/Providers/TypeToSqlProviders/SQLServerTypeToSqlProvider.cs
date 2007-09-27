@@ -12,22 +12,22 @@ namespace Migrator.Providers.TypeToSqlProviders
 
 		public IColumnPropertiesMapper Char(byte size)
 		{
-			return new SQLServerColumnPropertiesMapper(string.Format("char({0})", size));
+			return new SQLServerColumnPropertiesMapper(string.Format("nchar({0})", size));
 		}
 
 		public IColumnPropertiesMapper String(ushort size)
 		{
-			return new SQLServerColumnPropertiesMapper(string.Format("varchar({0})", size));
+			return new SQLServerColumnPropertiesMapper(string.Format("nvarchar({0})", size));
 		}
 
 		public IColumnPropertiesMapper Text
 		{
-			get { return new SQLServerColumnPropertiesMapper("TEXT"); }
+			get { return new SQLServerColumnPropertiesMapper("ntext"); }
 		}
 
 		public IColumnPropertiesMapper LongText
 		{
-			get { return new SQLServerColumnPropertiesMapper("LONGTEXT"); }
+			get { return new SQLServerColumnPropertiesMapper("nvarchar(max)"); }
 		}
 
 		public IColumnPropertiesMapper Binary(byte size)
@@ -37,32 +37,32 @@ namespace Migrator.Providers.TypeToSqlProviders
 
 		public IColumnPropertiesMapper Blob
 		{
-			get { return new SQLServerColumnPropertiesMapper("BLOB"); }
+			get { return new SQLServerColumnPropertiesMapper("image"); }
 		}
 
 		public IColumnPropertiesMapper LongBlob
 		{
-			get { return new SQLServerColumnPropertiesMapper("LONGBLOB"); }
+			get { return new SQLServerColumnPropertiesMapper("image"); }
 		}
 
 		public IColumnPropertiesMapper Integer
 		{
-			get { return new SQLServerColumnPropertiesMapper("INT4"); }
+			get { return new SQLServerColumnPropertiesMapper("int"); }
 		}
 
 		public IColumnPropertiesMapper Long
 		{
-			get { return new SQLServerColumnPropertiesMapper("INT8"); }
+			get { return new SQLServerColumnPropertiesMapper("bigint"); }
 		}
 
 		public IColumnPropertiesMapper Float
 		{
-			get { return new SQLServerColumnPropertiesMapper("FLOAT4"); }
+			get { return new SQLServerColumnPropertiesMapper("real"); }
 		}
 
 		public IColumnPropertiesMapper Double
 		{
-			get { return new SQLServerColumnPropertiesMapper("FLOAT8"); }
+			get { return new SQLServerColumnPropertiesMapper("float"); }
 		}
 
 		public IColumnPropertiesMapper Decimal(int whole)
@@ -79,7 +79,7 @@ namespace Migrator.Providers.TypeToSqlProviders
 		{
 			get
 			{
-				IColumnPropertiesMapper mapper = new SQLServerColumnPropertiesMapper("TINYINT(1)");
+				IColumnPropertiesMapper mapper = new SQLServerColumnPropertiesMapper("bit");
 				mapper.Default("0");
 				return mapper;
 			}
@@ -87,7 +87,7 @@ namespace Migrator.Providers.TypeToSqlProviders
 
 		public IColumnPropertiesMapper DateTime
 		{
-			get { return new SQLServerColumnPropertiesMapper("DATETIME"); }
+			get { return new SQLServerColumnPropertiesMapper("datetime"); }
 		}
 
 		#endregion

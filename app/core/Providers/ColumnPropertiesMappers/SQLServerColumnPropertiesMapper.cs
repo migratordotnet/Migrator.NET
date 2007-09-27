@@ -14,37 +14,40 @@ namespace Migrator.Providers.ColumnPropertiesMappers
 
 		public override string IndexSql
 		{
-			get { throw new Exception("The method or operation is not implemented."); }
+			get 
+			{
+				return null; 
+			}
 		}
 
 		public override void NotNull()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			sqlNull = "NOT NULL";
 		}
 
 		public override void PrimaryKey()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			sqlPrimaryKey = "PRIMARY KEY";
 		}
 
 		public override void Unique()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			sqlUnique = "UNIQUE";
 		}
 
 		public override void Unsigned()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			sqlUnsigned = "";
 		}
 
 		public override void Identity()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			sqlIdentity = "IDENTITY";
 		}
 
 		public override void Default(string defaultValue)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			sqlDefault = string.Format("DEFAULT={0}", defaultValue);
 		}
 	}
 }
