@@ -34,7 +34,7 @@ namespace Migrator.Providers.Tests
 			
 			_provider.AddTable("Test2",
 				new Column("Id", typeof(int), ColumnProperties.PrimaryKeyWithIdentity),
-				new Column("TestId", typeof(int))
+				new Column("TestId", typeof(int), ColumnProperties.ForeignKey)
 			);
 		}
 		
