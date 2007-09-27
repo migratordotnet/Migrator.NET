@@ -27,7 +27,7 @@ namespace Migrator.Providers
 	/// </summary>
 	public abstract class TransformationProvider : ITransformationProvider
 	{
-		private ILogger _logger = new NullLogger();
+		private ILogger _logger = new Logger(false);
 		protected IDbConnection _connection;
 		private IDbTransaction _transaction;
 

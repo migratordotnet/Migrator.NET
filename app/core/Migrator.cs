@@ -26,7 +26,7 @@ namespace Migrator
 		private TransformationProvider _provider;
 		private ArrayList _migrationsTypes = new ArrayList();
 		private bool _trace;  // show trace for debugging
-		private ILogger _logger = new NullLogger();
+		private ILogger _logger = new Logger(false);
 		private string[] _args;
 
 		public string[] args
@@ -47,8 +47,9 @@ namespace Migrator
 		{
 			_provider = provider;
 			_trace = trace;
-			_logger = new Logger(_trace);
-			_logger.Attach(new ConsoleWriter());
+			Logger logger = new Logger(_trace);
+			logger.Attach(new ConsoleWriter());
+			_logger = logger;
 			
 			_migrationsTypes.AddRange(GetMigrationTypes(Assembly.GetExecutingAssembly()));
 			if (migrationAssembly != null)

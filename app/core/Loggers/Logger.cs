@@ -16,7 +16,7 @@ namespace Migrator.Loggers
 	/// <summary>
 	/// Text logger for the migration mediator
 	/// </summary>
-	public class Logger : ILogger
+	public class Logger : IAttachableLogger
 	{
 		private int _widthFirstColumn = 5;
 		private bool _trace = false;
@@ -25,6 +25,12 @@ namespace Migrator.Loggers
 		public Logger(bool trace)
 		{
 			_trace = trace;
+		}
+
+		public Logger(bool trace, params ILogWriter[] writers)
+			: this(trace)
+		{
+			_writers.AddRange(writers);
 		}
 
 		public void Attach(ILogWriter writer)
@@ -121,5 +127,13 @@ namespace Migrator.Loggers
 				writer.Write(message, args);
 			}
 		}
+
+		#region Static Logger Helpers
+
+		public static ILogger ConsoleLogger()
+		{
+			return new Logger(false, new ConsoleWriter());
+		}
+		#endregion
 	}
 }

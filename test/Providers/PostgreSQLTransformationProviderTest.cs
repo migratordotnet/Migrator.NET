@@ -22,7 +22,7 @@ namespace Migrator.Providers.Tests
 				throw new ArgumentNullException("ConnectionString", "No config file");
 
 			_provider = new PostgreSQLTransformationProvider(constr);
-			_provider.Logger = new ConsoleLogger(true);
+			_provider.Logger = Logger.ConsoleLogger();
 			_provider.BeginTransaction();
 			
 			_provider.AddTable("Test2",
