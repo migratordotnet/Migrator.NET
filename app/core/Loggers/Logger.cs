@@ -124,7 +124,7 @@ namespace Migrator.Loggers
 		{
 			foreach (ILogWriter writer in _writers)
 			{
-				writer.Write(message, args);
+				writer.WriteLine(message, args);
 			}
 		}
 
