@@ -54,8 +54,9 @@
     <Compile Include="DuplicatedVersionException.cs" />
     <Compile Include="IrreversibleMigrationException.cs" />
     <Compile Include="Loggers\ConsoleWriter.cs" />
+    <Compile Include="Loggers\IAttachableLogger.cs" />
     <Compile Include="Loggers\ILogger.cs" />
-    <Compile Include="Loggers\ISimpleWriter.cs" />
+    <Compile Include="Loggers\ILogWriter.cs" />
     <Compile Include="Loggers\Logger.cs" />
     <Compile Include="Migration.cs" />
     <Compile Include="MigrationAttribute.cs" />
@@ -66,11 +67,13 @@
     <Compile Include="Providers\ColumnPropertiesMappers\IColumnPropertiesMapper.cs" />
     <Compile Include="Providers\ColumnPropertiesMappers\MysqlColumnPropertiesMapper.cs" />
     <Compile Include="Providers\ColumnPropertiesMappers\SQLServerColumnPropertiesMapper.cs" />
+    <Compile Include="Providers\ColumnPropertiesMappers\PostgreSQLColumnPropertiesMapper.cs" />
     <Compile Include="Providers\ForeignKeys\SQLServerForeignKeyConstraintMapper.cs" />
     <Compile Include="Providers\ForeignKeys\ForeignKeyConstraint.cs" />
     <Compile Include="Providers\ForeignKeys\ForeignKeyConstraintMapper.cs" />
     <Compile Include="Providers\ForeignKeys\IForeignKeyConstraintMapper.cs" />
     <Compile Include="Providers\ForeignKeys\MysqlForeignKeyConstraintMapper.cs" />
+    <Compile Include="Providers\ForeignKeys\PostgreSQLForeignKeyConstraintMapper.cs" />
     <Compile Include="Providers\ITransformationProvider.cs" />
     <Compile Include="Providers\MySqlTransformationProvider.cs" />
     <Compile Include="Providers\PostgreSQLTransformationProvider.cs" />
@@ -84,7 +87,17 @@
     <Compile Include="Providers\TypeToSqlProviders\SQLServerTypeToSqlProvider.cs" />
     <Compile Include="Providers\TypeToSqlProviders\ITypeToSqlProvider.cs" />
     <Compile Include="Providers\TypeToSqlProviders\MysqlTypeToSqlProvider.cs" />
+    <Compile Include="Providers\TypeToSqlProviders\PostgreSQLTypeToSqlProvider.cs" />
     <Compile Include="Tools\SchemaDumper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\config\test.config">
+      <Link>test.config</Link>
+    </None>
+    <None Include="..\..\default.build">
+      <Link>default.build</Link>
+    </None>
+    <None Include="Providers\OLDPostgreSQLTransformationProvider.old.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
