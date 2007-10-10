@@ -5,6 +5,8 @@ namespace Migrator.Providers.TypeToSqlProviders
 {
 	public interface ITypeToSqlProvider
 	{
+		IColumnPropertiesMapper PrimaryKey { get;}
+
 		IColumnPropertiesMapper Char(byte size);
 		IColumnPropertiesMapper String(ushort size);
 		IColumnPropertiesMapper Text {get;}

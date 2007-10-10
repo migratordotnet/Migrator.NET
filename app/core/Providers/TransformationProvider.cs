@@ -176,7 +176,10 @@ namespace Migrator.Providers
 			}
 
 			if (column.Type == typeof(int))
-				return TypeToSqlProvider.Integer;
+				if ((column.ColumnProperty & ColumnProperties.PrimaryKey) == ColumnProperties.PrimaryKey)
+					return TypeToSqlProvider.PrimaryKey;
+				else
+					return TypeToSqlProvider.Integer;
 
 			if (column.Type == typeof(long))
 				return TypeToSqlProvider.Long;
@@ -428,6 +431,7 @@ namespace Migrator.Providers
 		
 		public int ExecuteNonQuery( string sql )
 		{
+			//_logger.Trace(sql);
 			IDbCommand cmd = BuildCommand( sql );
 			return cmd.ExecuteNonQuery();
 		}

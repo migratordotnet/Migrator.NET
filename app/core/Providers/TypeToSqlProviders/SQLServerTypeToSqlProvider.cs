@@ -10,6 +10,11 @@ namespace Migrator.Providers.TypeToSqlProviders
 
 		#region ITypeToSqlProvider Members
 
+		public IColumnPropertiesMapper PrimaryKey
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
 		public IColumnPropertiesMapper Char(byte size)
 		{
 			return new SQLServerColumnPropertiesMapper(string.Format("nchar({0})", size));
@@ -91,5 +96,6 @@ namespace Migrator.Providers.TypeToSqlProviders
 		}
 
 		#endregion
+
 	}
 }

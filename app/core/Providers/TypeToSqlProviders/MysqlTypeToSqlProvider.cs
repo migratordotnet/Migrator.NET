@@ -10,6 +10,11 @@ namespace Migrator.Providers.TypeToSqlProviders
 
 		#region ITypeToSqlProvider Members
 
+		public IColumnPropertiesMapper PrimaryKey
+		{
+			get { return Integer; }
+		}
+
 		public IColumnPropertiesMapper Char(byte size)
 		{
 			return new MysqlColumnPropertiesMapper(string.Format("char({0})", size));
