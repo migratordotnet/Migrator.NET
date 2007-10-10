@@ -10,6 +10,16 @@ namespace Migrator.Providers.ColumnPropertiesMappers
 			: base(type)
 		{
 		}
+
+		public override string IndexSql
+		{
+			get
+			{
+				if (indexed)
+					return string.Format("INDEX(`{0}`)", name.Trim('`'));
+				return null;
+			}
+		}
 		
 		public override void NotNull()
 		{
@@ -39,16 +49,6 @@ namespace Migrator.Providers.ColumnPropertiesMappers
 		public override void Default(string defaultValue)
 		{
 			sqlDefault = string.Format("DEFAULT={0}", defaultValue);
-		}
-
-		public override string IndexSql
-		{
-			get
-			{
-				if (indexed)
-					return string.Format("INDEX(`{0}`)", name.Trim('`'));
-				return null;
-			}
 		}
 	}
 }
