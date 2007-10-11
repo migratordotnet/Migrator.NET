@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Loggers\TaskLogger.cs" />
-    <Compile Include="Loggers\TaskWriter.cs" />
     <Compile Include="MigrateTask.cs" />
   </ItemGroup>
   <ItemGroup>
