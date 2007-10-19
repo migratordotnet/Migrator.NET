@@ -613,7 +613,7 @@ namespace Migrator.Providers
 
 		public void AddColumn(string table, Column column)
 		{
-			AddColumn(table, column.Name, column.Type, column.ColumnProperty);
+			AddColumn(table, column.Name, column.Type, column.Size, column.ColumnProperty);
 		}
 
 		public void GenerateForeignKey(string primaryTable, string refTable)
