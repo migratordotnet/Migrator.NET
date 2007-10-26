@@ -12,7 +12,7 @@ namespace Migrator.Providers.TypeToSqlProviders
 
 		public IColumnPropertiesMapper PrimaryKey
 		{
-			get { throw new Exception("The method or operation is not implemented."); }
+            get { return Integer; }
 		}
 
 		public IColumnPropertiesMapper Char(byte size)
