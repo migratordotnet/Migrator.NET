@@ -77,10 +77,10 @@ namespace Migrator.Loggers
 				WriteLine(ex.ToString());
 				WriteLine(ex.StackTrace);
 				Exception iex = ex.InnerException;
-				while (ex.InnerException != null)
+				while (iex != null)
 				{
-					WriteLine("Caused by: {0}", ex.InnerException);
-					WriteLine(ex.InnerException.StackTrace);
+					WriteLine("Caused by: {0}", iex);
+					WriteLine(ex.StackTrace);
 					iex = iex.InnerException;
 				}
 				WriteLine("======================================");
