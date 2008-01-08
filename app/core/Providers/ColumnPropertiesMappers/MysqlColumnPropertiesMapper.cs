@@ -48,7 +48,7 @@ namespace Migrator.Providers.ColumnPropertiesMappers
 
 		public override void Default(string defaultValue)
 		{
-			sqlDefault = string.Format("DEFAULT={0}", defaultValue);
+			sqlDefault = string.Format("DEFAULT '{0}'", defaultValue);
 		}
 	}
 }

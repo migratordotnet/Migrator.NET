@@ -132,6 +132,8 @@ namespace Migrator.Providers
 		{
 			IColumnPropertiesMapper mapper = GetColumnMapper(column);
 			MapColumnProperties(mapper, column);
+			if (column.DefaultValue != null)
+				mapper.Default(column.DefaultValue.ToString());
 			return mapper;
 		}
 
@@ -613,7 +615,7 @@ namespace Migrator.Providers
 
 		public void AddColumn(string table, Column column)
 		{
-			AddColumn(table, column.Name, column.Type, column.Size, column.ColumnProperty);
+			AddColumn(table, column.Name, column.Type, column.Size, column.ColumnProperty, column.DefaultValue);
 		}
 
 		public void GenerateForeignKey(string primaryTable, string refTable)

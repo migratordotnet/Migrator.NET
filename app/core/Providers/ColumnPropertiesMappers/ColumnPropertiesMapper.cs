@@ -70,7 +70,7 @@ namespace Migrator.Providers.ColumnPropertiesMappers
 		{
 			get
 			{
-				return String.Join(" ", new string[] { name, type, sqlUnsigned, sqlNull, sqlIdentity, sqlUnique, sqlPrimaryKey });
+				return String.Join(" ", new string[] { name, type, sqlUnsigned, sqlNull, sqlIdentity, sqlUnique, sqlPrimaryKey, sqlDefault });
 			}
 		}
 
