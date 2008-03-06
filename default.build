@@ -24,6 +24,7 @@
 				<include name="${dir.bin}/MySql.Data.dll" />
 				<include name="${dir.bin}/Npgsql.dll" />
 				<include name="${dir.lib}/SQLite.NET.dll" />
+				<include name="${dir.lib}/Oracle.DataAccess.dll" />
 				<include name="${dir.lib}/Castle/Castle.ActiveRecord.dll" />
 				<include name="${dir.lib}/Castle/NHibernate.dll" />
 				<include name="${dir.lib}/Castle/Castle.MonoRail.Framework.dll" />
@@ -91,6 +92,7 @@
 				<include name="${dir.lib.postgre}/Npgsql.dll" />
 				<include name="${dir.lib.postgre}/Mono.Security.dll" />
 				<include name="${dir.lib}/SQLite*.dll" />
+				<include name="${dir.lib}/Oracle.DataAccess.dll" />
 			</fileset>
 		</copy>
 	</target>
@@ -121,9 +123,10 @@
 				assemblyname="${dir.bin}\Migrator.Tests.dll"
 				appconfig="config\test.config">
 				<categories>
-					<!--<exclude name="SqlServer" />-->
-					<!--<exclude name="MySql" />-->
-          <!--<exclude name="Postgre" />-->
+					<!--<exclude name="SqlServer" />
+					<exclude name="Oracle" /> 
+					<exclude name="MySql" />
+					<exclude name="Postgre" />-->
 				</categories>
 			</test>
 		</nunit2>	
