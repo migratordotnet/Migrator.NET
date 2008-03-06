@@ -28,6 +28,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Oracle.DataAccess, Version=2.111.5.10, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Oracle.DataAccess.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -66,8 +70,10 @@
     <Compile Include="Providers\ColumnPropertiesMappers\ColumnPropertiesMapper.cs" />
     <Compile Include="Providers\ColumnPropertiesMappers\IColumnPropertiesMapper.cs" />
     <Compile Include="Providers\ColumnPropertiesMappers\MysqlColumnPropertiesMapper.cs" />
+    <Compile Include="Providers\ColumnPropertiesMappers\OracleColumnPropertiesMapper.cs" />
     <Compile Include="Providers\ColumnPropertiesMappers\SQLServerColumnPropertiesMapper.cs" />
     <Compile Include="Providers\ColumnPropertiesMappers\PostgreSQLColumnPropertiesMapper.cs" />
+    <Compile Include="Providers\ForeignKeys\OracleForeignKeyConstraintMapper.cs" />
     <Compile Include="Providers\ForeignKeys\SQLServerForeignKeyConstraintMapper.cs" />
     <Compile Include="Providers\ForeignKeys\ForeignKeyConstraint.cs" />
     <Compile Include="Providers\ForeignKeys\ForeignKeyConstraintMapper.cs" />
@@ -76,15 +82,13 @@
     <Compile Include="Providers\ForeignKeys\PostgreSQLForeignKeyConstraintMapper.cs" />
     <Compile Include="Providers\ITransformationProvider.cs" />
     <Compile Include="Providers\MySqlTransformationProvider.cs" />
+    <Compile Include="Providers\OracleTransformationProvider.cs" />
     <Compile Include="Providers\PostgreSQLTransformationProvider.cs" />
     <Compile Include="Providers\ProviderFactory.cs" />
-    <Compile Include="Providers\ProviderTemplate\ColumnPropertiesMappers\TemplateColumnPropertiesMapper.cs" />
-    <Compile Include="Providers\ProviderTemplate\ForeignKeys\TemplateForeignKeyConstraintMapper.cs" />
-    <Compile Include="Providers\ProviderTemplate\TemplateTransformationProvider.cs" />
-    <Compile Include="Providers\ProviderTemplate\TypeToSqlProviders\TemplateTypeToSqlProvider.cs" />
     <Compile Include="Providers\ProviderType.cs" />
     <Compile Include="Providers\SqlServerTransformationProvider.cs" />
     <Compile Include="Providers\TransformationProvider.cs" />
+    <Compile Include="Providers\TypeToSqlProviders\OracleTypeToSqlProvider.cs" />
     <Compile Include="Providers\TypeToSqlProviders\SQLServerTypeToSqlProvider.cs" />
     <Compile Include="Providers\TypeToSqlProviders\ITypeToSqlProvider.cs" />
     <Compile Include="Providers\TypeToSqlProviders\MysqlTypeToSqlProvider.cs" />

@@ -433,15 +433,15 @@ namespace Migrator.Providers
 		
 		public int ExecuteNonQuery( string sql )
 		{
-			_logger.Trace(sql);
+			IDbCommand cmd = BuildCommand(sql);
 			try
 			{
-				IDbCommand cmd = BuildCommand(sql);
 				return cmd.ExecuteNonQuery();
 			}
-			catch (Exception ex)
+			catch
 			{
-				throw new Exception("Error running SQL: " + sql, ex);
+				Logger.Warn("query failed: {0}", cmd.CommandText);
+				throw;
 			}
 		}
 
@@ -465,19 +465,28 @@ namespace Migrator.Providers
 		public IDataReader ExecuteQuery( string sql )
 		{
 			IDbCommand cmd = BuildCommand( sql );
-			return cmd.ExecuteReader();
+            try
+            {
+                return cmd.ExecuteReader();
+            }
+            catch
+            {
+                Logger.Warn("query failed: {0}", cmd.CommandText);
+                throw;
+            }
 		}
 
 		public object ExecuteScalar( string sql )
 		{
+			IDbCommand cmd = BuildCommand(sql);
 			try
 			{
-				IDbCommand cmd = BuildCommand(sql);
 				return cmd.ExecuteScalar();
 			}
-			catch (Exception e)
+			catch
 			{
-				throw new Exception(string.Format("Execution running SQL: {0}", sql), e);
+				Logger.Warn("Query failed: {0}", cmd.CommandText);
+				throw;
 			}
 		}
 		

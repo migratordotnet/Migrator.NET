@@ -37,6 +37,10 @@ namespace Migrator.Providers
 			{
 				return "SqlServer";
 			}
+            else if (name == "NHibernate.Driver.OracleDataClientDriver")
+            {
+                return "Oracle";
+            }
 			else
 			{
 				return name;
