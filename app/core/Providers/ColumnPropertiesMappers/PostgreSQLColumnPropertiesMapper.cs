@@ -12,12 +12,20 @@ namespace Migrator.Providers.ColumnPropertiesMappers
 		{
 		}
 
+		public override string ColumnSql
+		{
+			get
+			{
+				return String.Join(" ", new string[] { Quote(name.ToLower()), type, sqlUnsigned, sqlNull, sqlIdentity, sqlUnique, sqlPrimaryKey, sqlDefault });
+			}
+		}
+
 		public override string IndexSql
 		{
 			get
 			{
 				if (indexed)
-					return string.Format("INDEX(`{0}`)", name.Trim('`'));
+					return string.Format("{0}", name.Trim('`'));
 				return null;
 			}
 		}
@@ -46,9 +54,14 @@ namespace Migrator.Providers.ColumnPropertiesMappers
 		{
 		}
 
-		public override void Default(string defaultValue)
+		public override void Default(object defaultValue)
 		{
-			sqlDefault = string.Format("DEFAULT={0}", defaultValue);
+			sqlDefault = string.Format("DEFAULT {0}", defaultValue.ToString());
+		}
+
+		public override string Quote(string value)
+		{
+			return string.Format("\"{0}\"", value);
 		}
 	}
 }

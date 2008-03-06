@@ -75,11 +75,23 @@ namespace Migrator
 		/// Defines tranformations to port the database to the current version.
 		/// </summary>
 		public abstract void Up();
+
+		/// <summary>
+		/// This is run after the Up transaction has been committed
+		/// </summary>
+		public virtual void AfterUp()
+		{ }
 		
 		/// <summary>
 		/// Defines transformations to revert things done in <c>Up</c>.
 		/// </summary>
 		public abstract void Down();
+
+		/// <summary>
+		/// This is run after the Down transaction has been committed
+		/// </summary>
+		public virtual void AfterDown()
+		{ }
 
 		/// <summary>
 		/// Represents the database.

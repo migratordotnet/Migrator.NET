@@ -82,6 +82,7 @@
     <Compile Include="Providers\ProviderTemplate\ForeignKeys\TemplateForeignKeyConstraintMapper.cs" />
     <Compile Include="Providers\ProviderTemplate\TemplateTransformationProvider.cs" />
     <Compile Include="Providers\ProviderTemplate\TypeToSqlProviders\TemplateTypeToSqlProvider.cs" />
+    <Compile Include="Providers\ProviderType.cs" />
     <Compile Include="Providers\SqlServerTransformationProvider.cs" />
     <Compile Include="Providers\TransformationProvider.cs" />
     <Compile Include="Providers\TypeToSqlProviders\SQLServerTypeToSqlProvider.cs" />

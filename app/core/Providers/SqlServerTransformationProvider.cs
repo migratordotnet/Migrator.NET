@@ -167,5 +167,13 @@ namespace Migrator.Providers
 				RemoveForeignKey(constraint, table);
 			}
 		}
+
+		public override ProviderType ProviderType
+		{
+			get
+			{
+				return ProviderType.SqlServer;
+			}
+		}
 	}
 }

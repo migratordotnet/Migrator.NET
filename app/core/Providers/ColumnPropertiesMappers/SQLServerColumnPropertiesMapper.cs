@@ -45,9 +45,14 @@ namespace Migrator.Providers.ColumnPropertiesMappers
 			sqlIdentity = "IDENTITY";
 		}
 
-		public override void Default(string defaultValue)
+		public override void Default(object defaultValue)
 		{
 			sqlDefault = string.Format("DEFAULT={0}", defaultValue);
+		}
+
+		public override string Quote(string value)
+		{
+			return string.Format("[{0]]", value);
 		}
 	}
 }

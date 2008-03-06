@@ -66,11 +66,11 @@ namespace Migrator.Providers.ColumnPropertiesMappers
 		/// <summary>
 		/// The sql for this column, override in database-specific implementation classes
 		/// </summary>
-		string IColumnPropertiesMapper.ColumnSql
+		public virtual string ColumnSql
 		{
 			get
 			{
-				return String.Join(" ", new string[] { name, type, sqlUnsigned, sqlNull, sqlIdentity, sqlUnique, sqlPrimaryKey, sqlDefault });
+				return String.Join(" ", new string[] { Quote(name), type, sqlUnsigned, sqlNull, sqlIdentity, sqlUnique, sqlPrimaryKey, sqlDefault });
 			}
 		}
 
@@ -97,7 +97,9 @@ namespace Migrator.Providers.ColumnPropertiesMappers
 
 		public abstract void Identity();
 
-		public abstract void Default(string defaultValue);
+		public abstract void Default(object defaultValue);
+
+		public abstract string Quote(string value);
 
 		#endregion
 	}

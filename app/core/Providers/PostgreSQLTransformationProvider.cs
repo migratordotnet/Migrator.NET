@@ -17,6 +17,8 @@ using ForeignKeyConstraint=Migrator.Providers.ForeignKeys.ForeignKeyConstraint;
 using Migrator.Providers.ForeignKeys;
 using Migrator.Providers.TypeToSqlProviders;
 using Npgsql;
+using Migrator.Providers.ColumnPropertiesMappers;
+using System.Collections.Generic;
 
 namespace Migrator.Providers
 {
@@ -40,7 +42,7 @@ namespace Migrator.Providers
 			if (TableExists(name))
 			{
 				string sql = string.Format("DROP TABLE \"{0}\"", name.ToLower());
-				Logger.Log(sql);
+				Logger.Trace(sql);
 				ExecuteNonQuery(sql);
 			}
 		}
@@ -52,10 +54,14 @@ namespace Migrator.Providers
 				Logger.Warn("Constraint {0} already exists", name);
 				return;
 			}
+
+			List<string> primaryColumnsLowerCase = new List<string>(primaryColumns);
+			primaryColumnsLowerCase = primaryColumnsLowerCase.ConvertAll(new Converter<string, string>(delegate(string toLower) { return "\"" + toLower.ToLower() + "\""; }));
+
 			string sql = string.Format("ALTER TABLE \"{0}\" ADD CONSTRAINT \"{1}\" FOREIGN KEY ({2}) REFERENCES \"{3}\" ({4})",
-									   primaryTable.ToLower(), name.ToLower(), string.Join(",", primaryColumns),
-									   refTable.ToLower(), string.Join(",", refColumns));
-			Logger.Log(sql);
+						   primaryTable.ToLower(), name.ToLower(), string.Join(",", primaryColumnsLowerCase.ToArray()),
+						   refTable.ToLower(), string.Join(",", refColumns));
+			Logger.Trace(sql);
 			ExecuteNonQuery(sql);
 		}
 
@@ -64,7 +70,7 @@ namespace Migrator.Providers
 			if (TableExists(table) && ConstraintExists(name, table))
 			{
 				string sql = string.Format("ALTER TABLE \"{0}\" DROP CONSTRAINT \"{1}\"", table.ToLower(), name.ToLower());
-				Logger.Log(sql);
+				Logger.Trace(sql);
 				ExecuteNonQuery(sql);
 			}
 		}
@@ -72,7 +78,7 @@ namespace Migrator.Providers
 		public override bool ConstraintExists(string name, string table)
 		{
 			string sql = string.Format("SELECT COUNT(constraint_name) FROM information_schema.table_constraints WHERE table_schema = 'public' AND constraint_schema = 'public' AND constraint_name = '{0}'", name.ToLower());
-			Logger.Log(sql);
+			Logger.Trace(sql);
 			object scalar = ExecuteScalar(sql);
 			return Convert.ToInt32(scalar) == 1;
 		}
@@ -84,7 +90,7 @@ namespace Migrator.Providers
 
 			string sql = string.Format("SELECT COUNT(column_name) FROM information_schema.columns WHERE table_schema = 'public' AND table_name = '{0}' AND column_name = '{1}'",
 										table.ToLower(), column.ToLower());
-			Logger.Log(sql);
+			Logger.Trace(sql);
 			object scalar = ExecuteScalar(sql);
 			return Convert.ToInt32(scalar) == 1;
 		}
@@ -116,7 +122,7 @@ namespace Migrator.Providers
 		{
 			string sql = string.Format("SELECT COUNT(table_name) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = '{0}'",
 									   table.ToLower());
-			Logger.Log(sql);
+			Logger.Trace(sql);
 			object count = ExecuteScalar(sql);
 			return Convert.ToInt32(count) == 1;
 		}
@@ -135,9 +141,41 @@ namespace Migrator.Providers
 		#endregion
 
 
+		public override void AddTable(string name, params Column[] columns)
+		{
+			if (TableExists(name))
+			{
+				Logger.Warn("Table {0} already exists", name);
+				return;
+			}
+
+			ArrayList columnProviders = new ArrayList(columns.Length);
+			foreach (Column column in columns)
+			{
+				IColumnPropertiesMapper mapper = GetAndMapColumnProperties(column);
+				columnProviders.Add(mapper);
+			}
+
+			IColumnPropertiesMapper[] columnArray = (IColumnPropertiesMapper[])columnProviders.ToArray(typeof(IColumnPropertiesMapper));
+			AddTable(name, JoinColumns(columnArray));
+
+			IList<string> indexes = new List<string>(columnArray.Length);
+			foreach (IColumnPropertiesMapper mapper in columnArray)
+			{
+				string indexSql = mapper.IndexSql;
+				if (indexSql != null)
+					indexes.Add(string.Format("CREATE INDEX {0}_{1}_index on \"{3}\" ({2})", name, mapper.Name, mapper.Quote(mapper.Name.ToLower()), name.ToLower()));
+			}
+
+			foreach(string index in indexes)
+			{
+				ExecuteNonQuery(index);
+			}
+		}
+
 		protected override void AddTable(string name, string columns)
 		{
-			string sqlCreate = string.Format("CREATE TABLE {0} ({1})", name, columns);
+			string sqlCreate = string.Format("CREATE TABLE \"{0}\" ({1})", name.ToLower(), columns);
 			ExecuteNonQuery(sqlCreate);
 		}
 
@@ -153,5 +191,14 @@ namespace Migrator.Providers
 		{
 			get { return new PostgreSQLTypeToSqlProvider(); }
 		}
+
+		public override ProviderType ProviderType
+		{
+			get
+			{
+				return ProviderType.Postgres;
+			}
+		}
+
 	}
 }

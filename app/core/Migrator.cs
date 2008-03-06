@@ -80,13 +80,12 @@ namespace Migrator
 		public void MigrateTo(int version)
 		{
 			_provider.Logger = _logger;
-			_provider.BeginTransaction();
 			
 			if (CurrentVersion == version) return;
 			int originalVersion = CurrentVersion;
 			bool goingUp = originalVersion < version;
 			Migration migration;
-			int v;	// the currently running migration number
+			int v, previous;	// the currently running migration number
 			bool firstRun = true;
 
 			if (goingUp)
@@ -94,10 +93,12 @@ namespace Migrator
 				// When we migrate to an upper version,
 				// tranformations of the current version are
 				// already applied, so we started at the next version.
-				v = CurrentVersion+1;
+				v = CurrentVersion + 1;
+				previous = CurrentVersion;
 			}
 			else
 			{
+				previous = CurrentVersion + 1;
 				v = CurrentVersion;
 			}
 			
@@ -115,6 +116,8 @@ namespace Migrator
 
 				if (migration != null)
 				{
+					_provider.BeginTransaction();
+
 					string migrationName = ToHumanName(migration.GetType().Name);
 					
 					migration.TransformationProvider = _provider;
@@ -125,11 +128,17 @@ namespace Migrator
 						{
 							_logger.MigrateUp(v, migrationName);
 							migration.Up();
+							_provider.CurrentVersion = v;
+							_provider.Commit();
+							migration.AfterUp();
 						}
 						else
 						{
 							_logger.MigrateDown(v, migrationName);
 							migration.Down();
+							_provider.CurrentVersion = v - 1;
+							_provider.Commit();
+							migration.AfterDown();
 						}
 					}
 					catch (Exception ex)
@@ -137,27 +146,29 @@ namespace Migrator
 						_logger.Exception(v, migrationName, ex);
 						
 						// Oho! error! We rollback changes.
-						_logger.RollingBack(originalVersion);
+						_logger.RollingBack(previous);
+						_provider.CurrentVersion = previous;
 						_provider.Rollback();
 						
 						throw ex;
 					}
-					
 				}
 				else
 				{
 					// The migration number is not found
 					_logger.Skipping(v);
 				}
-				
+
 				if (goingUp)
 				{
 					if (v == version)
 						break;
+					previous = v;
 					v++;
 				}
 				else
 				{
+					previous = v;
 					v--;
 					// When we go back to previous versions
 					// we don't invoke Down() of the current
@@ -167,10 +178,6 @@ namespace Migrator
 				}
 			}
 			
-			// Update and commit all changes
-			_provider.CurrentVersion = version;
-			
-			_provider.Commit();
 			_logger.Finished(originalVersion, version);
 		}
 		

@@ -133,7 +133,7 @@ namespace Migrator.Providers
 			IColumnPropertiesMapper mapper = GetColumnMapper(column);
 			MapColumnProperties(mapper, column);
 			if (column.DefaultValue != null)
-				mapper.Default(column.DefaultValue.ToString());
+				mapper.Default(column.DefaultValue);
 			return mapper;
 		}
 
@@ -433,9 +433,16 @@ namespace Migrator.Providers
 		
 		public int ExecuteNonQuery( string sql )
 		{
-			//_logger.Trace(sql);
-			IDbCommand cmd = BuildCommand( sql );
-			return cmd.ExecuteNonQuery();
+			_logger.Trace(sql);
+			try
+			{
+				IDbCommand cmd = BuildCommand(sql);
+				return cmd.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Error running SQL: " + sql, ex);
+			}
 		}
 
 		private IDbCommand BuildCommand( string sql )
@@ -463,8 +470,15 @@ namespace Migrator.Providers
 
 		public object ExecuteScalar( string sql )
 		{
-			IDbCommand cmd = BuildCommand( sql );
-			return cmd.ExecuteScalar();
+			try
+			{
+				IDbCommand cmd = BuildCommand(sql);
+				return cmd.ExecuteScalar();
+			}
+			catch (Exception e)
+			{
+				throw new Exception(string.Format("Execution running SQL: {0}", sql), e);
+			}
 		}
 		
 		public IDataReader Select(string what, string from)
@@ -514,7 +528,7 @@ namespace Migrator.Providers
 			if( _transaction == null && _connection != null )
 			{
 				EnsureHasConnection();
-				_transaction = _connection.BeginTransaction( IsolationLevel.ReadCommitted );
+				_transaction = _connection.BeginTransaction(IsolationLevel.ReadCommitted);
 			}
 		}
 		
@@ -577,7 +591,7 @@ namespace Migrator.Providers
 			get
 			{
 				CreateSchemaInfoTable();
-				object version = SelectScalar("Version", "SchemaInfo");
+				object version = SelectScalar("version", "SchemaInfo");
 				if (version == null)
 				{
 					return 0;
@@ -628,6 +642,13 @@ namespace Migrator.Providers
 			GenerateForeignKey(primaryTable, refTable, refTable, "Id");
 		}
 
+		public System.Data.IDbCommand GetCommand()
+		{
+			return BuildCommand(null);
+		}
+
+		public abstract ProviderType ProviderType { get;}
+
 		#endregion
 
 		#region Helper methods
@@ -638,6 +659,5 @@ namespace Migrator.Providers
 		}
 
 		#endregion
-
 	}
 }

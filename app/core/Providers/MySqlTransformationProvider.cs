@@ -100,5 +100,13 @@ namespace Migrator.Providers
 			get { return new MysqlTypeToSqlProvider(); }
 		}
 
+		public override ProviderType ProviderType
+		{
+			get
+			{
+				return ProviderType.Mysql;
+			}
+		}
+
 	}
 }

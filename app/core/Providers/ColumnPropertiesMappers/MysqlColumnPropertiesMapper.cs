@@ -46,9 +46,19 @@ namespace Migrator.Providers.ColumnPropertiesMappers
 			sqlIdentity = "AUTO_INCREMENT";
 		}
 
-		public override void Default(string defaultValue)
+		public override void Default(object defaultValue)
 		{
-			sqlDefault = string.Format("DEFAULT '{0}'", defaultValue);
+			if (defaultValue.GetType().Equals(typeof(bool)))
+			{
+				defaultValue = ((bool)defaultValue) ? 1 : 0;
+			}
+			sqlDefault = string.Format("DEFAULT '{0}'", defaultValue.ToString());
 		}
+
+		public override string Quote(string value)
+		{
+			return string.Format("`{0}`", value);
+		}
+
 	}
 }

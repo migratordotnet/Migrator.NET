@@ -46,7 +46,7 @@ namespace Migrator.Providers.TypeToSqlProviders
 
 		public IColumnPropertiesMapper Blob
 		{
-			get { return new PostgreSQLColumnPropertiesMapper("blob"); }
+			get { return new PostgreSQLColumnPropertiesMapper("bytea"); }
 		}
 
 		public IColumnPropertiesMapper LongBlob
@@ -89,7 +89,7 @@ namespace Migrator.Providers.TypeToSqlProviders
 			get
 			{
 				IColumnPropertiesMapper mapper = new PostgreSQLColumnPropertiesMapper("boolean");
-				mapper.Default("0");
+				mapper.Default("FALSE");
 				return mapper;
 			}
 		}

@@ -1,4 +1,4 @@
-using System;
+	using System;
 
 namespace Migrator.Providers.ColumnPropertiesMappers
 {
@@ -54,6 +54,13 @@ namespace Migrator.Providers.ColumnPropertiesMappers
 		/// Default value for this column, quote if needed
 		/// </summary>
 		/// <param name="defaultValue"></param>
-		void Default(string defaultValue);
+		void Default(object defaultValue);
+
+		/// <summary>
+		/// Quote a string for sql statement
+		/// </summary>
+		/// <param name="value">The string to quote</param>
+		/// <returns>The quoted string</returns>
+		string Quote(string value);
 	}
 }

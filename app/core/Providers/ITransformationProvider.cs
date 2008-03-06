@@ -1,6 +1,7 @@
 using System;
 using Migrator.Providers.ForeignKeys;
 using Migrator.Providers.TypeToSqlProviders;
+
 namespace Migrator.Providers
 {
 	interface ITransformationProvider
@@ -55,5 +56,8 @@ namespace Migrator.Providers
 		object SelectScalar(string what, string from);
 		bool TableExists(string table);
 		int Update(string table, params string[] columnValues);
+
+		ProviderType ProviderType { get;}
+		System.Data.IDbCommand GetCommand();
 	}
 }
