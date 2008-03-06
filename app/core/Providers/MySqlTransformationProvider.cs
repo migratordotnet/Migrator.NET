@@ -89,7 +89,7 @@ namespace Migrator.Providers
 			get { return new ForeignKeys.MysqlForeignKeyConstraintMapper(); }
 		}
 
-		protected override void AddTable(string name, string columns)
+		public override void AddTable(string name, string columns)
 		{
 			string sqlCreate = string.Format("CREATE TABLE {0} ({1}) ENGINE = INNODB", name, columns);
 			ExecuteNonQuery(sqlCreate);

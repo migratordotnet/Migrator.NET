@@ -72,6 +72,7 @@ namespace Migrator.Providers.Tests
 		}
 
 		#region Simple delegate method
+
 		public override int CurrentVersion {
 			get {
 				return _realProvider.CurrentVersion;
@@ -126,32 +127,28 @@ namespace Migrator.Providers.Tests
 		{
 			return _realProvider.GetColumns(table);
 		}
-		#endregion
 
-
-		public override void AddForeignKey(string name, string primaryTable, string[] primaryColumns, string refTable, string[] refColumns, global::Migrator.Providers.ForeignKeys.ForeignKeyConstraint constraint)
+		public override ProviderType ProviderType
 		{
-			throw new Exception("The method or operation is not implemented.");
+			get { return _realProvider.ProviderType; }
+		}
+
+		public override void AddTable(string name, string columns)
+		{
+			_realProvider.AddTable(name, columns);
 		}
 
 		public override global::Migrator.Providers.ForeignKeys.IForeignKeyConstraintMapper ForeignKeyMapper
 		{
-			get { throw new Exception("The method or operation is not implemented."); }
+			get { return _realProvider.ForeignKeyMapper; }
 		}
 
-		protected override void AddTable(string name, string columns)
+		public override ITypeToSqlProvider TypeToSqlProvider
 		{
-			throw new Exception("The method or operation is not implemented.");
+			get { return _realProvider.TypeToSqlProvider; }
 		}
 
-		public override global::Migrator.Providers.TypeToSqlProviders.ITypeToSqlProvider TypeToSqlProvider
-		{
-			get { return new MysqlTypeToSqlProvider(); }
-		}
+		#endregion
 
-		public override void AddColumn(string table, string sqlColumn)
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
 	}
 }

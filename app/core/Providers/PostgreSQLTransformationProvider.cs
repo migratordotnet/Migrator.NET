@@ -173,7 +173,7 @@ namespace Migrator.Providers
 			}
 		}
 
-		protected override void AddTable(string name, string columns)
+		public override void AddTable(string name, string columns)
 		{
 			string sqlCreate = string.Format("CREATE TABLE \"{0}\" ({1})", name.ToLower(), columns);
 			ExecuteNonQuery(sqlCreate);

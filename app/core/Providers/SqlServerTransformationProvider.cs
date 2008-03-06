@@ -127,7 +127,7 @@ namespace Migrator.Providers
 			get { return new ForeignKeys.SQLServerForeignKeyConstraintMapper(); }
 		}
 
-		protected override void AddTable(string name, string columns)
+		public override void AddTable(string name, string columns)
 		{
 			string sqlCreate = string.Format("CREATE TABLE {0} ({1})", name, columns);
 			ExecuteNonQuery(sqlCreate);

@@ -126,7 +126,7 @@ namespace Migrator.Providers
 			return columnsAndIndexes;
 		}
 
-		protected abstract void AddTable(string name, string columns);
+		public abstract void AddTable(string name, string columns);
 
 		protected IColumnPropertiesMapper GetAndMapColumnProperties(Column column)
 		{
