@@ -37,5 +37,11 @@ namespace Migrator.Providers.Tests
 								new Column("TestId", typeof(int)));
 		}
 		
+        [Test]
+        public void ByteColumnWillBeCreatedAsBlob()
+        {
+            _provider.AddColumn("Test2", "BlobColumn", typeof(byte[]));
+            Assert.IsTrue(_provider.ColumnExists("Test2", "BlobColumn"));
+        }
 	}
 }

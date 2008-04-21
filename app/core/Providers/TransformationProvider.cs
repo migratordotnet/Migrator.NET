@@ -218,9 +218,9 @@ namespace Migrator.Providers
 
 			if (column.Type == typeof(byte[]))
 			{
-				if (column.Size <= Convert.ToInt32(byte.MaxValue))
+                if (column.Size <= Convert.ToInt32(byte.MaxValue) && column.Size > 0)
 					return TypeToSqlProvider.Binary(Convert.ToByte(column.Size));
-				else if (column.Size <= Convert.ToInt32(ushort.MaxValue))
+				else if (column.Size <= Convert.ToInt32(ushort.MaxValue) && column.Size > 0)
 					return TypeToSqlProvider.Blob;
 				else
 					return TypeToSqlProvider.LongBlob;
