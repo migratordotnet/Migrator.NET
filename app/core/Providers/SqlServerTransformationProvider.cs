@@ -175,5 +175,10 @@ namespace Migrator.Providers
 				return ProviderType.SqlServer;
 			}
 		}
+
+		public override string Quote(string text)
+		{
+			return string.Format("[{0}]", text);
+		}
 	}
 }

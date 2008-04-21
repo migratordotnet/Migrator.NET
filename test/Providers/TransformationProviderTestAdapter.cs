@@ -150,5 +150,10 @@ namespace Migrator.Providers.Tests
 
 		#endregion
 
+
+		public override string Quote(string text)
+		{
+			return _realProvider.Quote(text);
+		}
 	}
 }

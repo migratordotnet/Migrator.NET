@@ -18,6 +18,7 @@ using Migrator.Providers.TypeToSqlProviders;
 using System.Collections;
 using Migrator.Providers.ColumnPropertiesMappers;
 using Migrator.Columns;
+using System.Collections.Generic;
 
 namespace Migrator.Providers
 {
@@ -403,12 +404,17 @@ namespace Migrator.Providers
 				return;
 			}
 
+			Converter<string, string> quoteConverter = new Converter<string, string>(delegate(string toQuote) { return Quote(toQuote); });
+
+			List<string> primaryColumnsQuoted = new List<string>(primaryColumns).ConvertAll(quoteConverter);
+			List<string> refColumnsQuoted = new List<string>(refColumns).ConvertAll(quoteConverter);
+
+
 			string constraintResolved = ForeignKeyMapper.Resolve(constraint);
 			ExecuteNonQuery( string.Format("ALTER TABLE {0} ADD CONSTRAINT {1} FOREIGN KEY ({2}) REFERENCES {3} ({4}) ON UPDATE {5} ON DELETE {6}",
-				Quote(primaryTable), Quote(name), string.Join( ",", primaryColumns ),
-				Quote(refTable), string.Join( ",", refColumns ), constraintResolved, constraintResolved ));
+				Quote(primaryTable), Quote(name), string.Join( ",", primaryColumnsQuoted.ToArray()),
+				Quote(refTable), string.Join( ",", refColumnsQuoted.ToArray()), constraintResolved, constraintResolved ));
 		}
-
 
 		/// <summary>
 		/// Removes a constraint.
@@ -662,10 +668,7 @@ namespace Migrator.Providers
 
 		#region Helper methods
 
-		protected virtual string Quote(string text)
-		{
-			return string.Format("`{0}`", text);
-		}
+		public abstract string Quote(string text);
 
 		#endregion
 	}

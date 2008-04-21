@@ -49,20 +49,11 @@ namespace Migrator.Providers
 
 		public override void AddForeignKey(string name, string primaryTable, string[] primaryColumns, string refTable, string[] refColumns, ForeignKeyConstraint constraint)
 		{
-			if (ConstraintExists(name, primaryTable))
-			{
-				Logger.Warn("Constraint {0} already exists", name);
-				return;
-			}
+			Converter<string, string> lowerCaseConverter = new Converter<string, string>(delegate(string toLower) { return toLower.ToLower(); });
+			List<string> primaryColumnsLowerCase = new List<string>(primaryColumns).ConvertAll(lowerCaseConverter);
+			List<string>refColumnsLowerCase = new List<string>(refColumns).ConvertAll(lowerCaseConverter);
 
-			List<string> primaryColumnsLowerCase = new List<string>(primaryColumns);
-			primaryColumnsLowerCase = primaryColumnsLowerCase.ConvertAll(new Converter<string, string>(delegate(string toLower) { return "\"" + toLower.ToLower() + "\""; }));
-
-			string sql = string.Format("ALTER TABLE \"{0}\" ADD CONSTRAINT \"{1}\" FOREIGN KEY ({2}) REFERENCES \"{3}\" ({4})",
-						   primaryTable.ToLower(), name.ToLower(), string.Join(",", primaryColumnsLowerCase.ToArray()),
-						   refTable.ToLower(), string.Join(",", refColumns));
-			Logger.Trace(sql);
-			ExecuteNonQuery(sql);
+			base.AddForeignKey(name.ToLower(), primaryTable.ToLower(), primaryColumnsLowerCase.ToArray(), refTable.ToLower(), refColumnsLowerCase.ToArray(), constraint);
 		}
 
 		public override void RemoveForeignKey(string name, string table)
@@ -200,5 +191,10 @@ namespace Migrator.Providers
 			}
 		}
 
+
+		public override string Quote(string text)
+		{
+			return string.Format("\"{0}\"", text);
+		}
 	}
 }

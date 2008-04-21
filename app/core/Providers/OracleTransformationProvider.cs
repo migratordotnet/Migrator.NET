@@ -165,5 +165,10 @@ namespace Migrator.Providers
 		{
 			get { return ProviderType.Oracle; }
 		}
+
+		public override string Quote(string text)
+		{
+			return string.Format("\"{0}\"", text);
+		}
 	}
 }
