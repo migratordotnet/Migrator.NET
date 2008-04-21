@@ -47,12 +47,12 @@ namespace Migrator.Providers.ColumnPropertiesMappers
 
 		public override void Default(object defaultValue)
 		{
-			sqlDefault = string.Format("DEFAULT={0}", defaultValue);
+			sqlDefault = string.Format("DEFAULT ({0})", defaultValue);
 		}
 
 		public override string Quote(string value)
 		{
-			return string.Format("[{0]]", value);
+			return string.Format("[{0}]", value);
 		}
 	}
 }
