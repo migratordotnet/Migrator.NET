@@ -96,8 +96,8 @@
     <Compile Include="Tools\SchemaDumper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\config\test.config">
-      <Link>test.config</Link>
+    <None Include="..\..\config\app.config">
+      <Link>app.config</Link>
     </None>
     <None Include="..\..\default.build">
       <Link>default.build</Link>
