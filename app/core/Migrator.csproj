@@ -53,46 +53,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Column.cs" />
-    <Compile Include="Columns\DecimalColumn.cs" />
+    <Compile Include="BaseMigrate.cs" />
+    <Compile Include="Compile\ScriptEngine.cs" />
     <Compile Include="DuplicatedVersionException.cs" />
     <Compile Include="IrreversibleMigrationException.cs" />
-    <Compile Include="Loggers\ConsoleWriter.cs" />
-    <Compile Include="Loggers\IAttachableLogger.cs" />
-    <Compile Include="Loggers\ILogger.cs" />
-    <Compile Include="Loggers\ILogWriter.cs" />
-    <Compile Include="Loggers\Logger.cs" />
-    <Compile Include="Migration.cs" />
-    <Compile Include="MigrationAttribute.cs" />
+    <Compile Include="MigrateDown.cs" />
+    <Compile Include="MigrateUp.cs" />
     <Compile Include="MigrationComparer.cs" />
-    <Compile Include="MigrationException.cs" />
+    <Compile Include="MigrationLoader.cs" />
     <Compile Include="Migrator.cs" />
-    <Compile Include="Providers\ColumnPropertiesMappers\ColumnPropertiesMapper.cs" />
-    <Compile Include="Providers\ColumnPropertiesMappers\IColumnPropertiesMapper.cs" />
-    <Compile Include="Providers\ColumnPropertiesMappers\MysqlColumnPropertiesMapper.cs" />
-    <Compile Include="Providers\ColumnPropertiesMappers\OracleColumnPropertiesMapper.cs" />
-    <Compile Include="Providers\ColumnPropertiesMappers\SQLServerColumnPropertiesMapper.cs" />
-    <Compile Include="Providers\ColumnPropertiesMappers\PostgreSQLColumnPropertiesMapper.cs" />
-    <Compile Include="Providers\ForeignKeys\OracleForeignKeyConstraintMapper.cs" />
-    <Compile Include="Providers\ForeignKeys\SQLServerForeignKeyConstraintMapper.cs" />
-    <Compile Include="Providers\ForeignKeys\ForeignKeyConstraint.cs" />
-    <Compile Include="Providers\ForeignKeys\ForeignKeyConstraintMapper.cs" />
-    <Compile Include="Providers\ForeignKeys\IForeignKeyConstraintMapper.cs" />
-    <Compile Include="Providers\ForeignKeys\MysqlForeignKeyConstraintMapper.cs" />
-    <Compile Include="Providers\ForeignKeys\PostgreSQLForeignKeyConstraintMapper.cs" />
-    <Compile Include="Providers\ITransformationProvider.cs" />
-    <Compile Include="Providers\MySqlTransformationProvider.cs" />
-    <Compile Include="Providers\OracleTransformationProvider.cs" />
-    <Compile Include="Providers\PostgreSQLTransformationProvider.cs" />
-    <Compile Include="Providers\ProviderFactory.cs" />
-    <Compile Include="Providers\ProviderType.cs" />
-    <Compile Include="Providers\SqlServerTransformationProvider.cs" />
-    <Compile Include="Providers\TransformationProvider.cs" />
-    <Compile Include="Providers\TypeToSqlProviders\OracleTypeToSqlProvider.cs" />
-    <Compile Include="Providers\TypeToSqlProviders\SQLServerTypeToSqlProvider.cs" />
-    <Compile Include="Providers\TypeToSqlProviders\ITypeToSqlProvider.cs" />
-    <Compile Include="Providers\TypeToSqlProviders\MysqlTypeToSqlProvider.cs" />
-    <Compile Include="Providers\TypeToSqlProviders\PostgreSQLTypeToSqlProvider.cs" />
+    <Compile Include="ProviderFactory.cs" />
     <Compile Include="Tools\SchemaDumper.cs" />
   </ItemGroup>
   <ItemGroup>

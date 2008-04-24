@@ -32,30 +32,46 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.mocks, Version=2.4.6.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\NUnit\nunit.mocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="nmock">
-      <HintPath>..\lib\nmock.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColumnPropertyMapperTest.cs" />
+    <Compile Include="Data\TestMigrations.cs" />
+    <Compile Include="MigrationLoaderTest.cs" />
     <Compile Include="MigrationTestCase.cs" />
     <Compile Include="MigrationTypeComparerTest.cs" />
     <Compile Include="MigratorTest.cs" />
+    <Compile Include="ProviderFactoryTest.cs" />
     <Compile Include="Providers\MySqlTransformationProviderTest.cs" />
+    <Compile Include="Providers\OracleTransformationProviderTest.cs" />
     <Compile Include="Providers\PostgreSQLTransformationProviderTest.cs" />
+    <Compile Include="Providers\SQLiteTransformationProviderTest.cs" />
     <Compile Include="Providers\SqlServerTransformationProviderTest.cs" />
     <Compile Include="Providers\TransformationProviderBase.cs" />
+    <Compile Include="Providers\TransformationProviderConstraintBase.cs" />
     <Compile Include="Providers\TransformationProviderTestAdapter.cs" />
+    <Compile Include="ScriptEngineTests.cs" />
     <Compile Include="Tools\SchemaDumperTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\app\core\Migrator.csproj">
       <Project>{1FEE70A4-AAD7-4C60-BE60-3F7DC03A8C4D}</Project>
       <Name>Migrator_2005</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\app\framework\Migrator.Framework.csproj">
+      <Project>{5270F048-E580-486C-B14C-E5B9F6E539D4}</Project>
+      <Name>Migrator.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\app\provider\Migrator.Providers.csproj">
+      <Project>{D58C68E4-D789-40F7-9078-C9F587D4363C}</Project>
+      <Name>Migrator.Providers</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
