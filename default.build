@@ -14,10 +14,7 @@
     
     <property name="test.project.name" value="Migrator.Tests"/>
 
-    <!--
-    removing this for now. not needed and disabling nant from working in this rev
     <loadtasks assembly="${dir.tools.ncover}/Explorer/NCoverExplorer.NAntTasks.dll" />
-    -->
     
 	<target name="build" description="Builds the app" depends="prepare">
         <csc target="library" output="${dir.bin}/Migrator.Framework.dll" define="${defines}" debug="${debug}">
@@ -151,34 +148,25 @@
 	</target>
 	
 	<target name="test" description="Run tests" depends="build.tests">
-	  <!-- Jump out the Windows -->
-		<nunit2 if="${platform::is-win32()}"> 
+		<nunit2> 
 			<formatter type="Plain" />
 			<test
 				assemblyname="${dir.bin}/Migrator.Tests.dll"
 				appconfig="config/test.config">
 				<categories>
 					<!--
-					<exclude name="SqlServer" />
+					<exclude name="SQLite" />
 					<exclude name="MySql" />
-                    <exclude name="SQLite" />
 					<exclude name="Postgre" />
+                    <exclude name="SqlServer" />
 					-->
-                    <exclude name="Oracle" /> 
+                    <exclude name="Oracle" />
 				</categories>
 			</test>
 		</nunit2>	
-		<!-- You're on unix, you're cool! -->
-		<property name="exclude" value="SqlServer,Oracle" overwrite="false" />
-		<exec program="nunit-console2" if="${platform::is-unix()}">
-			<arg value="${dir.bin}/Migrator.Tests.dll" />
-			<arg value="/nologo" />
-			<arg value="/config=config/test.config" />
-			<arg value="/exclude=${exclude}" />
-		</exec>
 	</target>
 
-    <target name="test.coverage" depends="build.tests">
+    <target name="test.coverage" description="Run the tests with code coverage. Only works on Windows/.NET" depends="build.tests">
 
         <property name="exclude" value="Oracle" overwrite="false" />
 

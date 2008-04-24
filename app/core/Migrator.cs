@@ -16,8 +16,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Migrator.Framework;
 using Migrator.Framework.Loggers;
-using Migrator.Providers;
-using ITransformationProvider=Migrator.Framework.ITransformationProvider;
 
 namespace Migrator
 {
