@@ -8,19 +8,19 @@
 //License for the specific language governing rights and limitations
 //under the License.
 #endregion
-using System;
+
 using System.IO;
-using Migrator.Providers;
+using Migrator.Framework;
 
 namespace Migrator.Tools
 {
 	public class SchemaDumper
 	{
-		TransformationProvider _provider;
+	    private readonly ITransformationProvider _provider;
 		
 		public SchemaDumper(string provider, string connectionString)
 		{
-			_provider = new ProviderFactory().Create(provider, connectionString);
+			_provider = ProviderFactory.Create(provider, connectionString);
 		}
 		
 		public string Dump()

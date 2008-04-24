@@ -21,11 +21,9 @@ namespace Migrator.Tests.Tools
 		[Test]
 		public void Dump()
 		{
-#if DOTNET2
+
 			string constr = ConfigurationManager.AppSettings["MySqlConnectionString"];
-#else
-			string constr = ConfigurationSettings.AppSettings["MySqlConnectionString"];
-#endif
+
 			if (constr == null)
 				throw new ArgumentNullException("MySqlConnectionString", "No config file");
 			

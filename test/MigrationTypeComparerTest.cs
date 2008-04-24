@@ -8,8 +8,10 @@
 //License for the specific language governing rights and limitations
 //under the License.
 #endregion
+
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using Migrator.Framework;
 using NUnit.Framework;
 
 namespace Migrator.Tests
@@ -17,7 +19,7 @@ namespace Migrator.Tests
 	[TestFixture]
 	public class MigrationTypeComparerTest
 	{
-		private Type[] _types = {
+		private readonly Type[] _types = {
 			typeof(Migration1),
 			typeof(Migration2),
 			typeof(Migration3)
@@ -26,7 +28,7 @@ namespace Migrator.Tests
 		[Test]
 		public void SortAscending()
 		{
-			ArrayList list = new ArrayList();
+            List<Type> list = new List<Type>();
 			
 			list.Add(_types[1]);
 			list.Add(_types[0]);
@@ -42,7 +44,7 @@ namespace Migrator.Tests
 		[Test]
 		public void SortDescending()
 		{
-			ArrayList list = new ArrayList();
+            List<Type> list = new List<Type>();
 			
 			list.Add(_types[1]);
 			list.Add(_types[0]);
@@ -60,11 +62,13 @@ namespace Migrator.Tests
 			override public void Up() {}
 			override public void Down() {}
 		}
-		[Migration(2, Ignore=true)]
+		
+        [Migration(2, Ignore=true)]
 		internal class Migration2 : Migration {
 			override public void Up() {}
 			override public void Down() {}
 		}
+
 		[Migration(3, Ignore=true)]
 		internal class Migration3 : Migration {
 			override public void Up() {}

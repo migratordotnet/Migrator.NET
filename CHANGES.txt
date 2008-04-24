@@ -1,0 +1,48 @@
+# Change history
+
+## Version 0.7.0
+- Geoff's major refactorings fork re-merged back into the trunk
+
+## Version 0.6.0
+- Better API documentation
+- Support declaring compound primary keys in the AddTable methods.
+- Add support for Renaming Tables and Columns
+- Add support for adding and removing Unique Constraints and Check Constraints
+- Add support for changing a column definition
+- Support compiling the migrations on the fly 
+
+- Breaking Change!: Change the Insert and Update methods to separate the column names from the column values.
+- Breaking Change!: Reversed the columns to have the table name first on ConstraintExists, PrimaryKeyExists and 
+	RemovePrimaryKey
+
+## Version 0.5.0
+Forked the project to fix a bunch of issues.
+- Major refactoring
+    - Breaking Change!: Changing to DBTypes instead of .NET Types for specifying column types
+    - Separated out Framework and Providers DLLs
+    - Made the Providers more of a Template model so they have to do less work and are more
+      declarative in nature.
+- Fixed SQL Server Provider
+- Added support for SQLite
+- Added "Multi-DB" support for DB Specific SQL code
+    - Database["ProviderName"].ExecuteSQL() will only run if you are running against "ProviderName"
+- Much more Unit Testing
+      
+See http://code.macournoyer.com/migrator for further info
+
+## Version 0.2.0
+- Added support for char type on SQL Server by Luke Melia & Daniel Berlinger
+- Fix some issues with SQL Server 2005 pointed out by Luke Melia & Daniel Berlinger
+- Added migrate NAnt task
+- Added basic schema dumper functionnality for MySql.
+- Restructured project tree
+- Applied patch from Tanner Burson to fix first run problem with SchemaInfo table creation
+
+## Version 0.1.0
+- Renamed "RemoveConstraint" to "RemoveForeignKey". We need to add Unique constraint support, but it's not in here yet.
+- Merged most of the provider unit test code to a base class.
+- Changed the hard dependencies on the ADO.NET providers to be a reflection-based load, just like NHibernate.
+- Changed the MySQL provider "RemoveForeignKey" method to call two SQL calls to the DB before the constraint would actually be deleted. This is the wierd piece, and I am not sure if it's just my OS or version of MySQL that needs this.
+- Added a few more assertions to the provider unit tests just to be sure the expectations are being met.
+- Changed the build file to handle different platforms, since the Npgsql driver is so platform-specific.
+

@@ -8,12 +8,10 @@
 //License for the specific language governing rights and limitations
 //under the License.
 #endregion
+
 using System;
-
 using NAnt.Core;
-using log4net;
-
-using Migrator.Loggers;
+using Migrator.Framework;
 
 namespace Migrator.NAnt.Loggers
 {
@@ -87,18 +85,17 @@ namespace Migrator.NAnt.Loggers
 		
 		public void Log(string format, params object[] args)
 		{
-			LogInfo("{0} {1}", "".PadLeft(_widthFirstColumn), string.Format(format, args));
+			LogInfo("{0} {1}", "".PadLeft(_widthFirstColumn), String.Format(format, args));
 		}
 		
 		public void Warn(string format, params object[] args)
 		{
-			LogInfo("{0} [Warning] {1}", "".PadLeft(_widthFirstColumn), string.Format(format, args));
+			LogInfo("{0} [Warning] {1}", "".PadLeft(_widthFirstColumn), String.Format(format, args));
 		}		
 		
 		public void Trace(string format, params object[] args)
 		{
-			_task.Log(Level.Debug, "{0} {1}", "".PadLeft(_widthFirstColumn), string.Format(format, args));
-		}
-		
+			_task.Log(Level.Debug, "{0} {1}", "".PadLeft(_widthFirstColumn), String.Format(format, args));
+		}	
 	}
 }

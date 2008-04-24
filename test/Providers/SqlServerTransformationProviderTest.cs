@@ -11,31 +11,50 @@
 
 using System;
 using System.Configuration;
+using System.Data;
+using Migrator.Framework;
+using Migrator.Providers;
+using Migrator.Providers.SqlServer;
+using Migrator.Tests.Providers;
 using NUnit.Framework;
 
-namespace Migrator.Providers.Tests
+namespace Migrator.Tests.Providers
 {
-	[TestFixture, Category("SqlServer")]
-	public class SqlServerTransformationProviderTest : TransformationProviderBase
-	{
-		[SetUp]
-		public void SetUp()
-		{
-#if DOTNET2
-			string constr = ConfigurationManager.AppSettings["SqlServerConnectionString"];
-#else
-			string constr = ConfigurationSettings.AppSettings["SqlServerConnectionString"];
-#endif
-			if (constr == null)
-				throw new ArgumentNullException("SqlServerConnectionString", "No config file");
+    [TestFixture, Category("SqlServer")]
+    public class SqlServerTransformationProviderTest : TransformationProviderConstraintBase
+    {
+        [SetUp]
+        public void SetUp()
+        {
 
-			_provider = new SqlServerTransformationProvider(constr);
-			_provider.BeginTransaction();
+            string constr = ConfigurationManager.AppSettings["SqlServerConnectionString"];
+
+            if (constr == null)
+                throw new ArgumentNullException("SqlServerConnectionString", "No config file");
+
+            _provider = new SqlServerTransformationProvider(constr);
+            _provider.BeginTransaction();
 			
-			_provider.AddTable("Test2",
-			                   new Column("Id", typeof(int), ColumnProperties.PrimaryKeyWithIdentity),
-								new Column("TestId", typeof(int)));
-		}
-		
-	}
+            _provider.AddTable("TestTwo",
+                               new Column("Id", DbType.Int32, ColumnProperty.PrimaryKeyWithIdentity),
+                               new Column("TestId", DbType.Int32));
+        }
+
+        [Test]
+        public void QuoteCreatesProperFormat()
+        {
+            Dialect dialect = new SqlServerDialect();
+            Assert.AreEqual("[foo]", dialect.Quote("foo"));
+        }
+
+        [Test]
+        public void InstanceForProvider()
+        {
+            ITransformationProvider localProv = _provider["sqlserver"];
+            Assert.IsTrue(localProv is SqlServerTransformationProvider);
+
+            ITransformationProvider localProv2 = _provider["foo"];
+            Assert.IsTrue(localProv2 is NoOpTransformationProvider);
+        }
+    }
 }

@@ -1,4 +1,5 @@
 #region License
+
 //The contents of this file are subject to the Mozilla Public License
 //Version 1.1 (the "License"); you may not use this file except in
 //compliance with the License. You may obtain a copy of the License at
@@ -7,327 +8,152 @@
 //basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
 //License for the specific language governing rights and limitations
 //under the License.
-#endregion
-using System;
-using System.Reflection;
-using System.Collections;
-using System.Text.RegularExpressions;
 
-using Migrator.Providers;
-using Migrator.Loggers;
+#endregion
+
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Migrator.Framework;
+using Migrator.Framework.Loggers;
 
 namespace Migrator
-{	
-	/// <summary>
-	/// Migrations mediator.
-	/// </summary>
-	public class Migrator
-	{
-		private TransformationProvider _provider;
-		private ArrayList _migrationsTypes = new ArrayList();
-		private bool _trace;  // show trace for debugging
-		private ILogger _logger = new Logger(false);
-		private string[] _args;
+{
+    /// <summary>
+    /// Migrations mediator.
+    /// </summary>
+    public class Migrator
+    {
+        private readonly ITransformationProvider _provider;
 
-		public string[] args
-		{
-			get { return _args; }
-			set { _args = value; }
-		}
-	
-		public Migrator(string provider, string connectionString, Assembly migrationAssembly, bool trace)
-			: this(CreateProvider(provider, connectionString), migrationAssembly, trace)
-		{}
-		
-		public Migrator(string provider, string connectionString, Assembly migrationAssembly)
-			: this(CreateProvider(provider, connectionString), migrationAssembly, false)
-		{}
-		
-		public Migrator(TransformationProvider provider, Assembly migrationAssembly, bool trace)
-		{
-			_provider = provider;
-			_trace = trace;
-			Logger logger = new Logger(_trace);
-			logger.Attach(new ConsoleWriter());
-			_logger = logger;
-			
-			_migrationsTypes.AddRange(GetMigrationTypes(Assembly.GetExecutingAssembly()));
-			if (migrationAssembly != null)
-				_migrationsTypes.AddRange(GetMigrationTypes(migrationAssembly));
-			
-			if (_trace)
-			{
-				_logger.Trace("Loaded migrations:");
-				foreach(Type t in _migrationsTypes)
-				{
-					_logger.Trace("{0} {1}", GetMigrationVersion(t).ToString().PadLeft(5), ToHumanName(t.Name));
-				}
-			}
-			
-			CheckForDuplicatedVersion();
-		}
-		
-		/// <summary>
-		/// Migrate the database to a specific version.
-		/// Runs all migration between the actual version and the
-		/// specified version.
-		/// If <c>version</c> is greater then the current version,
-		/// the <c>Up()</c> method will be invoked.
-		/// If <c>version</c> lower then the current version,
-		/// the <c>Down()</c> method of previous migration will be invoked.
-		/// </summary>
-		/// <param name="version">The version that must became the current one</param>
-		public void MigrateTo(int version)
-		{
-			_provider.Logger = _logger;
-			
-			if (CurrentVersion == version) return;
-			int originalVersion = CurrentVersion;
-			bool goingUp = originalVersion < version;
-			Migration migration;
-			int v, previous;	// the currently running migration number
-			bool firstRun = true;
+        private readonly MigrationLoader _migrationLoader;
 
-			if (goingUp)
-			{
-				// When we migrate to an upper version,
-				// tranformations of the current version are
-				// already applied, so we started at the next version.
-				v = CurrentVersion + 1;
-				previous = CurrentVersion;
-			}
-			else
-			{
-				previous = CurrentVersion + 1;
-				v = CurrentVersion;
-			}
-			
-			_logger.Started(originalVersion, version);
-			
-			while (true)
-			{
-				migration = GetMigration(v);
+        private readonly bool _trace; // show trace for debugging
+        private ILogger _logger = new Logger(false);
+        private string[] _args;
 
-				if (firstRun)
-				{
-					migration.InitializeOnce(_args);
-					firstRun = false;
-				}
+        public string[] args
+        {
+            get { return _args; }
+            set { _args = value; }
+        }
 
-				if (migration != null)
-				{
-					_provider.BeginTransaction();
+        public Migrator(string provider, string connectionString, Assembly migrationAssembly, bool trace)
+            : this(ProviderFactory.Create(provider, connectionString), migrationAssembly, trace)
+        {
+        }
 
-					string migrationName = ToHumanName(migration.GetType().Name);
-					
-					migration.TransformationProvider = _provider;
-					
-					try
-					{
-						if (goingUp)
-						{
-							_logger.MigrateUp(v, migrationName);
-							migration.Up();
-							_provider.CurrentVersion = v;
-							_provider.Commit();
-							migration.AfterUp();
-						}
-						else
-						{
-							_logger.MigrateDown(v, migrationName);
-							migration.Down();
-							_provider.CurrentVersion = v - 1;
-							_provider.Commit();
-							migration.AfterDown();
-						}
-					}
-					catch (Exception ex)
-					{
-						_logger.Exception(v, migrationName, ex);
-						
-						// Oho! error! We rollback changes.
-						_logger.RollingBack(previous);
-						_provider.CurrentVersion = previous;
-						_provider.Rollback();
-						
-						throw ex;
-					}
-				}
-				else
-				{
-					// The migration number is not found
-					_logger.Skipping(v);
-				}
+        public Migrator(string provider, string connectionString, Assembly migrationAssembly)
+            : this(ProviderFactory.Create(provider, connectionString), migrationAssembly, false)
+        {
+        }
 
-				if (goingUp)
-				{
-					if (v == version)
-						break;
-					previous = v;
-					v++;
-				}
-				else
-				{
-					previous = v;
-					v--;
-					// When we go back to previous versions
-					// we don't invoke Down() of the current
-					// version.
-					if (v == version)
-						break;
-				}
-			}
-			
-			_logger.Finished(originalVersion, version);
-		}
-		
-		/// <summary>
-		/// Run all migrations up to the latest.
-		/// </summary>
-		public void MigrateToLastVersion()
-		{
-			MigrateTo(LastVersion);
-		}
-		
-		/// <summary>
-		/// Returns the last version of the migrations.
-		/// </summary>
-		public int LastVersion
-		{
-			get
-			{
-				if (_migrationsTypes.Count == 0)
-					return 0;
-				return GetMigrationVersion((Type) _migrationsTypes[_migrationsTypes.Count-1]);
-			}
-		}
-		
-		/// <summary>
-		/// Returns the current version of the database.
-		/// </summary>
-		public int CurrentVersion
-		{
-			get
-			{
-				return _provider.CurrentVersion;
-			}
-		}
-		
-		/// <summary>
-		/// Returns registered migration <see cref="System.Type">types</see>.
-		/// </summary>
-		public ArrayList MigrationsTypes
-		{
-			get
-			{
-				return _migrationsTypes;
-			}
-		}
-		
-		/// <summary>
-		/// Get or set the event logger.
-		/// </summary>
-		public ILogger Logger {
-			get {
-				return _logger;
-			}
-			set {
-				_logger = value;
-			}
-		}
-		
-		
-		/// <summary>
-		/// Returns the version of the migration
-		/// <see cref="MigrationAttribute">MigrationAttribute</see>.
-		/// </summary>
-		/// <param name="t">Migration type.</param>
-		/// <returns>Version number sepcified in the attribute</returns>
-		public static int GetMigrationVersion(Type t)
-		{
-			MigrationAttribute attrib = (MigrationAttribute) 
-					Attribute.GetCustomAttribute(t, typeof(MigrationAttribute));
-			
-			return attrib.Version;
-		}
-		
-		/// <summary>
-		/// Check for duplicated version in migrations.
-		/// </summary>
-		/// <exception cref="CheckForDuplicatedVersion">CheckForDuplicatedVersion</exception>
-		public void CheckForDuplicatedVersion()
-		{
-			ArrayList versions = new ArrayList();
-			
-			foreach (Type t in _migrationsTypes)
-			{
-				int version = GetMigrationVersion(t);
-				
-				if (versions.Contains(version))
-					throw new DuplicatedVersionException(version);
-				
-				versions.Add(version);
-			}
-		}
-						
-		/// <summary>
-		/// Collect migrations in one <c>Assembly</c>.
-		/// </summary>
-		/// <param name="asm">The <c>Assembly</c> to browse.</param>
-		/// <returns>The migrations collection</returns>
-		public static ArrayList GetMigrationTypes(Assembly asm)
-		{
-			ArrayList migrations = new ArrayList();
-			
-			foreach (Type t in asm.GetTypes())
-			{
-				MigrationAttribute attrib = (MigrationAttribute) 
-					Attribute.GetCustomAttribute(t, typeof(MigrationAttribute));
-				if (attrib != null && typeof(Migration).IsAssignableFrom(t))
-			    {
-					if (!attrib.Ignore)
-					{
-						migrations.Add(t);
-					}
-			    }
-			}
-			
-			migrations.Sort(new MigrationTypeComparer(true));
-			
-			return migrations;
-		}
-		
-		/// <summary>
-		/// Convert a classname to something more readable.
-		/// ex.: CreateATable => Create a table
-		/// </summary>
-		/// <param name="className"></param>
-		/// <returns></returns>
-		public static string ToHumanName(string className)
-		{
-			string name = Regex.Replace(className, "([A-Z])", " $1").Substring(1);
-			return name.Substring(0, 1).ToUpper() + name.Substring(1).ToLower();
-		}
-		
-		
-		#region Helper methods
-		private static TransformationProvider CreateProvider(string name, string constr)
-		{
-			return new ProviderFactory().Create(name, constr);
-		}
-				
-		private Migration GetMigration(int version)
-		{
-			foreach (Type t in _migrationsTypes)
-			{
-				if (GetMigrationVersion(t) == version)
-					return (Migration) Activator.CreateInstance(t);
-			}
-			
-			return null;
-		}
-		
-		#endregion
-		
-	}
+        public Migrator(ITransformationProvider provider, Assembly migrationAssembly, bool trace)
+        {
+            Logger logger = new Logger(_trace);
+            logger.Attach(new ConsoleWriter());
+            _logger = logger;
+
+            _provider = provider;
+            _provider.Logger = logger;
+
+            _trace = trace;
+
+            _migrationLoader = new MigrationLoader(provider, migrationAssembly, trace);
+
+            _migrationLoader.CheckForDuplicatedVersion();
+        }
+
+
+        /// <summary>
+        /// Returns registered migration <see cref="System.Type">types</see>.
+        /// </summary>
+        public List<Type> MigrationsTypes
+        {
+            get { return _migrationLoader.MigrationsTypes; }
+        }
+
+        /// <summary>
+        /// Run all migrations up to the latest.
+        /// </summary>
+        public void MigrateToLastVersion()
+        {
+            MigrateTo(_migrationLoader.LastVersion);
+        }
+
+        /// <summary>
+        /// Returns the current version of the database.
+        /// </summary>
+        public int CurrentVersion
+        {
+            get { return _provider.CurrentVersion; }
+        }
+
+        /// <summary>
+        /// Get or set the event logger.
+        /// </summary>
+        public ILogger Logger
+        {
+            get { return _logger; }
+            set { _logger = value; }
+        }
+
+        /// <summary>
+        /// Migrate the database to a specific version.
+        /// Runs all migration between the actual version and the
+        /// specified version.
+        /// If <c>version</c> is greater then the current version,
+        /// the <c>Up()</c> method will be invoked.
+        /// If <c>version</c> lower then the current version,
+        /// the <c>Down()</c> method of previous migration will be invoked.
+        /// </summary>
+        /// <param name="version">The version that must became the current one</param>
+        public void MigrateTo(int version)
+        {
+            if (CurrentVersion == version) return;
+            bool goingUp = CurrentVersion < version;
+
+            bool firstRun = true;
+
+            BaseMigrate migrate = BaseMigrate.GetInstance(goingUp, CurrentVersion, _provider, _logger);
+            _logger.Started(migrate.Original, version);
+
+            while (migrate.Continue(version))
+            {
+                Migration migration = _migrationLoader.GetMigration(migrate.Current);
+                if (null == migration)
+                {
+                    _logger.Skipping(migrate.Current);
+                    migrate.Iterate();
+                    continue;
+                }
+
+                try
+                {
+                    if (firstRun)
+                    {
+                        migration.InitializeOnce(_args);
+                        firstRun = false;
+                    }
+
+                    migrate.Migrate(migration);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Exception(migrate.Current, migration.Name, ex);
+
+                    // Oho! error! We rollback changes.
+                    _logger.RollingBack(migrate.Previous);
+                    _provider.CurrentVersion = migrate.Previous;
+                    _provider.Rollback();
+
+                    throw;
+                }
+
+                migrate.Iterate();
+            }
+
+            _logger.Finished(migrate.Original, version);
+        }
+    }
 }

@@ -11,33 +11,40 @@
 
 using System;
 using System.Configuration;
+using System.Data;
+using Migrator.Framework;
+using Migrator.Providers.Mysql;
+using Migrator.Tests.Providers;
 using NUnit.Framework;
 
-namespace Migrator.Providers.Tests
+namespace Migrator.Tests.Providers
 {
-	[TestFixture, Category("MySql")]
-	public class MySqlTransformationProviderTest : TransformationProviderBase
-	{
-		[SetUp]
-		public void SetUp()
-		{
-#if DOTNET2
-			string constr = ConfigurationManager.AppSettings["MySqlConnectionString"];
-#else
-			string constr = ConfigurationSettings.AppSettings["MySqlConnectionString"];
-#endif
-			if (constr == null)
-				throw new ArgumentNullException("MySqlConnectionString", "No config file");
+    [TestFixture, Category("MySql")]
+    public class MySqlTransformationProviderTest : TransformationProviderConstraintBase
+    {
+        [SetUp]
+        public void SetUp()
+        {
 
-			_provider = new MySqlTransformationProvider(constr);
-			_provider.BeginTransaction();
+            string constr = ConfigurationManager.AppSettings["MySqlConnectionString"];
+
+            if (constr == null)
+                throw new ArgumentNullException("MySqlConnectionString", "No config file");
+
+            _provider = new MySqlTransformationProvider(constr);
+            _provider.BeginTransaction();
 			
-			_provider.AddTable("Test2",
-				new Column("Id", typeof(int), ColumnProperties.PrimaryKeyWithIdentity),
-				new Column("TestId", typeof(int), ColumnProperties.ForeignKey)
-			);
-		}
+            _provider.AddTable("TestTwo",
+                               new Column("Id", DbType.Int32, ColumnProperty.PrimaryKeyWithIdentity),
+                               new Column("TestId", DbType.Int32, ColumnProperty.ForeignKey)
+                );
+        }
 		
+		[Test]
+        public override void AddCheckConstraint()
+        {
+            // MySQL doesn't support check constraints - it parses them, it just doesn't actually add them
+        }
 		
-	}
+    }
 }
