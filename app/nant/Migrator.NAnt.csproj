@@ -4,56 +4,48 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{882B6A93-67B8-45BF-8636-5796B1B1CBF8}</ProjectGuid>
+    <ProjectGuid>{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Migrator.Tests</RootNamespace>
-    <AssemblyName>Migrator.Tests</AssemblyName>
+    <RootNamespace>Migrator.NAnt</RootNamespace>
+    <AssemblyName>Migrator.NAnt</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Migrator.Tests\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOTNET2</DefineConstants>
+    <OutputPath>bin\Migrator.NAnt\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Migrator.Tests\Release\</OutputPath>
-    <DefineConstants>TRACE;DOTNET2</DefineConstants>
+    <OutputPath>bin\Migrator.NAnt\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.2.0.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+    <Reference Include="log4net, Version=1.2.9.0, Culture=neutral, PublicKeyToken=b32731d11ce58905">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\nunit.framework.dll</HintPath>
+      <HintPath>..\..\lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="nmock">
-      <HintPath>..\lib\nmock.dll</HintPath>
+    <Reference Include="NAnt.Core">
+      <HintPath>..\..\lib\NAnt.Core.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MigrationTestCase.cs" />
-    <Compile Include="MigrationTypeComparerTest.cs" />
-    <Compile Include="MigratorTest.cs" />
-    <Compile Include="Providers\MySqlTransformationProviderTest.cs" />
-    <Compile Include="Providers\PostgreSQLTransformationProviderTest.cs" />
-    <Compile Include="Providers\SqlServerTransformationProviderTest.cs" />
-    <Compile Include="Providers\TransformationProviderBase.cs" />
-    <Compile Include="Providers\TransformationProviderTestAdapter.cs" />
-    <Compile Include="Tools\SchemaDumperTest.cs" />
+    <Compile Include="Loggers\TaskLogger.cs" />
+    <Compile Include="MigrateTask.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\app\core\Migrator_2005.csproj">
+    <ProjectReference Include="..\core\Migrator.csproj">
       <Project>{1FEE70A4-AAD7-4C60-BE60-3F7DC03A8C4D}</Project>
       <Name>Migrator_2005</Name>
     </ProjectReference>
