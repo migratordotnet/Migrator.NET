@@ -8,7 +8,7 @@ namespace Migrator.Tests
     [TestFixture]
     public class ScriptEngineTests
     {
-        [Test,Ignore("Test fails on Path.Combine")]
+        [Test,Ignore("Test fails when run from IDE, but works with NAnt from command line.")]
         public void CanCompileAssemblies() 
         {
             ScriptEngine engine = new ScriptEngine();

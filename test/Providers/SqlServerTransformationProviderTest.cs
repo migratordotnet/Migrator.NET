@@ -59,8 +59,8 @@ namespace Migrator.Tests.Providers
         [Test]
         public void ByteColumnWillBeCreatedAsBlob()
         {
-            _provider.AddColumn("Test2", "BlobColumn", DbType.Byte);
-            Assert.IsTrue(_provider.ColumnExists("Test2", "BlobColumn"));
+            _provider.AddColumn("TestTwo", "BlobColumn", DbType.Byte);
+            Assert.IsTrue(_provider.ColumnExists("TestTwo", "BlobColumn"));
         }
     }
 }
