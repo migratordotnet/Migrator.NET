@@ -59,17 +59,17 @@
     <Compile Include="ColumnPropertiesMapper.cs" />
     <Compile Include="Dialect.cs" />
     <Compile Include="ForeignKeyConstraintMapper.cs" />
-    <Compile Include="Mysql\MysqlDialect.cs" />
-    <Compile Include="Mysql\MySqlTransformationProvider.cs" />
+    <Compile Include="Impl\Mysql\MysqlDialect.cs" />
+    <Compile Include="Impl\Mysql\MySqlTransformationProvider.cs" />
     <Compile Include="NoOpTransformationProvider.cs" />
-    <Compile Include="Oracle\OracleDialect.cs" />
-    <Compile Include="Oracle\OracleTransformationProvider.cs" />
-    <Compile Include="PostgreSQL\PostgreSQLDialect.cs" />
-    <Compile Include="PostgreSQL\PostgreSQLTransformationProvider.cs" />
-    <Compile Include="SQLite\SQLiteDialect.cs" />
-    <Compile Include="SQLite\SQLiteTransformationProvider.cs" />
-    <Compile Include="SqlServer\SqlServerDialect.cs" />
-    <Compile Include="SqlServer\SqlServerTransformationProvider.cs" />
+    <Compile Include="Impl\Oracle\OracleDialect.cs" />
+    <Compile Include="Impl\Oracle\OracleTransformationProvider.cs" />
+    <Compile Include="Impl\PostgreSQL\PostgreSQLDialect.cs" />
+    <Compile Include="Impl\PostgreSQL\PostgreSQLTransformationProvider.cs" />
+    <Compile Include="Impl\SQLite\SQLiteDialect.cs" />
+    <Compile Include="Impl\SQLite\SQLiteTransformationProvider.cs" />
+    <Compile Include="Impl\SqlServer\SqlServerDialect.cs" />
+    <Compile Include="Impl\SqlServer\SqlServerTransformationProvider.cs" />
     <Compile Include="TransformationProvider.cs" />
     <Compile Include="TypeNames.cs" />
   </ItemGroup>

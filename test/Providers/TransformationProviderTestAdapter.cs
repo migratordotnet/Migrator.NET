@@ -132,7 +132,6 @@ namespace Migrator.Tests.Providers
             _realProvider.AddTable(name, columns);
         }
 
-        #endregion
-
-    }
+		#endregion
+	}
 }

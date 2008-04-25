@@ -25,7 +25,6 @@ namespace Migrator.Tests.Providers
         [SetUp]
         public void SetUp()
         {
-
             string constr = ConfigurationManager.AppSettings["MySqlConnectionString"];
 
             if (constr == null)
@@ -40,11 +39,7 @@ namespace Migrator.Tests.Providers
                 );
         }
 		
-		[Test]
-        public override void AddCheckConstraint()
-        {
-            // MySQL doesn't support check constraints - it parses them, it just doesn't actually add them
-        }
-		
+		[Test,Ignore("MySql doesn't support check constraints")]
+        public override void AddCheckConstraint() {}
     }
 }
