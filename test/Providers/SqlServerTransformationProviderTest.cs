@@ -34,7 +34,6 @@ namespace Migrator.Tests.Providers
 
             _provider = new SqlServerTransformationProvider(constr);
             _provider.BeginTransaction();
-			
             _provider.AddTable("TestTwo",
                                new Column("Id", DbType.Int32, ColumnProperty.PrimaryKeyWithIdentity),
                                new Column("TestId", DbType.Int32));
@@ -55,6 +54,13 @@ namespace Migrator.Tests.Providers
 
             ITransformationProvider localProv2 = _provider["foo"];
             Assert.IsTrue(localProv2 is NoOpTransformationProvider);
+        }
+        
+        [Test]
+        public void ByteColumnWillBeCreatedAsBlob()
+        {
+            _provider.AddColumn("Test2", "BlobColumn", DbType.Byte);
+            Assert.IsTrue(_provider.ColumnExists("Test2", "BlobColumn"));
         }
     }
 }
