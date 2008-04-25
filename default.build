@@ -97,7 +97,7 @@
 	<target name="rebuild" description="Rebuilds the app from scratch" depends="clean build" />
 	
 	<target name="build.tests" description="Builds the tests" depends="build, prepare.tests">
-		<copy file="config/test.config" tofile="${dir.bin}/${test.project.name}.dll.config" />
+		<copy file="config/app.config" tofile="${dir.bin}/${test.project.name}.dll.config" />
 		<csc target="library" output="${dir.bin}/${test.project.name}.dll" define="${defines}" debug="${debug}">
 			<sources basedir="test">
 				<include name="**/*.cs" />
@@ -152,7 +152,8 @@
 			<formatter type="Plain" />
 			<test
 				assemblyname="${dir.bin}/Migrator.Tests.dll"
-				appconfig="config/test.config">
+				appconfig="config/app.config">
+                <!-- FIXME: Figure out a way to externalize this so different people can make different choices -->
 				<categories>
 					<!--
 					<exclude name="SQLite" />
