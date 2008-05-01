@@ -95,6 +95,11 @@ namespace Migrator.Providers.TypeToSqlProviders
             get { return new OracleColumnPropertiesMapper("timestamp"); }
         }
 
-        #endregion
-    }
+		public IColumnPropertiesMapper Date
+		{
+			get { return new OracleColumnPropertiesMapper("date"); }
+		}
+
+		#endregion
+	}
 }

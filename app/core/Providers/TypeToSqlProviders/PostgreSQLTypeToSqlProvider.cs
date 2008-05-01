@@ -99,7 +99,11 @@ namespace Migrator.Providers.TypeToSqlProviders
 			get { return new PostgreSQLColumnPropertiesMapper("timestamp"); }
 		}
 
-		#endregion
+		public IColumnPropertiesMapper Date
+		{
+			get { return new PostgreSQLColumnPropertiesMapper("date"); }
+		}
 
+		#endregion
 	}
 }

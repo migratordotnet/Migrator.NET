@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Migrator.Providers.ColumnPropertiesMappers;
+using Migrator.Providers.TypeToSqlProviders;
 
 namespace Migrator.Columns
 {
@@ -25,6 +27,10 @@ namespace Migrator.Columns
 			get { return _remainder; }
 			set { _remainder = value; }
 		}
-	
+
+		public override IColumnPropertiesMapper TypeHint(ITypeToSqlProvider provider)
+		{
+			return provider.Decimal(Size, Remainder);
+		}
 	}
 }

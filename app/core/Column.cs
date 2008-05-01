@@ -9,6 +9,8 @@
 //under the License.
 #endregion
 using System;
+using Migrator.Providers.ColumnPropertiesMappers;
+using Migrator.Providers.TypeToSqlProviders;
 
 namespace Migrator
 {
@@ -156,6 +158,15 @@ namespace Migrator
 			set {
 				_defaultValue = value;
 			}
+		}
+
+		/// <summary>
+		/// This overrides the TransformationProvider.GetColumnMapper that decides what IColumnPropertyMapper to use for the column
+		/// This allows us to handle more types than is possibly using the System.Type system
+		/// </summary>
+		public virtual IColumnPropertiesMapper TypeHint(ITypeToSqlProvider provider)
+		{
+			return null;
 		}
 				
 	}

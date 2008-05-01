@@ -158,6 +158,11 @@ namespace Migrator.Providers
 
 		protected IColumnPropertiesMapper GetColumnMapper(Column column)
 		{
+			// if the column itself knows what ColumnMapper to return, then use this
+			IColumnPropertiesMapper hint = column.TypeHint(TypeToSqlProvider);
+			if (hint != null)
+				return hint;
+
 			if (column.Type == typeof(char))
 			{
 				if (column.Size <= Convert.ToInt32(byte.MaxValue))
@@ -170,9 +175,9 @@ namespace Migrator.Providers
 
 			if (column.Type== typeof(string))
 			{
-				if (column.Size <= 255)
+				if (column.Size <= ((int)byte.MaxValue))
 					return TypeToSqlProvider.String(Convert.ToUInt16(column.Size));
-				else if (column.Size <= Convert.ToInt32(ushort.MaxValue))
+				else if (column.Size <= ((int)ushort.MaxValue))
 					return TypeToSqlProvider.Text;
 				else
 					return TypeToSqlProvider.LongText;
@@ -200,14 +205,7 @@ namespace Migrator.Providers
 
 			if (column.Type == typeof(decimal))
 			{
-				if (typeof(DecimalColumn).IsAssignableFrom(column.GetType()))
-				{
-					return TypeToSqlProvider.Decimal(column.Size, (column as DecimalColumn).Remainder);
-				}
-				else
-				{
-					return TypeToSqlProvider.Decimal(column.Size);
-				}
+				return TypeToSqlProvider.Decimal(column.Size);
 			}
 
 			if (column.Type == typeof(bool))
@@ -253,6 +251,20 @@ namespace Migrator.Providers
 				columnStrings[i++] = column.ColumnSql;
 			return String.Join(", ", columnStrings);
 		}
+
+		public virtual void AddColumn(string table, Column column)
+		{
+			if (ColumnExists(table, column.Name))
+			{
+				Logger.Warn("Column {0}.{1} already exists", table, column.Name);
+				return;
+			}
+
+			IColumnPropertiesMapper mapper = GetAndMapColumnProperties(column);
+
+			AddColumn(table, mapper.ColumnSql);
+		}
+
 		
 		/// <summary>
 		/// Add a new column to an existing table.
@@ -265,15 +277,7 @@ namespace Migrator.Providers
 		/// <param name="defaultValue">Default value</param>
 		public virtual void AddColumn(string table, string column, Type type, int size, ColumnProperties property, object defaultValue)
 		{
-			if (ColumnExists(table, column))
-			{
-				Logger.Warn("Column {0}.{1} already exists", table, column);
-				return;
-			}
-
-			IColumnPropertiesMapper mapper = GetAndMapColumnProperties(new Column(column, type, size, property, defaultValue));
-
-			AddColumn(table, mapper.ColumnSql);
+			AddColumn(table, new Column(column, type, size, property, defaultValue));
 		}
 		
 		/// <summary>
@@ -641,11 +645,6 @@ namespace Migrator.Providers
 		#region ITransformationProvider Members
 
 		public abstract ITypeToSqlProvider TypeToSqlProvider { get;}
-
-		public void AddColumn(string table, Column column)
-		{
-			AddColumn(table, column.Name, column.Type, column.Size, column.ColumnProperty, column.DefaultValue);
-		}
 
 		public void GenerateForeignKey(string primaryTable, string refTable)
 		{

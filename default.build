@@ -123,9 +123,9 @@
 				assemblyname="${dir.bin}\Migrator.Tests.dll"
 				appconfig="config\test.config">
 				<categories>
-					<!--<exclude name="SqlServer" />
+					<exclude name="SqlServer" />
 					<exclude name="Oracle" /> 
-					<exclude name="MySql" />
+					<!--<exclude name="MySql" />
 					<exclude name="Postgre" />-->
 				</categories>
 			</test>

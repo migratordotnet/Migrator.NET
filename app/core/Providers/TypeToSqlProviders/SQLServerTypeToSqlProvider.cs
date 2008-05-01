@@ -95,7 +95,11 @@ namespace Migrator.Providers.TypeToSqlProviders
 			get { return new SQLServerColumnPropertiesMapper("datetime"); }
 		}
 
-		#endregion
+		public IColumnPropertiesMapper Date
+		{
+			get { return new SQLServerColumnPropertiesMapper("datetime"); }
+		}
 
+		#endregion
 	}
 }

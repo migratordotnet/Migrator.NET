@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Column.cs" />
+    <Compile Include="Columns\DateColumn.cs" />
     <Compile Include="Columns\DecimalColumn.cs" />
     <Compile Include="DuplicatedVersionException.cs" />
     <Compile Include="IrreversibleMigrationException.cs" />

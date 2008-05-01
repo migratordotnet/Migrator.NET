@@ -21,7 +21,9 @@ namespace Migrator.Providers.TypeToSqlProviders
 		IColumnPropertiesMapper Decimal(int whole, int part);
 
 		IColumnPropertiesMapper Bool { get;}
+
 		IColumnPropertiesMapper DateTime { get;}
+		IColumnPropertiesMapper Date { get;}
 
 		IColumnPropertiesMapper Binary(byte size);
 		IColumnPropertiesMapper Blob { get;}

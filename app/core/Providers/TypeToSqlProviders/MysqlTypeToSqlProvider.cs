@@ -98,6 +98,12 @@ namespace Migrator.Providers.TypeToSqlProviders
 			get { return new MysqlColumnPropertiesMapper("DATETIME"); }
 		}
 
+
+		public IColumnPropertiesMapper Date
+		{
+			get { return new MysqlColumnPropertiesMapper("DATE"); }
+		}
+
 		#endregion
 	}
 }
