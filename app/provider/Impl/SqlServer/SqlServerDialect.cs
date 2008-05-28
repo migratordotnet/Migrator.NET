@@ -1,4 +1,5 @@
 
+using System;
 using System.Data;
 using Migrator.Framework;
 
@@ -52,6 +53,15 @@ namespace Migrator.Providers.SqlServer
         public override string QuoteTemplate
         {
             get { return "[{0}]"; }
+        }
+
+        public override string Default(object defaultValue)
+        {
+            if (defaultValue.GetType().Equals(typeof (bool)))
+            {
+                defaultValue = ((bool) defaultValue) ? 1 : 0;
+            }
+            return String.Format("DEFAULT '{0}'", defaultValue);
         }
     }
 }

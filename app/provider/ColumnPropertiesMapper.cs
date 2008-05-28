@@ -99,8 +99,8 @@ namespace Migrator.Providers
             AddValueIfSelected(column, ColumnProperty.Unique, vals);
             AddValueIfSelected(column, ColumnProperty.ForeignKey, vals);
 
-            if (null != defaultVal)
-                vals.Add(dialect.Default(defaultVal));
+            if (column.DefaultValue != null)
+                vals.Add(dialect.Default(column.DefaultValue));
 
             columnSql = String.Join(" ", vals.ToArray());
         }

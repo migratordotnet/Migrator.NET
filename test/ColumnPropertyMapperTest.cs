@@ -84,5 +84,12 @@ namespace Migrator.Tests
             Assert.AreEqual("foo varchar(30) NOT NULL", mapper.ColumnSql);
         }
 
+        [Test]
+        public void SqlServerCreatesSqWithDefault1()
+        {
+            ColumnPropertiesMapper mapper = new ColumnPropertiesMapper(new SqlServerDialect(), "varchar(30)");
+            mapper.MapColumnProperties(new Column("foo", DbType.String, 0, "NEW"));
+            Assert.AreEqual("foo varchar(30) DEFAULT 'NEW'", mapper.ColumnSql);
+        }
     }
 }
