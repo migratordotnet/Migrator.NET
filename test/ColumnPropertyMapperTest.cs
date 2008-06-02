@@ -85,11 +85,30 @@ namespace Migrator.Tests
         }
 
         [Test]
-        public void SqlServerCreatesSqWithDefault1()
+        public void SqlServerCreatesSqWithDefault()
         {
             ColumnPropertiesMapper mapper = new ColumnPropertiesMapper(new SqlServerDialect(), "varchar(30)");
-            mapper.MapColumnProperties(new Column("foo", DbType.String, 0, "NEW"));
+            mapper.MapColumnProperties(new Column("foo", DbType.String, 0, "'NEW'"));
             Assert.AreEqual("foo varchar(30) DEFAULT 'NEW'", mapper.ColumnSql);
+        }
+
+        [Test]
+        public void SqlServerCreatesSqWithNullDefault()
+        {
+            ColumnPropertiesMapper mapper = new ColumnPropertiesMapper(new SqlServerDialect(), "varchar(30)");
+            mapper.MapColumnProperties(new Column("foo", DbType.String, 0, "NULL"));
+            Assert.AreEqual("foo varchar(30) DEFAULT NULL", mapper.ColumnSql);
+        }
+
+        [Test]
+        public void SqlServerCreatesSqWithBooleanDefault()
+        {
+            ColumnPropertiesMapper mapper = new ColumnPropertiesMapper(new SqlServerDialect(), "bit");
+            mapper.MapColumnProperties(new Column("foo", DbType.Boolean, 0, false));
+            Assert.AreEqual("foo bit DEFAULT 0", mapper.ColumnSql);
+
+            mapper.MapColumnProperties(new Column("bar", DbType.Boolean, 0, true));
+            Assert.AreEqual("bar bit DEFAULT 1", mapper.ColumnSql);
         }
     }
 }
