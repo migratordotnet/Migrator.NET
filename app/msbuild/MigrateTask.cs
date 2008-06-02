@@ -124,9 +124,7 @@ namespace Migrator.MSBuild
 
         private void Execute(Assembly asm)
 	    {
-
-	        Migrator mig = new Migrator(Provider, ConnectionString, asm, Trace);
-	        mig.Logger = new TaskLogger(this);
+	        Migrator mig = new Migrator(Provider, ConnectionString, asm, Trace, new TaskLogger(this));
 
 	        if (_to == -1)
 	            mig.MigrateToLastVersion();
@@ -135,4 +133,5 @@ namespace Migrator.MSBuild
 	    }
 	}
 }
+
 

@@ -38,26 +38,33 @@ namespace Migrator
             set { _args = value; }
         }
 
+        public Migrator(string provider, string connectionString, Assembly migrationAssembly)
+            : this(provider, connectionString, migrationAssembly, false)
+        {
+        }
+
         public Migrator(string provider, string connectionString, Assembly migrationAssembly, bool trace)
             : this(ProviderFactory.Create(provider, connectionString), migrationAssembly, trace)
         {
         }
 
-        public Migrator(string provider, string connectionString, Assembly migrationAssembly)
-            : this(ProviderFactory.Create(provider, connectionString), migrationAssembly, false)
+        public Migrator(string provider, string connectionString, Assembly migrationAssembly, bool trace, ILogger logger)
+            : this(ProviderFactory.Create(provider, connectionString), migrationAssembly, trace, logger)
         {
         }
 
         public Migrator(ITransformationProvider provider, Assembly migrationAssembly, bool trace)
+            : this(provider, migrationAssembly, trace, new Logger(trace, new ConsoleWriter()))
         {
-            Logger logger = new Logger(_trace);
-            logger.Attach(new ConsoleWriter());
-            _logger = logger;
+        }
 
+        public Migrator(ITransformationProvider provider, Assembly migrationAssembly, bool trace, ILogger logger)
+        {
             _provider = provider;
-            _provider.Logger = logger;
-
             _trace = trace;
+            _logger = logger;
+            
+            _provider.Logger = logger;
 
             _migrationLoader = new MigrationLoader(provider, migrationAssembly, trace);
 
