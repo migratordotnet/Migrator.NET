@@ -124,7 +124,6 @@ namespace Migrator.Framework
         /// </summary>
         public virtual void InitializeOnce(string[] args)
         {
-            System.Console.WriteLine("Migration.InitializeOnce()");
         }
     }
 }
