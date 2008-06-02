@@ -703,7 +703,7 @@ namespace Migrator.Providers
 
         public void GenerateForeignKey(string primaryTable, string refTable, ForeignKeyConstraint constraint)
         {
-            GenerateForeignKey(primaryTable, refTable + "Id", refTable, "Id");
+            GenerateForeignKey(primaryTable, refTable + "Id", refTable, "Id", constraint);
         }
 
         public IDbCommand GetCommand()
