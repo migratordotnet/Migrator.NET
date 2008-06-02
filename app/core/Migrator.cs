@@ -117,6 +117,13 @@ namespace Migrator
         /// <param name="version">The version that must became the current one</param>
         public void MigrateTo(int version)
         {
+
+            if (_migrationLoader.MigrationsTypes.Count == 0)
+            {
+                _logger.Warn("No public classes with the Migration attribute were found.");
+                return;
+            }
+
             if (CurrentVersion == version) return;
             bool goingUp = CurrentVersion < version;
 
