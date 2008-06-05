@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<ClassLibraryOutputDirectory>bin\$(Configuration)</ClassLibraryOutputDirectory>
+        <MigrationsProject>src\Migrations.csproj</MigrationsProject>
+    </PropertyGroup>
+
+    <Import Project="$(MigratorTasksPath)\Migrator.Targets" />
+
+    <ItemGroup>
+        <MigrationProjectReferences Include="$(MigrationsProject)" />
+    </ItemGroup>
+
+    <Target Name="Build-Migrations">
+        <MSBuild Projects="@(MigrationProjectReferences)" Targets="Build">
+            <Output TaskParameter="TargetOutputs" ItemName="MigrationAssemblies" />
+        </MSBuild>
+
+        <Message Text="Built: @(MigrationAssemblies)"/>
+    </Target>
+
+    <Target name="Migrate" DependsOnTargets="Build-Migrations">
+        <Migrate Provider="SqlServer"
+            Connectionstring="Database=MyDB;Data Source=localhost;User Id=;Password=;"
+            Migrations="@(MigrationAssemblies)"/>
+    </Target>
+</Project>

@@ -8,6 +8,7 @@
 //License for the specific language governing rights and limitations
 //under the License.
 #endregion
+
 using System;
 
 namespace Migrator
@@ -18,7 +19,7 @@ namespace Migrator
 	public class DuplicatedVersionException : Exception
 	{
 		public DuplicatedVersionException(int version)
-			: base(string.Format("Migration version #{0} is duplicated", version))
+			: base(String.Format("Migration version #{0} is duplicated", version))
 		{
 		}
 	}
