@@ -1,0 +1,13 @@
+Near Term:
+
+* Think about modeling a Table object as well as the Column object
+* Think of a DSL to configure what the SQL syntax for a specific implementation looks like?
+* Separate out Providers into separate DLLs and load them like plugins?
+
+Future:
+* Look into using something like NHibernate to create our schema changes
+* Look into directly supporting other kinds of SQL objects
+  * Stored Procedures
+  * User Defined Functions
+  * Would modeling these things as objects help?
+

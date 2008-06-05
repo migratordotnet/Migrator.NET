@@ -9,10 +9,12 @@
 //under the License.
 #endregion
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using Migrator.Framework;
+using Migrator.Framework.Loggers;
 using NUnit.Framework;
-using NMock;
-using Migrator.Providers;
+using NUnit.Mocks;
 
 namespace Migrator.Tests
 {
@@ -21,15 +23,14 @@ namespace Migrator.Tests
 	{
 		private Migrator _migrator;
 		
-		// Collections qui vont contenir les # de versions
-		// des migrations invoquées après un appel au migrateur.
-		private static ArrayList _upCalled = new ArrayList();
-		private static ArrayList _downCalled = new ArrayList();
+		// Collections that contain the version that are called migrating up and down
+		private static readonly List<int> _upCalled = new List<int>();
+		private static readonly List<int> _downCalled = new List<int>();
 		
 		[SetUp]
 		public void SetUp()
 		{
-			SetUpCurrentVersion(0);
+            SetUpCurrentVersion(0);
 		}
 		
 		[Test]
@@ -106,12 +107,18 @@ namespace Migrator.Tests
 			Assert.AreEqual(0, _upCalled.Count);
 			Assert.AreEqual(0, _downCalled.Count);
 		}
-		
-		[Test]
-		public void LastVersion()
-		{
-			Assert.AreEqual(6, _migrator.LastVersion);
-		}
+
+        [Test]
+        public void MigrateToLastVersion()
+        {
+            SetUpCurrentVersion(3, false, false);
+
+            _migrator.MigrateToLastVersion();
+
+            Assert.AreEqual(2, _upCalled.Count);
+            Assert.AreEqual(0, _downCalled.Count);
+        }
+	
 		
 		[Test]
 		public void CurrentVersion()
@@ -123,35 +130,35 @@ namespace Migrator.Tests
 		}
 		
 		[Test]
-		[ExpectedException(typeof(DuplicatedVersionException), "Migration version #1 is duplicated")]
-		public void CheckForDuplicatedVersion()
-		{
-			_migrator.MigrationsTypes.Add(typeof(FirstMigration));
-			_migrator.CheckForDuplicatedVersion();
-		}
-		
-		[Test]
 		public void ToHumanName()
 		{
-			Assert.AreEqual("Create a table", Migrator.ToHumanName("CreateATable"));
+            Assert.AreEqual("Create a table", StringUtils.ToHumanName("CreateATable"));
 		}
 		
 		#region Helper methods and classes
-		private void SetUpCurrentVersion(int version)
+
+        private void SetUpCurrentVersion(int version)
 		{
 			SetUpCurrentVersion(version, false);
 		}
-		private void SetUpCurrentVersion(int version, bool assertRollbackIsCalled)
+
+        private void SetUpCurrentVersion(int version, bool assertRollbackIsCalled)
+        {
+            SetUpCurrentVersion(version, assertRollbackIsCalled, true);
+        }
+
+        private void SetUpCurrentVersion(int version, bool assertRollbackIsCalled, bool includeBad)
 		{
-			DynamicMock providerMock = new DynamicMock(typeof(TransformationProvider));
-			
-			providerMock.SetupResult("CurrentVersion", version);
+			DynamicMock providerMock = new DynamicMock(typeof(ITransformationProvider));
+
+            providerMock.SetReturnValue("get_CurrentVersion", version);
+            providerMock.SetReturnValue("get_Logger", new Logger(false));
 			if (assertRollbackIsCalled)
 				providerMock.Expect("Rollback");
 			else
 				providerMock.ExpectNoCall("Rollback");
-			
-			_migrator = new Migrator((TransformationProvider) providerMock.MockInstance, null, true);
+
+            _migrator = new Migrator((ITransformationProvider)providerMock.MockInstance, Assembly.GetExecutingAssembly(), false);
 			
 			// Enlève toutes les migrations trouvée automatiquement
 			_migrator.MigrationsTypes.Clear();
@@ -162,32 +169,37 @@ namespace Migrator.Tests
 			_migrator.MigrationsTypes.Add(typeof(SecondMigration));
 			_migrator.MigrationsTypes.Add(typeof(ThirdMigration));
 			_migrator.MigrationsTypes.Add(typeof(ForthMigration));
-			_migrator.MigrationsTypes.Add(typeof(BadMigration));
-			_migrator.MigrationsTypes.Add(typeof(SixthMigration));
+            _migrator.MigrationsTypes.Add(typeof(SixthMigration));
+
+			if (includeBad)
+                _migrator.MigrationsTypes.Add(typeof(BadMigration));
+
 		}
 		
-		private class AbstractTestMigration : Migration
+		public class AbstractTestMigration : Migration
 		{
 			override public void Up()
 			{
-				_upCalled.Add(Migrator.GetMigrationVersion(GetType()));
+				_upCalled.Add(MigrationLoader.GetMigrationVersion(GetType()));
 			}
 			override public void Down()
 			{
-				_downCalled.Add(Migrator.GetMigrationVersion(GetType()));
+                _downCalled.Add(MigrationLoader.GetMigrationVersion(GetType()));
 			}
 		}
 		
 		[Migration(1, Ignore=true)]
-		private class FirstMigration : AbstractTestMigration {}
+		public class FirstMigration : AbstractTestMigration {}
 		[Migration(2, Ignore=true)]
-		private class SecondMigration : AbstractTestMigration {}
+        public class SecondMigration : AbstractTestMigration { }
 		[Migration(3, Ignore=true)]
-		private class ThirdMigration : AbstractTestMigration {}
+        public class ThirdMigration : AbstractTestMigration { }
 		[Migration(4, Ignore=true)]
-		private class ForthMigration : AbstractTestMigration {}
-		[Migration(5, Ignore=true)]
-		private class BadMigration : AbstractTestMigration {
+        public class ForthMigration : AbstractTestMigration { }
+		
+        [Migration(5, Ignore=true)]
+        public class BadMigration : AbstractTestMigration
+        {
 			override public void Up()
 			{
 				throw new Exception("oh uh!");
@@ -197,9 +209,13 @@ namespace Migrator.Tests
 				throw new Exception("oh uh!");
 			}
 		}
-		[Migration(6, Ignore=true)]
-		private class SixthMigration : AbstractTestMigration {}
 		
+        [Migration(6, Ignore=true)]
+        public class SixthMigration : AbstractTestMigration { }
+
+        [Migration(7)]
+        public class NonIgnoredMigration : AbstractTestMigration { }
+
 		#endregion
 	}
 }

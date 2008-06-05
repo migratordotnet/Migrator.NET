@@ -9,9 +9,9 @@
 //under the License.
 #endregion
 using System.Reflection;
+using Migrator.Tests.Providers;
 using NUnit.Framework;
 using Migrator.Providers;
-using Migrator.Providers.Tests;
 
 namespace Migrator.Tests
 {

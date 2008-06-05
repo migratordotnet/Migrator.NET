@@ -8,27 +8,29 @@
 //License for the specific language governing rights and limitations
 //under the License.
 #endregion
+
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using Migrator.Framework;
 
 namespace Migrator
 {
 	/// <summary>
 	/// Comparer of Migration by their version attribute.
 	/// </summary>
-	public class MigrationTypeComparer : IComparer
+	public class MigrationTypeComparer : IComparer<Type>
 	{
-		private bool _ascending = true;
+		private readonly bool _ascending = true;
 		
 		public MigrationTypeComparer(bool ascending)
 		{
 			_ascending = ascending;
 		}
-				
-		public int Compare(object x, object y)
+
+        public int Compare(Type x, Type y)
 		{
-			MigrationAttribute attribOfX = (MigrationAttribute) Attribute.GetCustomAttribute((Type) x, typeof(MigrationAttribute));
-			MigrationAttribute attribOfY = (MigrationAttribute) Attribute.GetCustomAttribute((Type) y, typeof(MigrationAttribute));
+			MigrationAttribute attribOfX = (MigrationAttribute) Attribute.GetCustomAttribute(x, typeof(MigrationAttribute));
+			MigrationAttribute attribOfY = (MigrationAttribute) Attribute.GetCustomAttribute(y, typeof(MigrationAttribute));
 			
 			if (_ascending)
 				return attribOfX.Version - attribOfY.Version;

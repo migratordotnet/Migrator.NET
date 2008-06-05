@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="migrator" xmlns="http://nant.sf.net/release/0.85/nant.xsd">
+	<loadtasks assembly="../bin/Migrator.NAnt.dll" />
+	<target name="migrate" description="Migrate the database">
+		<property name="version" value="-1" overwrite="false" />
+	  	<migrate
+	    	provider="MySql"
+	    	connectionstring="Data Source=localhost;Database=test;User Id=root;Password=;"
+	    	directory="migrations"
+	    	to="${version}" />
+	</target>
+</project>

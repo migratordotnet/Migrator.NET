@@ -8,9 +8,10 @@
 //License for the specific language governing rights and limitations
 //under the License.
 #endregion
+
 using System;
 using System.Reflection;
-using System.IO;
+using Migrator.Framework;
 using Migrator.Tools;
 
 namespace Migrator.MigratorConsole
@@ -97,11 +98,11 @@ namespace Migrator.MigratorConsole
 			Console.WriteLine("Available migrations:");
 			foreach (Type t in mig.MigrationsTypes)
 			{
-				int v = Migrator.GetMigrationVersion(t);
+                int v = MigrationLoader.GetMigrationVersion(t);
 				Console.WriteLine("{0} {1} {2}",
 				                  v == currentVersion ? "=>" : "  ",
 				                  v.ToString().PadLeft(3),
-				                  Migrator.ToHumanName(t.Name)
+				                  StringUtils.ToHumanName(t.Name)
 				                 );
 			}
 		}
