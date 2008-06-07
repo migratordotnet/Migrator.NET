@@ -25,12 +25,8 @@ namespace Migrator.Tests.Providers
          [SetUp]
          public void SetUp()
          {
-
-             #if DOTNET2
+             
              string constr = ConfigurationManager.AppSettings["SQLiteConnectionString"];
-             #else
-             string constr = ConfigurationManager.AppSettings["SQLiteConnectionString-Mono"];
-             #endif
 
              if (constr == null)
                  throw new ArgumentNullException("SQLiteConnectionString", "No config file");
