@@ -77,7 +77,7 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\framework\Migrator.Framework.csproj">
+    <ProjectReference Include="..\Migrator.Framework\Migrator.Framework.csproj">
       <Project>{5270F048-E580-486C-B14C-E5B9F6E539D4}</Project>
       <Name>Migrator.Framework</Name>
     </ProjectReference>
