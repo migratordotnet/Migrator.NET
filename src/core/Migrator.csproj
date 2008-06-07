@@ -53,6 +53,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\config\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="BaseMigrate.cs" />
     <Compile Include="Compile\ScriptEngine.cs" />
     <Compile Include="DuplicatedVersionException.cs" />
@@ -66,9 +69,6 @@
     <Compile Include="Tools\SchemaDumper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\config\app.config">
-      <Link>app.config</Link>
-    </None>
     <None Include="..\..\default.build">
       <Link>default.build</Link>
     </None>
