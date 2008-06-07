@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="migrator" default="build" xmlns="http://nant.sf.net/release/0.85/nant.xsd">
+	<property name="defines" value="DOTNET2" if="${framework::get-target-framework() == 'net-2.0' or framework::get-target-framework() == 'net-3.5'}" />
+	<property name="defines" value="MONO2" if="${framework::get-target-framework() == 'mono-2.0'}" />
+	
+	<!-- Paths to various parts of the build -->
 	<property name="dir.bin" value="build" />
 	<property name="dir.lib" value="lib" />
 	<property name="dir.results" value="results"/>
 	<property name="dir.zip" value="${dir.bin}/zip" />
 	<property name="dir.src" value="src"/>
-
 	<property name="dir.config" value="${dir.src}/config" />
 	<property name="dir.tests" value="${dir.src}/Migrator.Tests" />
 	<property name="dir.msbuild" value="${dir.src}/Migrator.MSBuild" />
@@ -14,16 +17,19 @@
 	<property name="dir.providers" value="${dir.src}/Migrator.Providers" />
 	<property name="dir.core" value="${dir.src}/Migrator" />
 	<property name="dir.console" value="${dir.src}/Migrator.Console" />
-	
     <property name="dir.tools.ncover" value="${dir.lib}/NCover" />
     <property name="dir.tools.nunit" value="${dir.lib}/NUnit" />
 	<property name="dir.lib.postgre" value="${dir.lib}/Npgsql/${framework::get-target-framework()}" />
-
-	<property name="defines" value="DOTNET2" if="${framework::get-target-framework() == 'net-2.0' or framework::get-target-framework() == 'net-3.5'}" />
-	<property name="defines" value="MONO2" if="${framework::get-target-framework() == 'mono-2.0'}" />
 	
 	<property name="debug" value="true" />
     <property name="test.project.name" value="Migrator.Tests"/>
+
+	<!-- Test related properties -->
+	<!-- To exclude tests, provide a comma separated set of exclude categories in your local.properties e.g. Oracle,SqlServer,Postgre -->
+	<property name="tests.exclude" value=""/>
+
+	<!-- Overrideable. Add your own values to a file called local.properties to have them override any above properties -->
+	<include buildfile="local.properties" failonerror="false"/>
 
     <loadtasks assembly="${dir.tools.ncover}/Explorer/NCoverExplorer.NAntTasks.dll" />
 
@@ -73,7 +79,6 @@
             <sources>
                 <include name="${dir.config}/AssemblyInfo.cs" />
                 <include name="${dir.core}/**/*.cs" />
-                <!-- <exclude name="${dir.providers}/ProviderTemplate/**" /> -->
             </sources>
             <references>
                 <include name="System.dll" />
@@ -181,13 +186,7 @@
 				appconfig="${dir.config}/app.config">
                 <!-- FIXME: Figure out a way to externalize this so different people can make different choices -->
 				<categories>
-					<!--
-					<exclude name="SQLite" />
-					<exclude name="MySql" />
-					<exclude name="Postgre" />
-                    <exclude name="SqlServer" />
-					-->
-                    <exclude name="Oracle" />
+					<exclude name="${tests.exclude}"/>
 				</categories>
 			</test>
 		</nunit2>	
@@ -195,11 +194,9 @@
 
     <target name="test.coverage" description="Run the tests with code coverage. Only works on Windows/.NET" depends="build.tests">
 
-        <property name="exclude" value="Oracle" overwrite="false" />
-
         <ncover program="${dir.tools.ncover}/NCover.Console.exe"
                 commandLineExe="${dir.tools.nunit}/nunit-console.exe"
-                commandLineArgs="${dir.bin}/${test.project.name}.dll /exclude=${exclude} /labels /nologo /noshadow"
+                commandLineArgs="${dir.bin}/${test.project.name}.dll /exclude=${tests.exclude} /labels /nologo /noshadow"
                 coverageFile="${dir.results}/coverage.xml"
                 logFile="${dir.results}/coverage.log">
             <assemblies basedir="${dir.bin}">

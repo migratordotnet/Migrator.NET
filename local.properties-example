@@ -1,0 +1,4 @@
+<!-- Copy this to local.properties and change the values to change how the build works -->
+<project xmlns="http://nant.sf.net/release/0.85/nant.xsd">
+	<property name="tests.exclude" value="Oracle,SqlServer,Postgre"/>
+</project>
