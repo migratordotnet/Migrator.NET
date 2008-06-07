@@ -3,6 +3,8 @@
 	<property name="defines" value="DOTNET2" if="${framework::get-target-framework() == 'net-2.0' or framework::get-target-framework() == 'net-3.5'}" />
 	<property name="defines" value="MONO2" if="${framework::get-target-framework() == 'mono-2.0'}" />
 	
+	<property name="debug" value="true" />
+	
 	<!-- Paths to various parts of the build -->
 	<property name="dir.bin" value="build" />
 	<property name="dir.lib" value="lib" />
@@ -21,16 +23,17 @@
     <property name="dir.tools.nunit" value="${dir.lib}/NUnit" />
 	<property name="dir.lib.postgre" value="${dir.lib}/Npgsql/${framework::get-target-framework()}" />
 	
-	<property name="debug" value="true" />
     <property name="test.project.name" value="Migrator.Tests"/>
 
 	<!-- Test related properties -->
 	<!-- To exclude tests, provide a comma separated set of exclude categories in your local.properties e.g. Oracle,SqlServer,Postgre -->
 	<property name="tests.exclude" value=""/>
+	<property name="tests.app.config" value="${dir.config}/app.config"/>
 
 	<!-- Overrideable. Add your own values to a file called local.properties to have them override any above properties -->
 	<include buildfile="local.properties" failonerror="false"/>
 
+	<!-- load the NCover NAnt tasks -->
     <loadtasks assembly="${dir.tools.ncover}/Explorer/NCoverExplorer.NAntTasks.dll" />
 
     <!--
@@ -125,10 +128,10 @@
 		</csc>
 	</target>
 	
-	<target name="rebuild" description="Rebuilds the app from scratch" depends="clean build" />
+	<target name="rebuild" description="Rebuilds the app from scratch" depends="clean, build" />
 	
 	<target name="build.tests" description="Builds the tests" depends="build, prepare.tests">
-		<copy file="${dir.config}/app.config" tofile="${dir.bin}/${test.project.name}.dll.config" />
+		<copy file="${tests.app.config}" tofile="${dir.bin}/${test.project.name}.dll.config" />
 		<csc target="library" output="${dir.bin}/${test.project.name}.dll" define="${defines}" debug="${debug}">
 			<sources>
 				<include name="${dir.tests}/**/*.cs" />
@@ -183,8 +186,7 @@
 			<formatter type="Plain" />
 			<test
 				assemblyname="${dir.bin}/Migrator.Tests.dll"
-				appconfig="${dir.config}/app.config">
-                <!-- FIXME: Figure out a way to externalize this so different people can make different choices -->
+				appconfig="${tests.app.config}">
 				<categories>
 					<exclude name="${tests.exclude}"/>
 				</categories>
