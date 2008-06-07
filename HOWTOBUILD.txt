@@ -9,6 +9,9 @@ To zip the project into a zip file run build passing a zip argument like so:
 
 c:\> build zip
 
+To override any of the build properties copy local.properties-exmple to local.properties and override any of the
+property values in the default.build.
+
 If you have any questions please go to the migrator google group located at:
 
 http://groups.google.com/group/migratordotnet-devel
