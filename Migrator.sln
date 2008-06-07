@@ -2,24 +2,64 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Runners", "Runners", "{1CC77E58-4B1E-4D3F-86EA-5078883434FC}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{9844714F-717A-4C16-97A9-9995BB1B4A8B}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8FF5F3DF-DF83-470C-ADFE-C0FF2B858F0F}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Console", "src\console\Migrator.Console.csproj", "{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator", "src\Migrator\Migrator.csproj", "{1FEE70A4-AAD7-4C60-BE60-3F7DC03A8C4D}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.NAnt", "src\nant\Migrator.NAnt.csproj", "{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Framework", "src\Migrator.Framework\Migrator.Framework.csproj", "{5270F048-E580-486C-B14C-E5B9F6E539D4}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.MSBuild", "src\msbuild\Migrator.MSBuild.csproj", "{A145FFA9-5FE6-4636-93B8-0C110D132BF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Providers", "src\Migrator.Providers\Migrator.Providers.csproj", "{D58C68E4-D789-40F7-9078-C9F587D4363C}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator", "src\core\Migrator.csproj", "{1FEE70A4-AAD7-4C60-BE60-3F7DC03A8C4D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Console", "src\Migrator.Console\Migrator.Console.csproj", "{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Framework", "src\framework\Migrator.Framework.csproj", "{5270F048-E580-486C-B14C-E5B9F6E539D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.MSBuild", "src\Migrator.MSBuild\Migrator.MSBuild.csproj", "{A145FFA9-5FE6-4636-93B8-0C110D132BF3}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Providers", "src\provider\Migrator.Providers.csproj", "{D58C68E4-D789-40F7-9078-C9F587D4363C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.NAnt", "src\Migrator.NAnt\Migrator.NAnt.csproj", "{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Tests", "src\test\Migrator.Tests.csproj", "{882B6A93-67B8-45BF-8636-5796B1B1CBF8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Tests", "src\Migrator.Tests\Migrator.Tests.csproj", "{882B6A93-67B8-45BF-8636-5796B1B1CBF8}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,18 +67,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A145FFA9-5FE6-4636-93B8-0C110D132BF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A145FFA9-5FE6-4636-93B8-0C110D132BF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A145FFA9-5FE6-4636-93B8-0C110D132BF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A145FFA9-5FE6-4636-93B8-0C110D132BF3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1FEE70A4-AAD7-4C60-BE60-3F7DC03A8C4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1FEE70A4-AAD7-4C60-BE60-3F7DC03A8C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FEE70A4-AAD7-4C60-BE60-3F7DC03A8C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,6 +79,18 @@ Global
 		{D58C68E4-D789-40F7-9078-C9F587D4363C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D58C68E4-D789-40F7-9078-C9F587D4363C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D58C68E4-D789-40F7-9078-C9F587D4363C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A145FFA9-5FE6-4636-93B8-0C110D132BF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A145FFA9-5FE6-4636-93B8-0C110D132BF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A145FFA9-5FE6-4636-93B8-0C110D132BF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A145FFA9-5FE6-4636-93B8-0C110D132BF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}.Release|Any CPU.Build.0 = Release|Any CPU
 		{882B6A93-67B8-45BF-8636-5796B1B1CBF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{882B6A93-67B8-45BF-8636-5796B1B1CBF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{882B6A93-67B8-45BF-8636-5796B1B1CBF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -60,12 +100,12 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31} = {1CC77E58-4B1E-4D3F-86EA-5078883434FC}
+		{A145FFA9-5FE6-4636-93B8-0C110D132BF3} = {1CC77E58-4B1E-4D3F-86EA-5078883434FC}
+		{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101} = {1CC77E58-4B1E-4D3F-86EA-5078883434FC}
 		{1FEE70A4-AAD7-4C60-BE60-3F7DC03A8C4D} = {9844714F-717A-4C16-97A9-9995BB1B4A8B}
 		{5270F048-E580-486C-B14C-E5B9F6E539D4} = {9844714F-717A-4C16-97A9-9995BB1B4A8B}
 		{D58C68E4-D789-40F7-9078-C9F587D4363C} = {9844714F-717A-4C16-97A9-9995BB1B4A8B}
 		{882B6A93-67B8-45BF-8636-5796B1B1CBF8} = {8FF5F3DF-DF83-470C-ADFE-C0FF2B858F0F}
-		{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31} = {1CC77E58-4B1E-4D3F-86EA-5078883434FC}
-		{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101} = {1CC77E58-4B1E-4D3F-86EA-5078883434FC}
-		{A145FFA9-5FE6-4636-93B8-0C110D132BF3} = {1CC77E58-4B1E-4D3F-86EA-5078883434FC}
 	EndGlobalSection
 EndGlobal

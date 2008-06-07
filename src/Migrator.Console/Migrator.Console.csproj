@@ -4,17 +4,17 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Migrator.NAnt</RootNamespace>
-    <AssemblyName>Migrator.NAnt</AssemblyName>
+    <RootNamespace>Migrator.Console</RootNamespace>
+    <AssemblyName>Migrator.Console</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Migrator.NAnt\Debug\</OutputPath>
+    <OutputPath>bin\Migrator.Console\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -22,37 +22,29 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Migrator.NAnt\Release\</OutputPath>
+    <OutputPath>bin\Migrator.Console\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.9.0, Culture=neutral, PublicKeyToken=b32731d11ce58905">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="NAnt.Core">
-      <HintPath>..\..\lib\NAnt.Core.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Loggers\TaskLogger.cs" />
-    <Compile Include="MigrateTask.cs" />
+    <Compile Include="Boot.cs" />
+    <Compile Include="MigratorConsole.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\core\Migrator.csproj">
+    <ProjectReference Include="..\Migrator\Migrator.csproj">
       <Project>{1FEE70A4-AAD7-4C60-BE60-3F7DC03A8C4D}</Project>
       <Name>Migrator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\framework\Migrator.Framework.csproj">
+    <ProjectReference Include="..\Migrator.Framework\Migrator.Framework.csproj">
       <Project>{5270F048-E580-486C-B14C-E5B9F6E539D4}</Project>
       <Name>Migrator.Framework</Name>
     </ProjectReference>

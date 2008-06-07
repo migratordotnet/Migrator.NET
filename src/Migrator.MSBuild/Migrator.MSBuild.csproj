@@ -41,11 +41,11 @@
     <None Include="Migrator.Targets" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\core\Migrator.csproj">
+    <ProjectReference Include="..\Migrator\Migrator.csproj">
       <Project>{1FEE70A4-AAD7-4C60-BE60-3F7DC03A8C4D}</Project>
       <Name>Migrator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\framework\Migrator.Framework.csproj">
+    <ProjectReference Include="..\Migrator.Framework\Migrator.Framework.csproj">
       <Project>{5270F048-E580-486C-B14C-E5B9F6E539D4}</Project>
       <Name>Migrator.Framework</Name>
     </ProjectReference>
