@@ -28,6 +28,7 @@ namespace Migrator
 
         private readonly MigrationLoader _migrationLoader;
 
+        // FIXME: We're not using this anywhere
         private readonly bool _trace; // show trace for debugging
         private ILogger _logger = new Logger(false);
         private string[] _args;
