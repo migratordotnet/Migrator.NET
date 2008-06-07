@@ -35,8 +35,8 @@
 	<target name="build" description="Builds the app" depends="prepare">
         <csc target="library" output="${dir.bin}/Migrator.Framework.dll" define="${defines}" debug="${debug}">
             <sources>
-				<include name="config/AssemblyInfo.cs" />
-                <include name="app/framework/**/*.cs" />
+				<include name="src/config/AssemblyInfo.cs" />
+                <include name="src/framework/**/*.cs" />
             </sources>
             <references>
                 <include name="System.dll" />
@@ -45,8 +45,8 @@
         </csc>
         <csc target="library" output="${dir.bin}/Migrator.Providers.dll" define="${defines}" debug="${debug}">
             <sources>
-				<include name="config/AssemblyInfo.cs" />
-                <include name="app/provider/**/*.cs" />
+				<include name="src/config/AssemblyInfo.cs" />
+                <include name="src/app/provider/**/*.cs" />
             </sources>
             <references>
                 <include name="System.dll" />
@@ -62,8 +62,8 @@
         <csc target="library" output="${dir.bin}/Migrator.dll" define="${defines}" debug="${debug}">
             <sources>
                 <include name="config/AssemblyInfo.cs" />
-                <include name="app/core/**/*.cs" />
-                <exclude name="app/core/Providers/ProviderTemplate/**" />
+                <include name="src/core/**/*.cs" />
+                <exclude name="src/core/Providers/ProviderTemplate/**" />
             </sources>
             <references>
                 <include name="System.dll" />
@@ -74,8 +74,8 @@
 		</csc>
 		<csc target="library" output="${dir.bin}/Migrator.NAnt.dll" define="${defines}" debug="${debug}">
 			<sources>
-			    <include name="config/AssemblyInfo.cs" />
-				<include name="app/nant/**/*.cs" />
+			    <include name="src/config/AssemblyInfo.cs" />
+				<include name="src/nant/**/*.cs" />
 			</sources>
 			<references>
 				<include name="System.dll" />
@@ -86,8 +86,8 @@
 		</csc>
         <csc target="library" output="${dir.bin}/Migrator.MSBuild.dll" define="${defines}" debug="${debug}" if="${framework::get-target-framework() == 'net-2.0'}">
 			<sources>
-			    <include name="config/AssemblyInfo.cs" />
-				<include name="app/msbuild/**/*.cs" />
+			    <include name="src/config/AssemblyInfo.cs" />
+				<include name="src/msbuild/**/*.cs" />
 			</sources>
 			<references>
                 <include name="System.dll" />
@@ -99,8 +99,8 @@
         </csc>
         <csc target="exe" output="${dir.bin}/Migrator.Console.exe" define="${defines}" debug="${debug}">
             <sources>
-                <include name="config/AssemblyInfo.cs" />
-                <include name="app/console/**/*.cs" />
+                <include name="src/config/AssemblyInfo.cs" />
+                <include name="src/console/**/*.cs" />
             </sources>
             <references>
                 <include name="System.dll" />
@@ -133,7 +133,7 @@
 	
 	<target name="prepare">
 		<mkdir dir="${dir.bin}" />
-		<copy file="app/msbuild/Migrator.Targets" todir="${dir.bin}" />
+		<copy file="src/msbuild/Migrator.Targets" todir="${dir.bin}" />
 		<copy todir="${dir.bin}" flatten="true">
 			<fileset>
 				<include name="${dir.lib}/NAnt.Core.dll" />
@@ -168,7 +168,7 @@
 			<formatter type="Plain" />
 			<test
 				assemblyname="${dir.bin}/Migrator.Tests.dll"
-				appconfig="config/app.config">
+				appconfig="src/config/app.config">
                 <!-- FIXME: Figure out a way to externalize this so different people can make different choices -->
 				<categories>
 					<!--
@@ -219,9 +219,7 @@
                 <include name="**/*" />
             </fileset>
             <fileset>
-                <include name="example/**/*" />
-                <include name="extras/**/*" />
-                <include name="*.txt" />
+                <include name="doc/**/*" />
             </fileset>
         </zip>
     </target>

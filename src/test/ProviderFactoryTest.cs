@@ -1,3 +1,4 @@
+using System.Configuration;
 using Migrator.Framework;
 using NUnit.Framework;
 
@@ -16,7 +17,7 @@ namespace Migrator.Tests
         [Test, Category("MySql")]
         public void CanLoad_MySqlProvider() 
         {
-            ITransformationProvider provider = ProviderFactory.Create("MySql", "Database=test;Data Source=localhost;User Id=root;Password=;");
+            ITransformationProvider provider = ProviderFactory.Create("MySql", ConfigurationManager.AppSettings["MySqlConnectionString"]);
             Assert.IsNotNull(provider);
         }
     }
