@@ -103,11 +103,16 @@ namespace Migrator.Providers.PostgreSQL
             using (
                 IDataReader reader =
                     ExecuteQuery(
-                        String.Format("select COLUMN_NAME from information_schema.columns where table_schema = 'public' AND table_name = lower('{0}');", table)))
+                        String.Format("select COLUMN_NAME, IS_NULLABLE from information_schema.columns where table_schema = 'public' AND table_name = lower('{0}');", table)))
             {
+                // FIXME: Mostly duplicated code from the Transformation provider just to support stupid case-insensitivty of Postgre
                 while (reader.Read())
                 {
-                    columns.Add(new Column(reader[0].ToString(), DbType.String));
+                    Column column = new Column(reader[0].ToString(), DbType.String);
+                    bool isNullable = reader.GetString(1) == "YES";
+                    column.ColumnProperty |= isNullable ? ColumnProperty.Null : ColumnProperty.NotNull;
+
+                    columns.Add(column);
                 }
             }
 

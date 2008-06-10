@@ -127,10 +127,14 @@ namespace Migrator.Providers.SQLite
         public override Column[] GetColumns(string table)
         {       
             List<Column> columns = new List<Column>();
-            foreach (string name in GetColumnNames(table))
+            foreach (string columnDef in GetColumnDefs(table))
             {
-                // FIXME: Need to get the real values
-                columns.Add(new Column(name, DbType.String));
+                string name = ExtractNameFromColumnDef(columnDef);
+                // FIXME: Need to get the real type information
+                Column column = new Column(name, DbType.String);
+                bool isNullable = IsNullable(columnDef);
+                column.ColumnProperty |= isNullable ? ColumnProperty.Null : ColumnProperty.NotNull;
+                columns.Add(column);
             }
             return columns.ToArray();
         }
@@ -175,13 +179,29 @@ namespace Migrator.Providers.SQLite
                 
             for (int i = 0; i < parts.Length; i ++) 
             {
-                int idx = parts[i].IndexOf(" ");
-                if (idx > 0) 
-                {
-                    parts[i] = parts[i].Substring(0, idx);
-                }
+                parts[i] = ExtractNameFromColumnDef(parts[i]);
             }
             return parts;
+        }
+
+        /// <summary>
+        /// Name is the first value before the space.
+        /// </summary>
+        /// <param name="columnDef"></param>
+        /// <returns></returns>
+        public string ExtractNameFromColumnDef(string columnDef)
+        {
+            int idx = columnDef.IndexOf(" ");
+            if (idx > 0)
+            {
+                return columnDef.Substring(0, idx);
+            }
+            return null;
+        }
+
+        public bool IsNullable(string columnDef)
+        {
+            return ! columnDef.Contains("NOT NULL");
         }
         
         public string[] ParseSqlColumnDefs(string sqldef) 

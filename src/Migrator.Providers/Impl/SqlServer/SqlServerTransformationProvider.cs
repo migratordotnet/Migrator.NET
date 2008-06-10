@@ -69,23 +69,6 @@ namespace Migrator.Providers.SqlServer
             }
         }
 
-        public override Column[] GetColumns(string table)
-        {
-            List<Column> columns = new List<Column>();
-            using (
-                IDataReader reader =
-                    ExecuteQuery(
-                        String.Format("select COLUMN_NAME from information_schema.columns where table_name = '{0}';", table)))
-            {
-                while (reader.Read())
-                {
-                    columns.Add(new Column(reader[0].ToString(), DbType.String));
-                }
-            }
-
-            return columns.ToArray();
-        }
-
         public override void RemoveColumn(string table, string column)
         {
             DeleteColumnConstraints(table, column);

@@ -57,7 +57,7 @@ namespace Migrator.Tests.Providers
             _provider.AddTable("Test",
                                new Column("Id", DbType.Int32, ColumnProperty.NotNull),
                                new Column("Title", DbType.String, 100),
-                               new Column("name", DbType.String, 50),
+                               new Column("name", DbType.String, 50), 
                                new Column("blobVal", DbType.Binary),
                                new Column("boolVal", DbType.Boolean),
                                new Column("bigstring", DbType.String, 50000)
@@ -78,7 +78,7 @@ namespace Migrator.Tests.Providers
 		}
 
         [Test]
-        public void GetColumnsWorks()
+        public void GetColumnsReturnsProperCount()
         {
             AddTable();
             Column[] cols = _provider.GetColumns("Test");
@@ -86,13 +86,30 @@ namespace Migrator.Tests.Providers
             Assert.AreEqual(6, cols.Length);
         }
 
+        [Test, Ignore("FIXME: This is not working for MySQL for some reason")]
+        public void GetColumnsContainsProperNullInformation()
+        {
+            // FIXME: The query appears to work just fine when run externally.
+
+            AddTableWithPrimaryKey();
+            Column[] cols = _provider.GetColumns("Test");
+            Assert.IsNotNull(cols);
+            foreach (Column column in cols)
+            {
+                if (column.Name == "name")
+                    Assert.IsTrue((column.ColumnProperty & ColumnProperty.NotNull) == ColumnProperty.NotNull);
+                else if (column.Name == "Title")
+                    Assert.IsTrue((column.ColumnProperty & ColumnProperty.Null) == ColumnProperty.Null);
+            }
+        }
+
         [Test]
         public void AddTableWithPrimaryKey()
         {
             _provider.AddTable("Test",
                                new Column("Id", DbType.Int32, ColumnProperty.PrimaryKeyWithIdentity),
-                               new Column("Title", DbType.String, 100),
-                               new Column("name", DbType.String, 50), 
+                               new Column("Title", DbType.String, 100, ColumnProperty.Null),
+                               new Column("name", DbType.String, 50, ColumnProperty.NotNull), 
                                new Column("blobVal", DbType.Binary),
                                new Column("boolVal", DbType.Boolean), 
                                new Column("bigstring", DbType.String, 50000)
@@ -169,6 +186,20 @@ namespace Migrator.Tests.Providers
         {
             _provider.AddColumn("TestTwo", "TestBoolean", DbType.Boolean, 0, 0, false);
             Assert.IsTrue(_provider.ColumnExists("TestTwo", "TestBoolean"));
+        }
+
+        [Test]
+        public void CanGetNullableFromProvider()
+        {
+            _provider.AddColumn("TestTwo", "NullableColumn", DbType.String, 30, ColumnProperty.Null);
+            Column[] columns = _provider.GetColumns("TestTwo");
+            foreach (Column column in columns)
+            {
+                if (column.Name == "NullableColumn")
+                {
+                    Assert.IsTrue((column.ColumnProperty & ColumnProperty.Null) == ColumnProperty.Null);
+                }
+            }
         }
 
         [Test]

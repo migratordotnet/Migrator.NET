@@ -41,5 +41,6 @@ namespace Migrator.Tests.Providers
 		
 		[Test,Ignore("MySql doesn't support check constraints")]
         public override void AddCheckConstraint() {}
+
     }
 }
