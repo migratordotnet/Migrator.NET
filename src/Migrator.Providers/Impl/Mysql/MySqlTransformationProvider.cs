@@ -82,20 +82,6 @@ namespace Migrator.Providers.Mysql
             ExecuteNonQuery(String.Format("ALTER TABLE {0} MODIFY {1}", table, sqlColumn));
         }
         
-        public override Column[] GetColumns(string table)
-        {
-            List<Column> columns = new List<Column>();
-            using (IDataReader reader = ExecuteQuery("SHOW COLUMNS FROM " + table))
-            {
-                while (reader.Read())
-                {
-                    // TODO retreive some more info about the column
-                    columns.Add(new Column(reader[0].ToString(), DbType.String));
-                }
-            }
-
-            return columns.ToArray();
-        }
         public override void AddTable(string name, string columns)
         {
             string sqlCreate = string.Format("CREATE TABLE {0} ({1}) ENGINE = INNODB", name, columns);

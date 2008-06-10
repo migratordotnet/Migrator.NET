@@ -35,7 +35,7 @@ namespace Migrator.Providers
 
         private readonly ForeignKeyConstraintMapper constraintMapper = new ForeignKeyConstraintMapper();
         
-        public TransformationProvider(string connectionString)
+        protected TransformationProvider(string connectionString)
         {
             _connectionString = connectionString;
             _logger = new Logger(false);
@@ -62,17 +62,38 @@ namespace Migrator.Providers
             {
                 if (null != provider && IsThisProvider(provider))
                     return this;
-                else
-                    return NoOpTransformationProvider.Instance;
+                
+                return NoOpTransformationProvider.Instance;
             }
         }
         
         public bool IsThisProvider(string provider)
         {
-            return this.GetType().Name.ToLower().StartsWith(provider.ToLower());
+            // XXX: This might need to be more sophisticated. Currently just a convention
+            return GetType().Name.ToLower().StartsWith(provider.ToLower());
         }
         
-        public abstract Column[] GetColumns(string table);
+        public virtual Column[] GetColumns(string table)
+        {
+            List<Column> columns = new List<Column>();
+            using (
+                IDataReader reader =
+                    ExecuteQuery(
+                        String.Format("select COLUMN_NAME, IS_NULLABLE from information_schema.columns where table_name = '{0}';", table)))
+            {
+                while (reader.Read())
+                {
+                    Column column = new Column(reader.GetString(0), DbType.String);
+                    string nullableStr = reader.GetString(1);
+                    bool isNullable = nullableStr == "YES";
+                    column.ColumnProperty |= isNullable ? ColumnProperty.Null : ColumnProperty.NotNull;
+
+                    columns.Add(column);
+                }
+            }
+
+            return columns.ToArray();
+        }
 
         public virtual string[] GetTables()
         {
@@ -139,7 +160,7 @@ namespace Migrator.Providers
             foreach (Column column in columns)
             {
                 // Remove the primary key notation if compound primary key because we'll add it back later
-                if (compoundPrimaryKey)
+                if (compoundPrimaryKey && column.IsPrimaryKey)
                     column.ColumnProperty = ColumnProperty.Unsigned | ColumnProperty.NotNull;
                     
                 ColumnPropertiesMapper mapper = dialect.GetAndMapColumnProperties(column);

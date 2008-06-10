@@ -43,7 +43,7 @@ namespace Migrator.Tests.Providers
          [Test]
          public void CanParseSqlDefinitions() 
          {
-             string testSql = "CREATE TABLE bar ( id INTEGER PRIMARY KEY AUTOINCREMENT, bar TEXT, baz INTEGER NOT NULL )";
+             const string testSql = "CREATE TABLE bar ( id INTEGER PRIMARY KEY AUTOINCREMENT, bar TEXT, baz INTEGER NOT NULL )";
              string[] columns = ((SQLiteTransformationProvider) _provider).ParseSqlColumnDefs(testSql);
              Assert.IsNotNull(columns);
              Assert.AreEqual(3, columns.Length);
@@ -55,13 +55,31 @@ namespace Migrator.Tests.Providers
          [Test]
          public void CanParseSqlDefinitionsForColumnNames() 
          {
-             string testSql = "CREATE TABLE bar ( id INTEGER PRIMARY KEY AUTOINCREMENT, bar TEXT, baz INTEGER NOT NULL )";
+             const string testSql = "CREATE TABLE bar ( id INTEGER PRIMARY KEY AUTOINCREMENT, bar TEXT, baz INTEGER NOT NULL )";
              string[] columns = ((SQLiteTransformationProvider) _provider).ParseSqlForColumnNames(testSql);
              Assert.IsNotNull(columns);
              Assert.AreEqual(3, columns.Length);
              Assert.AreEqual("id", columns[0]);
              Assert.AreEqual("bar", columns[1]);
              Assert.AreEqual("baz", columns[2]);
+         }
+
+         [Test]
+         public void CanParseColumnDefForNotNull()
+         {
+             const string nullString = "bar TEXT";
+             const string notNullString = "baz INTEGER NOT NULL";
+             Assert.IsTrue(((SQLiteTransformationProvider)_provider).IsNullable(nullString));
+             Assert.IsFalse(((SQLiteTransformationProvider)_provider).IsNullable(notNullString));
+         }
+
+         [Test]
+         public void CanParseColumnDefForName()
+         {
+             const string nullString = "bar TEXT";
+             const string notNullString = "baz INTEGER NOT NULL";
+             Assert.AreEqual("bar", ((SQLiteTransformationProvider)_provider).ExtractNameFromColumnDef(nullString));
+             Assert.AreEqual("baz", ((SQLiteTransformationProvider)_provider).ExtractNameFromColumnDef(notNullString));
          }
      }
 }
