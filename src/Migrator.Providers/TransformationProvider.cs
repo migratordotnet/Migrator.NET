@@ -79,7 +79,7 @@ namespace Migrator.Providers
             using (
                 IDataReader reader =
                     ExecuteQuery(
-                        String.Format("select COLUMN_NAME, IS_NULLABLE from information_schema.columns where table_name = '{0}';", table)))
+                        String.Format("select COLUMN_NAME, IS_NULLABLE from information_schema.columns where table_name = '{0}'", table)))
             {
                 while (reader.Read())
                 {

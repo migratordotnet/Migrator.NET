@@ -9,6 +9,7 @@ namespace Migrator.Tests.Providers
     /// </summary>
     public class TransformationProviderConstraintBase : TransformationProviderBase
     {
+
         [Test]
         public void AddPrimaryKey()
         {
@@ -20,14 +21,12 @@ namespace Migrator.Tests.Providers
         [Test]
         public void AddIndexedColumn()
         {
-            AddTable();
             _provider.AddColumn("TestTwo", "Test", DbType.String, 50, ColumnProperty.Indexed);
         }
 
         [Test]
         public void AddUniqueColumn()
         {
-            AddTable();
             _provider.AddColumn("TestTwo", "Test", DbType.String, 50, ColumnProperty.Unique);
         }
 
@@ -42,7 +41,6 @@ namespace Migrator.Tests.Providers
         [Test]
         public void AddUniqueConstraint()
         {
-            AddTableWithPrimaryKey();
             _provider.AddUniqueConstraint("UN_Test_TestTwo", "TestTwo", "TestId");
             Assert.IsTrue(_provider.ConstraintExists("TestTwo", "UN_Test_TestTwo"));
         }
@@ -50,7 +48,6 @@ namespace Migrator.Tests.Providers
         [Test]
         public virtual void AddCheckConstraint()
         {
-            AddTableWithPrimaryKey();
             _provider.AddCheckConstraint("CK_TestTwo_TestId", "TestTwo", "TestId>5");
             Assert.IsTrue(_provider.ConstraintExists("TestTwo", "CK_TestTwo_TestId"));
         }

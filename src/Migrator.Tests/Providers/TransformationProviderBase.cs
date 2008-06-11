@@ -14,7 +14,7 @@ namespace Migrator.Tests.Providers
         protected TransformationProvider _provider;
 		
         [TearDown]
-        public void TearDown()
+        public virtual void TearDown()
         {	
             DropTestTables();
 			
@@ -135,6 +135,14 @@ namespace Migrator.Tests.Providers
             Assert.IsFalse(_provider.TableExists("Test"));
             _provider.RemoveTable("Test_Rename");
         }
+
+        [Test]
+        [ExpectedException(typeof(MigrationException))]
+        public void RenameTableToExistingTable()
+        {
+            AddTable();
+            _provider.RenameTable("Test", "TestTwo");
+        }
         
         [Test]
         public void RenameColumnThatExists()
@@ -144,6 +152,14 @@ namespace Migrator.Tests.Providers
             
             Assert.IsTrue(_provider.ColumnExists("Test", "name_rename"));
             Assert.IsFalse(_provider.ColumnExists("Test", "name"));
+        }
+
+        [Test]
+        [ExpectedException(typeof(MigrationException))]
+        public void RenameColumnToExistingColumn()
+        {
+            AddTable();
+            _provider.RenameColumn("Test", "Title", "name");
         }
 
         [Test]

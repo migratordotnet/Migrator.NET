@@ -31,12 +31,17 @@ namespace Migrator.Tests.Providers
                 throw new ArgumentNullException("MySqlConnectionString", "No config file");
 
             _provider = new MySqlTransformationProvider(constr);
-            _provider.BeginTransaction();
 			
             _provider.AddTable("TestTwo",
                                new Column("Id", DbType.Int32, ColumnProperty.PrimaryKeyWithIdentity),
                                new Column("TestId", DbType.Int32, ColumnProperty.ForeignKey)
                 );
+        }
+
+        [TearDown]
+        public override void TearDown()
+        {
+            DropTestTables();
         }
 		
 		[Test,Ignore("MySql doesn't support check constraints")]

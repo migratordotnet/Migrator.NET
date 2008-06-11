@@ -11,7 +11,6 @@
 
 #endregion
 
-using System;
 using System.Data;
 
 namespace Migrator.Framework
@@ -29,47 +28,47 @@ namespace Migrator.Framework
 
         public Column(string name, DbType type)
         {
-            this._name = name;
-            this._type = type;
+            Name = name;
+            Type = type;
         }
 
         public Column(string name, DbType type, int size)
         {
-            this._name = name;
-            this._type = type;
-            this._size = size;
+            Name = name;
+            Type = type;
+            Size = size;
         }
 
         public Column(string name, DbType type, ColumnProperty property)
         {
-            this._name = name;
-            this._type = type;
-            this._property = property;
+            Name = name;
+            Type = type;
+            ColumnProperty = property;
         }
 
         public Column(string name, DbType type, int size, ColumnProperty property)
         {
-            this._name = name;
-            this._type = type;
-            this._size = size;
-            this._property = property;
+            Name = name;
+            Type = type;
+            Size = size;
+            ColumnProperty = property;
         }
 
         public Column(string name, DbType type, int size, ColumnProperty property, object defaultValue)
         {
-            this._name = name;
-            this._type = type;
-            this._size = size;
-            this._property = property;
-            this._defaultValue = defaultValue;
+            Name = name;
+            Type = type;
+            Size = size;
+            ColumnProperty = property;
+            DefaultValue = defaultValue;
         }
 
         public Column(string name, DbType type, ColumnProperty property, object defaultValue)
         {
-            this._name = name;
-            this._type = type;
-            this._property = property;
-            this._defaultValue = defaultValue;
+            Name = name;
+            Type = type;
+            ColumnProperty = property;
+            DefaultValue = defaultValue;
         }
 
         public string Name
