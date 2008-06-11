@@ -2,7 +2,8 @@
 <project name="migrator" default="build" xmlns="http://nant.sf.net/release/0.85/nant.xsd">
 	<property name="defines" value="DOTNET2" if="${framework::get-target-framework() == 'net-2.0' or framework::get-target-framework() == 'net-3.5'}" />
 	<property name="defines" value="MONO2" if="${framework::get-target-framework() == 'mono-2.0'}" />
-	
+    <property name="version" value="0.7.0"/>
+    
 	<property name="debug" value="true" />
 	
 	<!-- Paths to various parts of the build -->
@@ -220,17 +221,34 @@
             </fileset>
         </ncoverexplorer>
     </target>
-    
+
+
     <target name="zip" description="Creates a zip file of the entire project including examples, source and docs" depends="build">
         <mkdir dir="${dir.zip}" />
-        <zip zipfile="${dir.zip}/migrator.zip">
+
+        <property name="zipcontainer" value="${dir.zip}/migratordotnet-${version}"/>
+
+        <mkdir dir="${zipcontainer}" />
+        <mkdir dir="${zipcontainer}/lib" />
+        
+        <copy todir="${zipcontainer}/lib">
             <fileset basedir="${dir.bin}">
                 <include name="**/*" />
             </fileset>
+        </copy>
+
+        <copy todir="${zipcontainer}">
             <fileset>
                 <include name="doc/**/*" />
             </fileset>
+        </copy>
+        
+        <zip zipfile="migratordotnet-${version}.zip">
+            <fileset basedir="${dir.zip}">
+                <include name="**/*" />
+            </fileset>
         </zip>
+        <delete dir="${dir.zip}"/>
     </target>
   
 </project>

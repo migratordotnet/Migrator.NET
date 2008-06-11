@@ -69,16 +69,6 @@ namespace Migrator.Framework
     {
         private ITransformationProvider _transformationProvider;
 
-
-        public Migration()
-        {
-        }
-
-        public Migration(ITransformationProvider _transformationProvider)
-        {
-            this._transformationProvider = _transformationProvider;
-        }
-
         public string Name
         {
             get { return StringUtils.ToHumanName(GetType().Name); }

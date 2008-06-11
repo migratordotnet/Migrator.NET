@@ -29,7 +29,7 @@ namespace Migrator.Framework
         /// <param name="version">The unique version of the migration.</param>	
         public MigrationAttribute(int version)
         {
-            _version = version;
+            Version = version;
         }
 
         /// <summary>

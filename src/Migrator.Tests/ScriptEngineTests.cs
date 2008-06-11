@@ -8,13 +8,13 @@ namespace Migrator.Tests
     [TestFixture]
     public class ScriptEngineTests
     {
-        [Test,Ignore("Test fails when run from IDE, but works with NAnt from command line.")]
+        [Test]
         public void CanCompileAssemblies() 
         {
             ScriptEngine engine = new ScriptEngine();
 
             // This should let it work on windows or mono/unix I hope
-            string dataPath = Path.Combine(Path.Combine("..", "test"), "Data");
+            string dataPath = Path.Combine(Path.Combine("..", Path.Combine("src", "Migrator.Tests")), "Data");
 
             Assembly asm = engine.Compile(dataPath);
             Assert.IsNotNull(asm);

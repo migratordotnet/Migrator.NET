@@ -63,6 +63,29 @@ namespace Migrator.Providers.Mysql
             return ConstraintExists(table, "PRIMARY");
         }
 
+        // XXX: Using INFORMATION_SCHEMA.COLUMNS should work, but it was causing trouble, so I used the MySQL specific thing.
+        public override Column[] GetColumns(string table)
+        {
+            List<Column> columns = new List<Column>();
+            using (
+                IDataReader reader =
+                    ExecuteQuery(
+                        String.Format("SHOW COLUMNS FROM {0}", table)))
+            {
+                while (reader.Read())
+                {
+                    Column column = new Column(reader.GetString(0), DbType.String);
+                    string nullableStr = reader.GetString(2);
+                    bool isNullable = nullableStr == "YES";
+                    column.ColumnProperty |= isNullable ? ColumnProperty.Null : ColumnProperty.NotNull;
+
+                    columns.Add(column);
+                }
+            }
+
+            return columns.ToArray();
+        }
+
         public override string[] GetTables()
         {
             List<string> tables = new List<string>();
