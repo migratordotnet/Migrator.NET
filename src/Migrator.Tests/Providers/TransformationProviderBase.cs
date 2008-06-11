@@ -86,7 +86,7 @@ namespace Migrator.Tests.Providers
             Assert.AreEqual(6, cols.Length);
         }
 
-        [Test, Ignore("FIXME: This is not working for MySQL for some reason")]
+        [Test]
         public void GetColumnsContainsProperNullInformation()
         {
             // FIXME: The query appears to work just fine when run externally.
