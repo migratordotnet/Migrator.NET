@@ -79,88 +79,86 @@ namespace Migrator.Framework
         /// Add a foreign key constraint
         /// </summary>
         /// <param name="name">The name of the foreign key. e.g. FK_TABLE_REF</param>
-        /// <param name="table">The table that contains a reference to a foreign key</param>
-        /// <param name="columns">The columns that reference the foreign keys</param>
-        /// <param name="foreignTable">The foreign table that is referred to</param>
-        /// <param name="foreignColumns">The foreign columns that are referred to</param>
-        /// <param name="constraint">Constraint parameters</param>
-        void AddForeignKey(string name, string table, string[] columns, string foreignTable,
-                           string[] foreignColumns, ForeignKeyConstraint constraint);
+        /// <param name="foreignTable">The table that the foreign key will be created in (eg. Table.FK_id)</param>
+        /// <param name="foreignColumns">The columns that are the foreign keys (eg. FK_id)</param>
+        /// <param name="primaryTable">The table that holds the primary keys (eg. Table.PK_id)</param>
+        /// <param name="primaryColumns">The columns that are the primary keys (eg. PK_id)</param>
+        void AddForeignKey(string name, string foreignTable, string[] foreignColumns, string primaryTable, string[] primaryColumns);
 
         /// <summary>
         /// Add a foreign key constraint
         /// </summary>
         /// <param name="name">The name of the foreign key. e.g. FK_TABLE_REF</param>
-        /// <param name="table">The table that contains a reference to a foreign key</param>
-        /// <param name="column">The column that reference the foreign key</param>
-        /// <param name="foreignTable">The foreign table that is referred to</param>
-        /// <param name="foreignColumn">The foreign column that is referred to</param>
-        void AddForeignKey(string name, string table, string column, string foreignTable, string foreignColumn);
+        /// <param name="foreignTable">The table that the foreign key will be created in (eg. Table.FK_id)</param>
+        /// <param name="foreignColumns">The columns that are the foreign keys (eg. FK_id)</param>
+        /// <param name="primaryTable">The table that holds the primary keys (eg. Table.PK_id)</param>
+        /// <param name="primaryColumns">The columns that are the primary keys (eg. PK_id)</param>
+        /// <param name="constraint">Constraint parameters</param>
+        void AddForeignKey(string name, string foreignTable, string[] foreignColumns, string primaryTable, string[] primaryColumns, ForeignKeyConstraint constraint);
+
+        /// <summary>
+        /// Add a foreign key constraint
+        /// </summary>
+        /// 
+        /// <param name="name">The name of the foreign key. e.g. FK_TABLE_REF</param>
+        /// <param name="foreignTable">The table that the foreign key will be created in (eg. Table.FK_id)</param>
+        /// <param name="foreignColumn">The column that is the foreign key (eg. FK_id)</param>
+        /// <param name="primaryTable">The table that holds the primary keys (eg. Table.PK_id)</param>
+        /// <param name="primaryColumn">The column that is the primary key (eg. PK_id)</param>
+        void AddForeignKey(string name, string foreignTable, string foreignColumn, string primaryTable, string primaryColumn);
 
         /// <summary>
         /// Add a foreign key constraint
         /// </summary>
         /// <param name="name">The name of the foreign key. e.g. FK_TABLE_REF</param>
-        /// <param name="table">The table that contains a reference to a foreign key</param>
-        /// <param name="columns">The columns that reference the foreign keys</param>
-        /// <param name="foreignTable">The foreign table that are referred to</param>
-        /// <param name="foreignColumns">The foreign columns that is referred to</param>
-        void AddForeignKey(string name, string table, string[] columns, string foreignTable, string[] foreignColumns);
-
-        /// <summary>
-        /// Add a foreign key constraint
-        /// </summary>
-        /// <param name="name">The name of the foreign key. e.g. FK_TABLE_REF</param>
-        /// <param name="table">The table that contains a reference to a foreign key</param>
-        /// <param name="column">The column that reference the foreign key</param>
-        /// <param name="foreignTable">The foreign table that is referred to</param>
-        /// <param name="foreignColumn">The foreign column that is referred to</param>
+        /// <param name="foreignTable">The table that the foreign key will be created in (eg. Table.FK_id)</param>
+        /// <param name="foreignColumn">The column that is the foreign key (eg. FK_id)</param>
+        /// <param name="primaryTable">The table that holds the primary key (eg. Table.PK_id)</param>
+        /// <param name="primaryColumn">The column that is the primary key (eg. PK_id)</param>
         /// <param name="constraint">Constraint parameters</param>
-        void AddForeignKey(string name, string table, string column, string foreignTable, string foreignColumn,
-                           ForeignKeyConstraint constraint);
+        void AddForeignKey(string name, string foreignTable, string foreignColumn, string primaryTable, string primaryColumn, ForeignKeyConstraint constraint);
 
         /// <summary>
         /// Add a foreign key constraint when you don't care about the name of the constraint.
         /// Warning: This will prevent you from dropping the constraint since you won't know the name.
         /// </summary>
-        /// <param name="table">The table that contains a reference to a foreign key</param>
-        /// <param name="column">The column that reference the foreign key</param>
-        /// <param name="foreignTable">The foreign table that is referred to</param>
-        /// <param name="foreignColumn">The foreign column that is referred to</param>
-        void GenerateForeignKey(string table, string column, string foreignTable, string foreignColumn);
+        /// <param name="foreignTable">The table that the foreign key will be created in (eg. Table.FK_id)</param>
+        /// <param name="foreignColumn">The column that is the foreign key (eg. FK_id)</param>
+        /// <param name="primaryTable">The table that holds the primary key (eg. Table.PK_id)</param>
+        /// <param name="primaryColumn">The column that is the primary key (eg. PK_id)</param>
+        void GenerateForeignKey(string foreignTable, string foreignColumn, string primaryTable, string primaryColumn);
 
         /// <summary>
         /// Add a foreign key constraint when you don't care about the name of the constraint.
         /// Warning: This will prevent you from dropping the constraint since you won't know the name.
         /// </summary>
-        /// <param name="table">The table that contains a reference to a foreign key</param>
-        /// <param name="columns">The columns that reference the foreign keys</param>
-        /// <param name="foreignTable">The foreign table that are referred to</param>
-        /// <param name="foreignColumns">The foreign columns that is referred to</param>
-        void GenerateForeignKey(string table, string[] columns, string foreignTable, string[] foreignColumns);
+        /// <param name="foreignTable">The table that the foreign key will be created in (eg. Table.FK_id)</param>
+        /// <param name="foreignColumns">The columns that are the foreign keys (eg. FK_id)</param>
+        /// <param name="primaryTable">The table that holds the primary key (eg. Table.PK_id)</param>
+        /// <param name="primaryColumns">The column that is the primary key (eg. PK_id)</param>
+        void GenerateForeignKey(string foreignTable, string[] foreignColumns, string primaryTable, string[] primaryColumns);
 
         /// <summary>
         /// Add a foreign key constraint when you don't care about the name of the constraint.
         /// Warning: This will prevent you from dropping the constraint since you won't know the name.
         /// </summary>
-        /// <param name="table">The table that contains a reference to a foreign key</param>
-        /// <param name="columns">The columns that reference the foreign keys</param>
-        /// <param name="foreignTable">The foreign table that is referred to</param>
-        /// <param name="foreignColumns">The foreign columns that are referred to</param>
+        /// <param name="foreignTable">The table that the foreign key will be created in (eg. Table.FK_id)</param>
+        /// <param name="foreignColumns">The columns that are the foreign keys (eg. FK_id)</param>
+        /// <param name="primaryTable">The table that holds the primary key (eg. Table.PK_id)</param>
+        /// <param name="primaryColumns">The columns that are the primary keys (eg. PK_id)</param>
         /// <param name="constraint">Constraint parameters</param>
-        void GenerateForeignKey(string table, string[] columns, string foreignTable, string[] foreignColumns,
-                                ForeignKeyConstraint constraint);
+        void GenerateForeignKey(string foreignTable, string[] foreignColumns, string primaryTable, string[] primaryColumns, ForeignKeyConstraint constraint);
 
         /// <summary>
         /// Add a foreign key constraint when you don't care about the name of the constraint.
         /// Warning: This will prevent you from dropping the constraint since you won't know the name.
         /// </summary>
-        /// <param name="table">The table that contains a reference to a foreign key</param>
-        /// <param name="column">The column that reference the foreign key</param>
-        /// <param name="foreignTable">The foreign table that is referred to</param>
-        /// <param name="foreignColumn">The foreign column that is referred to</param>
+        /// <param name="foreignTable">The table that the foreign key will be created in (eg. Table.FK_id)</param>
+        /// <param name="foreignColumn">The columns that are the foreign keys (eg. FK_id)</param>
+        /// <param name="primaryTable">The table that holds the primary key (eg. Table.PK_id)</param>
+        /// <param name="primaryColumn">The column that is the primary key (eg. PK_id)</param>
         /// <param name="constraint">Constraint parameters</param>
-        void GenerateForeignKey(string table, string column, string foreignTable, string foreignColumn,
+        void GenerateForeignKey(string foreignTable, string foreignColumn, string primaryTable, string primaryColumn,
                                 ForeignKeyConstraint constraint);
 
         /// <summary>
@@ -170,9 +168,9 @@ namespace Migrator.Framework
         /// The current expectations are that there is a column named the same as the foreignTable present in
         /// the table. This is subject to change because I think it's not a good convention.
         /// </summary>
-        /// <param name="table">The table that contains a reference to a foreign key</param>
-        /// <param name="foreignTable">The foreign table that is referred to</param>
-        void GenerateForeignKey(string table, string foreignTable);
+        /// <param name="foreignTable">The table that the foreign key will be created in (eg. Table.FK_id)</param>
+        /// <param name="primaryTable">The table that holds the primary key (eg. Table.PK_id)</param>
+        void GenerateForeignKey(string foreignTable, string primaryTable);
 
         /// <summary>
         /// Add a foreign key constraint when you don't care about the name of the constraint.
@@ -181,10 +179,10 @@ namespace Migrator.Framework
         /// The current expectations are that there is a column named the same as the foreignTable present in
         /// the table. This is subject to change because I think it's not a good convention.
         /// </summary>
-        /// <param name="table">The table that contains a reference to a foreign key</param>
-        /// <param name="foreignTable">The foreign table that is referred to</param>
+        /// <param name="foreignTable">The table that the foreign key will be created in (eg. Table.FK_id)</param>
+        /// <param name="primaryTable">The table that holds the primary key (eg. Table.PK_id)</param>
         /// <param name="constraint"></param>
-        void GenerateForeignKey(string table, string foreignTable, ForeignKeyConstraint constraint);
+        void GenerateForeignKey(string foreignTable, string primaryTable, ForeignKeyConstraint constraint);
 
         /// <summary>
         /// Add a primary key to a table

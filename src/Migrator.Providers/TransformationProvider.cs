@@ -403,8 +403,7 @@ namespace Migrator.Providers
         /// <summary>
         /// Guesses the name of the foreign key and add it
         /// </summary>
-        public virtual void GenerateForeignKey(string primaryTable, string primaryColumn, string refTable,
-                                               string refColumn)
+        public virtual void GenerateForeignKey(string primaryTable, string primaryColumn, string refTable, string refColumn)
         {
             AddForeignKey("FK_" + primaryTable + "_" + refTable, primaryTable, primaryColumn, refTable, refColumn);
         }
@@ -456,18 +455,16 @@ namespace Migrator.Providers
         }
 
         /// <summary>
-        /// <see cref="TransformationProvider.AddForeignKey(string, string, string, string, string)">
+        /// <see cref="ITransformationProvider.AddForeignKey(string, string, string, string, string)">
         /// AddForeignKey(string, string, string, string, string)
         /// </see>
         /// </summary>
-        public virtual void AddForeignKey(string name, string primaryTable, string[] primaryColumns, string refTable,
-                                          string[] refColumns)
+        public virtual void AddForeignKey(string name, string primaryTable, string[] primaryColumns, string refTable, string[] refColumns)
         {
             AddForeignKey(name, primaryTable, primaryColumns, refTable, refColumns, ForeignKeyConstraint.NoAction);
         }
 
-        public virtual void AddForeignKey(string name, string primaryTable, string primaryColumn, string refTable,
-                                          string refColumn, ForeignKeyConstraint constraint)
+        public virtual void AddForeignKey(string name, string primaryTable, string primaryColumn, string refTable, string refColumn, ForeignKeyConstraint constraint)
         {
             AddForeignKey(name, primaryTable, new string[] {primaryColumn}, refTable, new string[] {refColumn},
                           constraint);
