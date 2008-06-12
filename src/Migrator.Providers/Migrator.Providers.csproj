@@ -61,6 +61,7 @@
     <Compile Include="ForeignKeyConstraintMapper.cs" />
     <Compile Include="Impl\Mysql\MysqlDialect.cs" />
     <Compile Include="Impl\Mysql\MySqlTransformationProvider.cs" />
+    <Compile Include="Impl\SqlServer\SqlServer2005Dialect.cs" />
     <Compile Include="NoOpTransformationProvider.cs" />
     <Compile Include="Impl\Oracle\OracleDialect.cs" />
     <Compile Include="Impl\Oracle\OracleTransformationProvider.cs" />
