@@ -9,7 +9,6 @@
 //under the License.
 #endregion
 using System.Reflection;
-using Migrator.Tests.Providers;
 using NUnit.Framework;
 using Migrator.Providers;
 
@@ -29,9 +28,7 @@ namespace Migrator.Tests
 		[SetUp]
 		public void SetUp()
 		{			
-			TransformationProviderTestAdapter adapter =
-				new TransformationProviderTestAdapter(TransformationProvider);
-			_migrator = new Migrator(adapter, MigrationAssembly, true);
+            _migrator = new Migrator(TransformationProvider, MigrationAssembly, true);
 			
 			Assert.IsTrue(_migrator.MigrationsTypes.Count > 0, "No migrations in assembly " + MigrationAssembly.Location);
 			
