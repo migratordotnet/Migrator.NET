@@ -40,6 +40,8 @@ namespace Migrator.Providers.SqlServer
 	        RegisterProperty(ColumnProperty.Identity, "IDENTITY");
         }
 
+        public override Type TransformationProvider { get { return typeof(SqlServerTransformationProvider); } }
+
         public override bool SupportsIndex
         {
             get { return false; }

@@ -12,6 +12,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Migrator.Framework;
@@ -24,6 +25,7 @@ namespace Migrator
     public class ProviderFactory
     {
         private static readonly Assembly providerAssembly;
+        private static readonly Dictionary<String, object> dialects = new Dictionary<string, object>();
         static ProviderFactory()
         {
             
@@ -34,15 +36,39 @@ namespace Migrator
             else if (fullPath.StartsWith("file:"))
                 fullPath = fullPath.Substring(5);
             providerAssembly = Assembly.LoadFrom(fullPath);
+            LoadDialects();
         }
 
         public static ITransformationProvider Create(string providerName, string connectionString)
         {
-            return (ITransformationProvider)Activator.CreateInstance(
-                                                providerAssembly.GetType(
-                                                    String.Format(
-                                                        "Migrator.Providers.{0}.{0}TransformationProvider", providerName), true, true),
-                                                new object[] {connectionString});
+            object dialectInstance = DialectForProvider(providerName);
+            MethodInfo mi = dialectInstance.GetType().GetMethod("NewProviderForDialect", new Type[] {typeof (String)});
+            return (ITransformationProvider)mi.Invoke(dialectInstance, new object[] { connectionString });
+        }
+
+        public static object DialectForProvider(string providerName)
+        {
+            if (String.IsNullOrEmpty(providerName))
+                return null;
+
+            foreach (string key in dialects.Keys)
+            {
+                if (0 < key.IndexOf(providerName, StringComparison.InvariantCultureIgnoreCase))
+                    return dialects[key];
+            }
+            return null;
+        }
+
+        public static void LoadDialects()
+        {
+            Type dialectType = providerAssembly.GetType("Migrator.Providers.Dialect");
+            foreach (Type t in providerAssembly.GetTypes())
+            {
+                if (t.IsSubclassOf(dialectType))
+                {
+                    dialects.Add(t.FullName, Activator.CreateInstance(t, null));
+                }
+            }
         }
     }
 }

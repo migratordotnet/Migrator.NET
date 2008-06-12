@@ -28,8 +28,6 @@ namespace Migrator
 
         private readonly MigrationLoader _migrationLoader;
 
-        // FIXME: We're not using this anywhere
-        private readonly bool _trace; // show trace for debugging
         private ILogger _logger = new Logger(false);
         private string[] _args;
 
@@ -62,8 +60,7 @@ namespace Migrator
         public Migrator(ITransformationProvider provider, Assembly migrationAssembly, bool trace, ILogger logger)
         {
             _provider = provider;
-            _trace = trace;
-            _logger = logger;
+            Logger = logger;
             
             _provider.Logger = logger;
 
@@ -131,7 +128,7 @@ namespace Migrator
             bool firstRun = true;
 
             BaseMigrate migrate = BaseMigrate.GetInstance(goingUp, CurrentVersion, _provider, _logger);
-            _logger.Started(migrate.Original, version);
+            Logger.Started(migrate.Original, version);
 
             while (migrate.Continue(version))
             {
@@ -155,10 +152,10 @@ namespace Migrator
                 }
                 catch (Exception ex)
                 {
-                    _logger.Exception(migrate.Current, migration.Name, ex);
+                    Logger.Exception(migrate.Current, migration.Name, ex);
 
                     // Oho! error! We rollback changes.
-                    _logger.RollingBack(migrate.Previous);
+                    Logger.RollingBack(migrate.Previous);
                     _provider.CurrentVersion = migrate.Previous;
                     _provider.Rollback();
 
@@ -168,7 +165,7 @@ namespace Migrator
                 migrate.Iterate();
             }
 
-            _logger.Finished(migrate.Original, version);
+            Logger.Finished(migrate.Original, version);
         }
     }
 }

@@ -1,4 +1,5 @@
 
+using System;
 using System.Data;
 using Migrator.Framework;
 
@@ -36,6 +37,8 @@ namespace Migrator.Providers.PostgreSQL
             
             RegisterProperty(ColumnProperty.Identity, "serial");
         }
+
+        public override Type TransformationProvider { get { return typeof(PostgreSQLTransformationProvider); } }
         
         public override bool TableNameNeedsQuote
         {

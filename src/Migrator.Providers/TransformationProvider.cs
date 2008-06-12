@@ -31,15 +31,15 @@ namespace Migrator.Providers
         private IDbTransaction _transaction;
         
         protected readonly string _connectionString;
-        protected Dialect dialect;
+        protected Dialect _dialect;
 
         private readonly ForeignKeyConstraintMapper constraintMapper = new ForeignKeyConstraintMapper();
         
-        protected TransformationProvider(string connectionString)
+        protected TransformationProvider(Dialect dialect, string connectionString)
         {
+            _dialect = dialect;
             _connectionString = connectionString;
             _logger = new Logger(false);
-            // ((Logger)_logger).Attach(new ConsoleWriter());
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Migrator.Providers
         
         public Dialect Dialect
         {
-            get { return dialect; }
+            get { return _dialect; }
         }
         
         public ITransformationProvider this[string provider] 
@@ -117,8 +117,8 @@ namespace Migrator.Providers
         {            
             if (TableExists(table) && ConstraintExists(table, name))
             {
-                table = dialect.TableNameNeedsQuote ? dialect.Quote(table) : table;
-                name = dialect.ConstraintNameNeedsQuote ? dialect.Quote(name) : name;
+                table = _dialect.TableNameNeedsQuote ? _dialect.Quote(table) : table;
+                name = _dialect.ConstraintNameNeedsQuote ? _dialect.Quote(name) : name;
                 ExecuteNonQuery(String.Format("ALTER TABLE {0} DROP CONSTRAINT {1}", table, name));
             }
         }
@@ -126,7 +126,7 @@ namespace Migrator.Providers
         
         public virtual void AddTable(string table, string columns)
         {
-            table = dialect.TableNameNeedsQuote ? dialect.Quote(table) : table;
+            table = _dialect.TableNameNeedsQuote ? _dialect.Quote(table) : table;
             string sqlCreate = String.Format("CREATE TABLE {0} ({1})", table, columns);
             ExecuteNonQuery(sqlCreate);
         }
@@ -163,7 +163,7 @@ namespace Migrator.Providers
                 if (compoundPrimaryKey && column.IsPrimaryKey)
                     column.ColumnProperty = ColumnProperty.Unsigned | ColumnProperty.NotNull;
                     
-                ColumnPropertiesMapper mapper = dialect.GetAndMapColumnProperties(column);
+                ColumnPropertiesMapper mapper = _dialect.GetAndMapColumnProperties(column);
                 columnProviders.Add(mapper);
             }
             
@@ -245,7 +245,7 @@ namespace Migrator.Providers
                 return;
             }
 
-            ColumnPropertiesMapper mapper = dialect.GetAndMapColumnProperties(column);
+            ColumnPropertiesMapper mapper = _dialect.GetAndMapColumnProperties(column);
             ChangeColumn(table, mapper.ColumnSql);
         }
         
@@ -317,7 +317,7 @@ namespace Migrator.Providers
             }
 
             ColumnPropertiesMapper mapper =
-                dialect.GetAndMapColumnProperties(new Column(column, type, size, property, defaultValue));
+                _dialect.GetAndMapColumnProperties(new Column(column, type, size, property, defaultValue));
            
             AddColumn(table, mapper.ColumnSql);
         }

@@ -8,10 +8,9 @@ namespace Migrator.Providers.Oracle
 {
     public class OracleTransformationProvider : TransformationProvider
     {
-        public OracleTransformationProvider(string connectionString) : base(connectionString)
+        public OracleTransformationProvider(Dialect dialect, string connectionString)
+            : base(dialect, connectionString)
         {
-            dialect = new OracleDialect();
-            
             _connection = new OracleConnection();
             _connection.ConnectionString = _connectionString;
             _connection.Open();

@@ -15,11 +15,10 @@ namespace Migrator.Providers.SQLite
     /// Summary description for SQLiteTransformationProvider.
     /// </summary>
     public class SQLiteTransformationProvider : TransformationProvider
-    {        
-        public SQLiteTransformationProvider(string connectionString) : base(connectionString)
+    {
+        public SQLiteTransformationProvider(Dialect dialect, string connectionString)
+            : base(dialect, connectionString)
         {
-            dialect = new SQLiteDialect();
-
             _connection = new SqliteConnection(_connectionString);
             _connection.ConnectionString = _connectionString;
             _connection.Open();
@@ -167,7 +166,6 @@ namespace Migrator.Providers.SQLite
         /// </summary>
         public string[] ParseSqlForColumnNames(string sqldef) 
         {
-            Console.Out.WriteLine("XXX:" + sqldef);
             string[] parts = ParseSqlColumnDefs(sqldef);
             return ParseSqlForColumnNames(parts);
         }
@@ -228,7 +226,7 @@ namespace Migrator.Providers.SQLite
         
         public bool ColumnMatch(string column, string columnDef)
         {
-            return columnDef.StartsWith(column + " ") || columnDef.StartsWith(dialect.Quote(column));
+            return columnDef.StartsWith(column + " ") || columnDef.StartsWith(_dialect.Quote(column));
         }
     }
 }

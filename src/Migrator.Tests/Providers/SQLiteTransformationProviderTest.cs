@@ -25,13 +25,12 @@ namespace Migrator.Tests.Providers
          [SetUp]
          public void SetUp()
          {
-             
              string constr = ConfigurationManager.AppSettings["SQLiteConnectionString"];
 
              if (constr == null)
                  throw new ArgumentNullException("SQLiteConnectionString", "No config file");
 
-             _provider = new SQLiteTransformationProvider(constr);
+             _provider = new SQLiteTransformationProvider(new SQLiteDialect(), constr);
              _provider.BeginTransaction();
             
              _provider.AddTable("TestTwo",

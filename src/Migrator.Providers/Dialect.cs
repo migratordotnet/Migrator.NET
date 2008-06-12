@@ -14,12 +14,19 @@ namespace Migrator.Providers
         private readonly Dictionary<ColumnProperty, string> propertyMap = new Dictionary<ColumnProperty, string>();
         private readonly TypeNames typeNames = new TypeNames();
         
-        public Dialect()
+        protected Dialect()
         {
             RegisterProperty(ColumnProperty.Null, "NULL");
             RegisterProperty(ColumnProperty.NotNull, "NOT NULL");
             RegisterProperty(ColumnProperty.Unique, "UNIQUE");
             RegisterProperty(ColumnProperty.PrimaryKey, "PRIMARY KEY");
+        }
+
+        public abstract Type TransformationProvider { get; }
+
+        public ITransformationProvider NewProviderForDialect(string connectionString)
+        {
+            return (ITransformationProvider) Activator.CreateInstance(TransformationProvider, this, connectionString);
         }
         
         /// <summary>
@@ -92,7 +99,6 @@ namespace Migrator.Providers
         /// <param name="scale"></param>
         public virtual string GetTypeName(DbType type, int length, int precision, int scale)
         {
-
             string resultWithLength = typeNames.Get(type, length, precision, scale);
             if (resultWithLength != null) 
                 return resultWithLength;
