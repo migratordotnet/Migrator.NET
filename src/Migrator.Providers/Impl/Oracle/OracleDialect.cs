@@ -40,5 +40,8 @@ namespace Migrator.Providers.Oracle
             RegisterColumnType(DbType.Time, "DATE");
 	        RegisterProperty(ColumnProperty.Null, String.Empty);
         }
+
+        public override Type TransformationProvider { get { return typeof(OracleTransformationProvider); } }
+
     }
 }

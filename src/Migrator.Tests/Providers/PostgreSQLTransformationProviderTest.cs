@@ -14,13 +14,12 @@ namespace Migrator.Tests.Providers
         [SetUp]
         public void SetUp()
         {
-
             string constr = ConfigurationManager.AppSettings["NpgsqlConnectionString"];
 
             if (constr == null)
                 throw new ArgumentNullException("ConnectionString", "No config file");
 
-            _provider = new PostgreSQLTransformationProvider(constr);
+            _provider = new PostgreSQLTransformationProvider(new PostgreSQLDialect(), constr);
             _provider.BeginTransaction();
             
             _provider.AddTable("TestTwo",

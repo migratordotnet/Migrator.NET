@@ -10,11 +10,10 @@ namespace Migrator.Providers.Mysql
     /// Summary description for MySqlTransformationProvider.
     /// </summary>
     public class MySqlTransformationProvider : TransformationProvider
-    {        
-        public MySqlTransformationProvider(string connectionString) : base(connectionString)
+    {
+        public MySqlTransformationProvider(Dialect dialect, string connectionString)
+            : base(dialect, connectionString)
         {
-            dialect = new MysqlDialect();
-
             _connection = new MySqlConnection(_connectionString);
             _connection.ConnectionString = _connectionString;
             _connection.Open();
@@ -24,8 +23,8 @@ namespace Migrator.Providers.Mysql
         {
             if (ConstraintExists(table, name))
             {
-                ExecuteNonQuery(String.Format("ALTER TABLE {0} DROP FOREIGN KEY {1}", table, dialect.Quote(name)));
-                ExecuteNonQuery(String.Format("ALTER TABLE {0} DROP KEY {1}", table, dialect.Quote(name)));
+                ExecuteNonQuery(String.Format("ALTER TABLE {0} DROP FOREIGN KEY {1}", table, _dialect.Quote(name)));
+                ExecuteNonQuery(String.Format("ALTER TABLE {0} DROP KEY {1}", table, _dialect.Quote(name)));
             }
         }
         
@@ -33,7 +32,7 @@ namespace Migrator.Providers.Mysql
         {
             if (ConstraintExists(table, name))
             {
-                ExecuteNonQuery(String.Format("ALTER TABLE {0} DROP KEY {1}", table, dialect.Quote(name)));
+                ExecuteNonQuery(String.Format("ALTER TABLE {0} DROP KEY {1}", table, _dialect.Quote(name)));
             }
         }
 

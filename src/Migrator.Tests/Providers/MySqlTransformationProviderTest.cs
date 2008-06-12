@@ -30,7 +30,7 @@ namespace Migrator.Tests.Providers
             if (constr == null)
                 throw new ArgumentNullException("MySqlConnectionString", "No config file");
 
-            _provider = new MySqlTransformationProvider(constr);
+            _provider = new MySqlTransformationProvider(new MysqlDialect(), constr);
 			
             _provider.AddTable("TestTwo",
                                new Column("Id", DbType.Int32, ColumnProperty.PrimaryKeyWithIdentity),
@@ -44,7 +44,7 @@ namespace Migrator.Tests.Providers
             DropTestTables();
         }
 		
-		[Test,Ignore("MySql doesn't support check constraints")]
+		// [Test,Ignore("MySql doesn't support check constraints")]
         public override void AddCheckConstraint() {}
 
     }

@@ -70,7 +70,7 @@ namespace Migrator.Tests.Providers
 		{
 		    foreach (string name in _provider.GetTables())
 		    {
-		        Console.Out.WriteLine("Table: " +name);
+		        _provider.Logger.Log("Table: {0}", name);
 		    }
 		    Assert.AreEqual(1, _provider.GetTables().Length);
 		    AddTable();

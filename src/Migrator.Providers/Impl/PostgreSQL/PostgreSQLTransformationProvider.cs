@@ -24,10 +24,9 @@ namespace Migrator.Providers.PostgreSQL
     /// </summary>
     public class PostgreSQLTransformationProvider : TransformationProvider
     {
-        public PostgreSQLTransformationProvider(string connectionString) : base(connectionString)
+        public PostgreSQLTransformationProvider(Dialect dialect, string connectionString)
+            : base(dialect, connectionString)
         {
-            dialect = new PostgreSQLDialect();
-
             _connection = new NpgsqlConnection();
             _connection.ConnectionString = _connectionString;
             _connection.Open();
