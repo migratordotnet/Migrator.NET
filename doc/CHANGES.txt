@@ -1,5 +1,8 @@
 # Change history
 
+## Version 0.8.0
+- Implemented specific support for SQL Server 2005 (MAX parameter basically)
+
 ## Version 0.7.0
 - Geoff's major refactorings fork re-merged back into the trunk
 - Improved the build process allowing developers to override things in local.properties
