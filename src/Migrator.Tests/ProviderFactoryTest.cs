@@ -12,7 +12,7 @@ namespace Migrator.Tests
         [Test]
         public void CanGetDialectsForProvider()
         {
-            string[] providers = new string[] { "SqlServer", "Mysql", "SQLite", "PostgreSQL", "SqlServer2005" };
+            string[] providers = new string[] { "SqlServer", "Mysql", "SQLite", "PostgreSQL", "SqlServer2005", "Oracle" };
             Array.ForEach(providers,
                           delegate(string provider) { Assert.IsNotNull(ProviderFactory.DialectForProvider(provider)); });
             Assert.IsNull(ProviderFactory.DialectForProvider(null));
@@ -26,6 +26,15 @@ namespace Migrator.Tests
             ITransformationProvider provider = ProviderFactory.Create("SqlServer",
                                                                       ConfigurationManager.AppSettings[
                                                                           "SqlServerConnectionString"]);
+            Assert.IsNotNull(provider);
+        }
+
+        [Test, Category("SqlServer2005")]
+        public void CanLoad_SqlServer2005Provider()
+        {
+            ITransformationProvider provider = ProviderFactory.Create("SqlServer2005",
+                                                                      ConfigurationManager.AppSettings[
+                                                                          "SqlServer2005ConnectionString"]);
             Assert.IsNotNull(provider);
         }
 
@@ -53,6 +62,15 @@ namespace Migrator.Tests
             ITransformationProvider provider = ProviderFactory.Create("PostgreSQL",
                                                                       ConfigurationManager.AppSettings[
                                                                           "NpgsqlConnectionString"]);
+            Assert.IsNotNull(provider);
+        }
+
+        [Test, Category("Oracle")]
+        public void CanLoad_OracleProvider()
+        {
+            ITransformationProvider provider = ProviderFactory.Create("Oracle",
+                                                                      ConfigurationManager.AppSettings[
+                                                                          "OracleConnectionString"]);
             Assert.IsNotNull(provider);
         }
     }
