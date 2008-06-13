@@ -89,8 +89,6 @@ namespace Migrator.Tests.Providers
         [Test]
         public void GetColumnsContainsProperNullInformation()
         {
-            // FIXME: The query appears to work just fine when run externally.
-
             AddTableWithPrimaryKey();
             Column[] cols = _provider.GetColumns("Test");
             Assert.IsNotNull(cols);
@@ -126,7 +124,7 @@ namespace Migrator.Tests.Providers
         }
         
         [Test]
-        public void RenameTableThatExists()
+        public virtual void RenameTableThatExists()
         {
             AddTable();
             _provider.RenameTable("Test", "Test_Rename");

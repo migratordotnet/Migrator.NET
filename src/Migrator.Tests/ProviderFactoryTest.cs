@@ -12,7 +12,7 @@ namespace Migrator.Tests
         [Test]
         public void CanGetDialectsForProvider()
         {
-            string[] providers = new string[] { "SqlServer", "Mysql", "SQLite", "PostgreSQL", "SqlServer2005", "Oracle" };
+            string[] providers = new string[] { "SqlServer", "Mysql", "SQLite", "PostgreSQL", "SqlServer2005", "SqlServerCe", "Oracle" };
             Array.ForEach(providers,
                           delegate(string provider) { Assert.IsNotNull(ProviderFactory.DialectForProvider(provider)); });
             Assert.IsNull(ProviderFactory.DialectForProvider(null));
@@ -28,6 +28,17 @@ namespace Migrator.Tests
                                                                           "SqlServerConnectionString"]);
             Assert.IsNotNull(provider);
         }
+
+
+        [Test, Category("SqlServerCe")]
+        public void CanLoad_SqlServerCeProvider()
+        {
+            ITransformationProvider provider = ProviderFactory.Create("SqlServerCe",
+                                                                      ConfigurationManager.AppSettings[
+                                                                          "SqlServerCeConnectionString"]);
+            Assert.IsNotNull(provider);
+        }
+
 
         [Test, Category("SqlServer2005")]
         public void CanLoad_SqlServer2005Provider()

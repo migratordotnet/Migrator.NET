@@ -27,12 +27,19 @@ namespace Migrator.Providers.SqlServer
         public SqlServerTransformationProvider(Dialect dialect, string connectionString)
             : base(dialect, connectionString)
         {
-            _connection = new SqlConnection();
-            _connection.ConnectionString = _connectionString;
-            _connection.Open();
+            CreateConnection();
         }
 
-        public override bool ConstraintExists(string table, string name)
+    	protected virtual void CreateConnection()
+    	{
+    		_connection = new SqlConnection();
+    		_connection.ConnectionString = _connectionString;
+    		_connection.Open();
+    	}
+
+        // FIXME: We should look into implementing this with INFORMATION_SCHEMA if possible
+        // so that it would be usable by all the SQL Server implementations
+    	public override bool ConstraintExists(string table, string name)
         {
             using (IDataReader reader =
                 ExecuteQuery(string.Format("SELECT TOP 1 * FROM sysobjects WHERE id = object_id('{0}')", name)))
@@ -46,27 +53,26 @@ namespace Migrator.Providers.SqlServer
             ExecuteNonQuery(string.Format("ALTER TABLE {0} ADD {1}", table, sqlColumn));
         }
 
-        public override bool ColumnExists(string table, string column)
-        {
-            if (!TableExists(table))
-                return false;
+		public override bool ColumnExists(string table, string column)
+		{
+			if (!TableExists(table))
+				return false;
 
-            using (IDataReader reader =
-                ExecuteQuery(String.Format("SELECT TOP 1 * FROM syscolumns WHERE id=object_id('{0}') and name='{1}'",
-                                           table, column)))
-            {
-                return reader.Read();
-            }
-        }
+			using (IDataReader reader =
+				ExecuteQuery(String.Format("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='{0}' AND COLUMN_NAME='{1}'", table, column)))
+			{
+				return reader.Read();
+			}
+		}
 
-        public override bool TableExists(string table)
-        {
-            using (IDataReader reader =
-                ExecuteQuery(String.Format("SELECT TOP 1 * FROM syscolumns WHERE id=object_id('{0}')",table)))
-            {
-                return reader.Read();
-            }
-        }
+		public override bool TableExists(string table)
+		{
+			using (IDataReader reader =
+				ExecuteQuery(String.Format("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='{0}'", table)))
+			{
+				return reader.Read();
+			}
+		}
 
         public override void RemoveColumn(string table, string column)
         {
@@ -96,11 +102,7 @@ namespace Migrator.Providers.SqlServer
         // doesn't seems to do this.
         private void DeleteColumnConstraints(string table, string column)
         {
-            string sqlContrainte =
-                String.Format("SELECT cont.name FROM SYSOBJECTS cont, SYSCOLUMNS col, SYSCONSTRAINTS cnt  "
-                              + "WHERE cont.parent_obj = col.id AND cnt.constid = cont.id AND cnt.colid=col.colid "
-                              + "AND col.name = '{1}' AND col.id = object_id('{0}')",
-                              table, column);
+            string sqlContrainte = FindConstraints(table, column);
             List<string> constraints = new List<string>();
             using (IDataReader reader = ExecuteQuery(sqlContrainte))
             {
@@ -115,5 +117,16 @@ namespace Migrator.Providers.SqlServer
                 RemoveForeignKey(table, constraint);
             }
         }
+
+        // FIXME: We should look into implementing this with INFORMATION_SCHEMA if possible
+        // so that it would be usable by all the SQL Server implementations
+    	protected virtual string FindConstraints(string table, string column)
+    	{
+    		return string.Format(
+				"SELECT cont.name FROM SYSOBJECTS cont, SYSCOLUMNS col, SYSCONSTRAINTS cnt  "
+				+ "WHERE cont.parent_obj = col.id AND cnt.constid = cont.id AND cnt.colid=col.colid "
+    		    + "AND col.name = '{1}' AND col.id = object_id('{0}')",
+    		    table, column);
+    	}
     }
 }

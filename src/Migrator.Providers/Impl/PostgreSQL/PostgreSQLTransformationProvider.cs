@@ -117,5 +117,15 @@ namespace Migrator.Providers.PostgreSQL
 
             return columns.ToArray();
         }
+
+		public override Column GetColumnByName(string table, string columnName)
+		{
+			// Duplicate because of the lower case issue
+			return Array.Find(GetColumns(table),
+				delegate(Column column)
+				{
+					return column.Name == columnName.ToLower();
+				});
+		}
     }
 }
