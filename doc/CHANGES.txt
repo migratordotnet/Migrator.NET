@@ -2,6 +2,7 @@
 
 ## Version 0.8.0
 - Implemented specific support for SQL Server 2005 (MAX parameter basically)
+- Implemented specific support for SQL Server CE (Thanks Gustavo Ringel)
 
 ## Version 0.7.0
 - Geoff's major refactorings fork re-merged back into the trunk

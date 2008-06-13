@@ -8,10 +8,11 @@ The migrations themselves are implemented in code and can be mostly done in a da
 Licensed under MPL 1.1 : http://www.mozilla.org/MPL/
 
 == Supported Database
-* MySQL
+* MySQL (5.0, 5.1)
 * PostgreSQL
 * SQLite (tested on Mono)
-* SQL Server
+* SQL Server (2000, 2005)
+* SQL Server CE (3.5)
 
 == Untested Databases but in there
 * Oracle
@@ -38,8 +39,18 @@ You should have a database installed and setup:
 * Oracle
 * PostgreSQL
 * or you can use SQLite with no setup
-You can Test on each engine or change those by changing the 'exclude' properties in the nant build
-file. To change the database connection strings see config\test.config.
+You can Test on each engine or change those by changing the 'exclude' properties in a nant build
+file called 'local.properties'. To change the database connection strings see config\app.config. You
+can make your own local version called 'local.config' to override these
+
+== SQL Server CE
+To use SQL Server CE, you will need the proper tools installed. The current DLL that we are testing
+against is the 3.5 version.
+As of this writing you can download the installer for the SQL CE Runtime at:
+http://www.microsoft.com/downloads/details.aspx?&FamilyID=7849b34f-67ab-481f-a5a5-4990597b0297&DisplayLang=en
+
+We have not confirmed if this will build on Mono yet. But it almost definitely won't run because SQL CE uses PInvoke
+internally.
 
 = Usage
 

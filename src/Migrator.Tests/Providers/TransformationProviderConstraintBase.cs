@@ -116,11 +116,9 @@ namespace Migrator.Tests.Providers
             Assert.IsTrue(_provider.TableExists("Test"), "Table doesn't exist");
             Assert.IsTrue(_provider.PrimaryKeyExists("Test", "PK_Test"), "Constraint doesn't exist");
 
-            foreach (Column column in _provider.GetColumns("Test"))
-            {
-                if (column.Name == "Name")
-                    Assert.IsTrue((column.ColumnProperty & ColumnProperty.Null) == ColumnProperty.Null);
-            }
+        	Column column = _provider.GetColumnByName("Test", "Name");
+            Assert.IsNotNull(column);
+            Assert.IsTrue((column.ColumnProperty & ColumnProperty.Null) == ColumnProperty.Null);
         }
     }
 }

@@ -53,6 +53,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\System.Data.SQLite.DLL</HintPath>
     </Reference>
+    <Reference Include="System.Data.SqlServerCe, Version=3.5.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\System.Data.SqlServerCe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +66,8 @@
     <Compile Include="Impl\Mysql\MysqlDialect.cs" />
     <Compile Include="Impl\Mysql\MySqlTransformationProvider.cs" />
     <Compile Include="Impl\SqlServer\SqlServer2005Dialect.cs" />
+    <Compile Include="Impl\SqlServer\SqlServerCeDialect.cs" />
+    <Compile Include="Impl\SqlServer\SqlServerCeTransformationProvider.cs" />
     <Compile Include="NoOpTransformationProvider.cs" />
     <Compile Include="Impl\Oracle\OracleDialect.cs" />
     <Compile Include="Impl\Oracle\OracleTransformationProvider.cs" />
@@ -79,6 +85,9 @@
       <Project>{5270F048-E580-486C-B14C-E5B9F6E539D4}</Project>
       <Name>Migrator.Framework</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
