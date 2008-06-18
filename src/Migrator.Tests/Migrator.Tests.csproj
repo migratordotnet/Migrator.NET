@@ -62,6 +62,7 @@
     <Compile Include="Providers\SqlServerTransformationProviderTest.cs" />
     <Compile Include="Providers\TransformationProviderBase.cs" />
     <Compile Include="Providers\TransformationProviderConstraintBase.cs" />
+    <Compile Include="SchemaBuilderTests.cs" />
     <Compile Include="ScriptEngineTests.cs" />
     <Compile Include="Tools\SchemaDumperTest.cs" />
   </ItemGroup>

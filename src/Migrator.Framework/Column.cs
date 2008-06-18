@@ -26,7 +26,12 @@ namespace Migrator.Framework
         private ColumnProperty _property;
         private object _defaultValue;
 
-        public Column(string name, DbType type)
+		public Column(string name)
+		{
+			Name = name;
+		}
+
+    	public Column(string name, DbType type)
         {
             Name = name;
             Type = type;
