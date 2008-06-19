@@ -11,8 +11,6 @@
 
 using System;
 using System.Configuration;
-using System.Data;
-using Migrator.Framework;
 using Migrator.Providers.Mysql;
 using Migrator.Tests.Providers;
 using NUnit.Framework;
@@ -26,16 +24,11 @@ namespace Migrator.Tests.Providers
         public void SetUp()
         {
             string constr = ConfigurationManager.AppSettings["MySqlConnectionString"];
-
             if (constr == null)
                 throw new ArgumentNullException("MySqlConnectionString", "No config file");
-
             _provider = new MySqlTransformationProvider(new MysqlDialect(), constr);
-			
-            _provider.AddTable("TestTwo",
-                               new Column("Id", DbType.Int32, ColumnProperty.PrimaryKeyWithIdentity),
-                               new Column("TestId", DbType.Int32, ColumnProperty.ForeignKey)
-                );
+
+            AddDefaultTable();
         }
 
         [TearDown]
@@ -45,7 +38,7 @@ namespace Migrator.Tests.Providers
         }
 		
 		// [Test,Ignore("MySql doesn't support check constraints")]
-        public override void AddCheckConstraint() {}
+        public override void CanAddCheckConstraint() {}
 
     }
 }

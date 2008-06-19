@@ -27,15 +27,13 @@ namespace Migrator.Tests.Providers
         public void SetUp()
         {
             string constr = ConfigurationManager.AppSettings["SqlServerConnectionString"];
-
             if (constr == null)
                 throw new ArgumentNullException("SqlServerConnectionString", "No config file");
 
             _provider = new SqlServerTransformationProvider(new SqlServerDialect(), constr);
             _provider.BeginTransaction();
-            _provider.AddTable("TestTwo",
-                               new Column("Id", DbType.Int32, ColumnProperty.PrimaryKeyWithIdentity),
-                               new Column("TestId", DbType.Int32));
+
+            AddDefaultTable();
         }
 
         [Test]

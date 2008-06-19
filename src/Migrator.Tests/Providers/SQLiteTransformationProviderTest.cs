@@ -11,8 +11,6 @@
 
 using System;
 using System.Configuration;
-using System.Data;
-using Migrator.Framework;
 using Migrator.Providers.SQLite;
 using Migrator.Tests.Providers;
 using NUnit.Framework;
@@ -26,17 +24,13 @@ namespace Migrator.Tests.Providers
          public void SetUp()
          {
              string constr = ConfigurationManager.AppSettings["SQLiteConnectionString"];
-
              if (constr == null)
                  throw new ArgumentNullException("SQLiteConnectionString", "No config file");
 
              _provider = new SQLiteTransformationProvider(new SQLiteDialect(), constr);
              _provider.BeginTransaction();
             
-             _provider.AddTable("TestTwo",
-                                new Column("Id", DbType.Int32, ColumnProperty.PrimaryKeyWithIdentity),
-                                new Column("TestId", DbType.Int32, ColumnProperty.ForeignKey)
-                 );
+             AddDefaultTable();
          }
 
          [Test]

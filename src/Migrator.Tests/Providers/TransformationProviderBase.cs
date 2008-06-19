@@ -29,8 +29,40 @@ namespace Migrator.Tests.Providers
             _provider.RemoveTable("Test");
             _provider.RemoveTable("SchemaInfo");
         }
-		
-		[Test]
+
+        public void AddDefaultTable()
+        {
+            _provider.AddTable("TestTwo",
+                               new Column("Id", DbType.Int32, ColumnProperty.PrimaryKeyWithIdentity),
+                               new Column("TestId", DbType.Int32, ColumnProperty.ForeignKey)
+                );
+        }
+
+        public void AddTable()
+        {
+            _provider.AddTable("Test",
+                               new Column("Id", DbType.Int32, ColumnProperty.NotNull),
+                               new Column("Title", DbType.String, 100),
+                               new Column("name", DbType.String, 50),
+                               new Column("blobVal", DbType.Binary),
+                               new Column("boolVal", DbType.Boolean),
+                               new Column("bigstring", DbType.String, 50000)
+                );
+        }
+
+        public void AddTableWithPrimaryKey()
+        {
+            _provider.AddTable("Test",
+                               new Column("Id", DbType.Int32, ColumnProperty.PrimaryKeyWithIdentity),
+                               new Column("Title", DbType.String, 100, ColumnProperty.Null),
+                               new Column("name", DbType.String, 50, ColumnProperty.NotNull),
+                               new Column("blobVal", DbType.Binary),
+                               new Column("boolVal", DbType.Boolean),
+                               new Column("bigstring", DbType.String, 50000)
+                );
+        }
+
+        [Test]
 		public void TableExistsWorks() 
 		{
 		    Assert.IsFalse(_provider.TableExists("gadadadadseeqwe"));
@@ -52,16 +84,9 @@ namespace Migrator.Tests.Providers
         }
       
         [Test]
-        public void AddTable()
+        public void TableCanBeAdded()
         {
-            _provider.AddTable("Test",
-                               new Column("Id", DbType.Int32, ColumnProperty.NotNull),
-                               new Column("Title", DbType.String, 100),
-                               new Column("name", DbType.String, 50), 
-                               new Column("blobVal", DbType.Binary),
-                               new Column("boolVal", DbType.Boolean),
-                               new Column("bigstring", DbType.String, 50000)
-                );
+            AddTable();
             Assert.IsTrue(_provider.TableExists("Test"));
         }
         
@@ -102,16 +127,9 @@ namespace Migrator.Tests.Providers
         }
 
         [Test]
-        public void AddTableWithPrimaryKey()
+        public void CanAddTableWithPrimaryKey()
         {
-            _provider.AddTable("Test",
-                               new Column("Id", DbType.Int32, ColumnProperty.PrimaryKeyWithIdentity),
-                               new Column("Title", DbType.String, 100, ColumnProperty.Null),
-                               new Column("name", DbType.String, 50, ColumnProperty.NotNull), 
-                               new Column("blobVal", DbType.Binary),
-                               new Column("boolVal", DbType.Boolean), 
-                               new Column("bigstring", DbType.String, 50000)
-                );
+            AddTableWithPrimaryKey();
             Assert.IsTrue(_provider.TableExists("Test"));
         }
 

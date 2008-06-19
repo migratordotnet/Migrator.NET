@@ -10,11 +10,32 @@ namespace Migrator.Tests.Providers
     public class TransformationProviderConstraintBase : TransformationProviderBase
     {
 
-        [Test]
+        public void AddForeignKey()
+        {
+            AddTableWithPrimaryKey();
+            _provider.AddForeignKey("FK_Test_TestTwo", "TestTwo", "TestId", "Test", "Id");
+        }
+
         public void AddPrimaryKey()
         {
             AddTable();
             _provider.AddPrimaryKey("PK_Test", "Test", "Id");
+        }
+
+        public void AddUniqueConstraint()
+        {
+            _provider.AddUniqueConstraint("UN_Test_TestTwo", "TestTwo", "TestId");
+        }
+
+        public void AddCheckConstraint()
+        {
+            _provider.AddCheckConstraint("CK_TestTwo_TestId", "TestTwo", "TestId>5");
+        }
+
+        [Test]
+        public void CanAddPrimaryKey()
+        {
+            AddPrimaryKey();
             Assert.IsTrue(_provider.PrimaryKeyExists("Test", "PK_Test"));
         }
 
@@ -31,24 +52,23 @@ namespace Migrator.Tests.Providers
         }
 
         [Test]
-        public void AddForeignKey()
+        public void CanAddForeignKey()
         {
-            AddTableWithPrimaryKey();
-            _provider.AddForeignKey("FK_Test_TestTwo", "TestTwo", "TestId", "Test", "Id");
+            AddForeignKey();
             Assert.IsTrue(_provider.ConstraintExists("TestTwo", "FK_Test_TestTwo"));
         }
 
         [Test]
-        public void AddUniqueConstraint()
+        public virtual void CanAddUniqueConstraint()
         {
-            _provider.AddUniqueConstraint("UN_Test_TestTwo", "TestTwo", "TestId");
+            AddUniqueConstraint();
             Assert.IsTrue(_provider.ConstraintExists("TestTwo", "UN_Test_TestTwo"));
         }
 
         [Test]
-        public virtual void AddCheckConstraint()
+        public virtual void CanAddCheckConstraint()
         {
-            _provider.AddCheckConstraint("CK_TestTwo_TestId", "TestTwo", "TestId>5");
+            AddCheckConstraint();
             Assert.IsTrue(_provider.ConstraintExists("TestTwo", "CK_TestTwo_TestId"));
         }
 
