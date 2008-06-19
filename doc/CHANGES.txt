@@ -4,6 +4,9 @@
 - Implemented specific support for SQL Server 2005 (MAX parameter basically)
 - Implemented specific support for SQL Server CE (Thanks Gustavo Ringel)
 
+- Changed the parameter names of AddForeignKey to try and make them easier to understand
+- Made Version for MigrationAttribute non-optional
+
 ## Version 0.7.0
 - Geoff's major refactorings fork re-merged back into the trunk
 - Improved the build process allowing developers to override things in local.properties

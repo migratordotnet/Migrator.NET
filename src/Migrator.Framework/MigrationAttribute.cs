@@ -38,7 +38,7 @@ namespace Migrator.Framework
         public int Version
         {
             get { return _version; }
-            set { _version = value; }
+            private set { _version = value; }
         }
 
         /// <summary>
