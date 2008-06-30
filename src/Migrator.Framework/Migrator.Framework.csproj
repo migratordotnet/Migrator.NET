@@ -34,6 +34,7 @@
     <Compile Include="Column.cs" />
     <Compile Include="ColumnProperty.cs" />
     <Compile Include="ForeignKeyConstraint.cs" />
+    <Compile Include="IFluentColumn.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="ITransformationProvider.cs" />
     <Compile Include="Loggers\ConsoleWriter.cs" />

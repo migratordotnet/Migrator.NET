@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using Migrator.Framework;
 using NUnit.Framework;
+using ForeignKeyConstraint=Migrator.Framework.ForeignKeyConstraint;
 
 namespace Migrator.Tests
 {
@@ -79,6 +80,16 @@ namespace Migrator.Tests
 
 			Assert.AreEqual("default value", _schemaBuilder.Columns[0].DefaultValue);
 		}
+
+		[Test]
+		public void Can_chain_AddTable_WithForeignKey()
+		{
+			_schemaBuilder
+				.AddColumn("MyColumnThatIsForeignKey")
+				.AsForeignKey().ReferencedTo("PrimaryKeyTable", "PrimaryKeyColumn").WithConstraint(ForeignKeyConstraint.NoAction);
+
+			Assert.IsTrue(_schemaBuilder.Columns[0].ColumnProperty == ColumnProperty.ForeignKey);
+		}
 	}
 
 	public interface IColumnOptions
@@ -86,26 +97,90 @@ namespace Migrator.Tests
 		SchemaBuilder OfType(DbType dbType);
 
 		SchemaBuilder WithSize(int size);
+
+		IForeignKeyOptions AsForeignKey();
 	}
 
-	public class SchemaBuilder : IColumnOptions
+	public interface IForeignKeyOptions
+	{
+		SchemaBuilder ReferencedTo(string primaryKeyTable, string primaryKeyColumn);
+	}
+
+	public class FluentColumn : IFluentColumn
+	{
+		private Column _inner;
+		private ForeignKeyConstraint _constraint;
+
+		public FluentColumn(string columnName)
+		{
+			_inner = new Column(columnName);
+		}
+
+		public ColumnProperty ColumnProperty
+		{
+			get { return _inner.ColumnProperty; }
+			set { _inner.ColumnProperty = value; }
+		}
+
+		public string Name
+		{
+			get { return _inner.Name; }
+			set { _inner.Name = value; }
+		}
+
+		public DbType Type
+		{
+			get { return _inner.Type; }
+			set { _inner.Type = value; }
+		}
+
+		public int Size
+		{
+			get { return _inner.Size; }
+			set { _inner.Size = value; }
+		}
+
+		public bool IsIdentity
+		{
+			get { return _inner.IsIdentity; }
+		}
+
+		public bool IsPrimaryKey
+		{
+			get { return _inner.IsPrimaryKey; }
+		}
+
+		public object DefaultValue
+		{
+			get { return _inner.DefaultValue; }
+			set { _inner.DefaultValue = value; }
+		}
+
+		public ForeignKeyConstraint Constraint
+		{
+			get { return _constraint; }
+			set { _constraint = value; }
+		}
+	}
+
+	public class SchemaBuilder : IColumnOptions, IForeignKeyOptions
 	{
 		private string _table;
-		private IList<Column> _columns;
-		private Column _lastColumn;
+		private IList<IFluentColumn> _columns;
+		private IFluentColumn _lastColumn;
 
 		public SchemaBuilder()
 		{
-			_columns = new List<Column>();
+			_columns = new List<IFluentColumn>();
 		}
 
 		public string Table {
 			get { return _table; }
 		}
 
-		public ReadOnlyCollection<Column> Columns
+		public ReadOnlyCollection<IFluentColumn> Columns
 		{
-			get { return new ReadOnlyCollection<Column>(_columns); }
+			get { return new ReadOnlyCollection<IFluentColumn>(_columns); }
 		}
 
 		/// <summary>
@@ -133,7 +208,7 @@ namespace Migrator.Tests
 			if (string.IsNullOrEmpty(name))
 				throw new ArgumentNullException("name");
 
-			Column column = new Column(name);
+			IFluentColumn column = new FluentColumn(name);
 			_lastColumn = column;
 			_columns.Add(column);
 
@@ -170,6 +245,30 @@ namespace Migrator.Tests
 				throw new ArgumentNullException("defaultValue", "DefaultValue cannot be null or empty");
 
 			_lastColumn.DefaultValue = defaultValue;
+
+			return this;
+		}
+
+		public IForeignKeyOptions AsForeignKey()
+		{
+			_lastColumn.ColumnProperty = ColumnProperty.ForeignKey;
+
+			return this;
+		}
+
+		public SchemaBuilder ReferencedTo(string primaryKeyTable, string primaryKeyColumn)
+		{
+			_lastColumn.Constraint = ForeignKeyConstraint.NoAction;
+			//
+			// Need to create ForeignKey column type to store primary table/column for FK
+			//
+
+			return this;
+		}
+
+		public SchemaBuilder WithConstraint(ForeignKeyConstraint action)
+		{
+			_lastColumn.Constraint = action;
 
 			return this;
 		}
