@@ -137,9 +137,9 @@ namespace Migrator.Framework.SchemaBuilder
 			return this;
 		}
 
-		public SchemaBuilder WithDefaultValue(string defaultValue)
+		public SchemaBuilder WithDefaultValue(object defaultValue)
 		{
-			if (string.IsNullOrEmpty(defaultValue))
+			if (defaultValue == null)
 				throw new ArgumentNullException("defaultValue", "DefaultValue cannot be null or empty");
 
 			_currentColumn.DefaultValue = defaultValue;

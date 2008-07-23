@@ -90,6 +90,7 @@
 				<include name="System.Data.dll" />
 				<include name="System.Configuration.dll" />
 				<include name="${dir.bin}/Migrator.Framework.dll" />
+				<include name="${dir.bin}/Migrator.Providers.dll" />
 			</references>
 		</csc>
 		<csc target="library" output="${dir.bin}/Migrator.NAnt.dll" define="${defines}" debug="${debug}">

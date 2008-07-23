@@ -1,8 +1,7 @@
 using System.Data;
 
 namespace Migrator.Framework
-{
-    
+{   
     /// <summary>
     /// The main interface to use in Migrations to make changes on a database schema.
     /// </summary>
@@ -407,5 +406,7 @@ namespace Migrator.Framework
         int Update(string table, string[] columns, string[] values, string where);
         
         IDbCommand GetCommand();
+
+        void ExecuteSchemaBuilder(SchemaBuilder.SchemaBuilder schemaBuilder);
     }
 }
