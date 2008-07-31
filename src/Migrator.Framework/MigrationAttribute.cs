@@ -20,14 +20,14 @@ namespace Migrator.Framework
     /// </summary>
     public class MigrationAttribute : Attribute
     {
-        private int _version;
+        private long _version;
         private bool _ignore = false;
 
         /// <summary>
         /// Describe the migration
         /// </summary>
         /// <param name="version">The unique version of the migration.</param>	
-        public MigrationAttribute(int version)
+        public MigrationAttribute(long version)
         {
             Version = version;
         }
@@ -35,7 +35,7 @@ namespace Migrator.Framework
         /// <summary>
         /// The version reflected by the migration
         /// </summary>
-        public int Version
+        public long Version
         {
             get { return _version; }
             private set { _version = value; }

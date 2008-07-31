@@ -24,8 +24,8 @@ namespace Migrator.Tests
 		private Migrator _migrator;
 		
 		// Collections that contain the version that are called migrating up and down
-		private static readonly List<int> _upCalled = new List<int>();
-		private static readonly List<int> _downCalled = new List<int>();
+		private static readonly List<long> _upCalled = new List<long>();
+		private static readonly List<long> _downCalled = new List<long>();
 		
 		[SetUp]
 		public void SetUp()
@@ -137,17 +137,17 @@ namespace Migrator.Tests
 		
 		#region Helper methods and classes
 
-        private void SetUpCurrentVersion(int version)
+        private void SetUpCurrentVersion(long version)
 		{
 			SetUpCurrentVersion(version, false);
 		}
 
-        private void SetUpCurrentVersion(int version, bool assertRollbackIsCalled)
+        private void SetUpCurrentVersion(long version, bool assertRollbackIsCalled)
         {
             SetUpCurrentVersion(version, assertRollbackIsCalled, true);
         }
 
-        private void SetUpCurrentVersion(int version, bool assertRollbackIsCalled, bool includeBad)
+        private void SetUpCurrentVersion(long version, bool assertRollbackIsCalled, bool includeBad)
 		{
 			DynamicMock providerMock = new DynamicMock(typeof(ITransformationProvider));
 

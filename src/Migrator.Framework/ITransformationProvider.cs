@@ -17,7 +17,7 @@ namespace Migrator.Framework
         /// <summary>
         /// The current version that the database is at.
         /// </summary>
-        int CurrentVersion { get; set; }
+        long CurrentVersion { get; set; }
         
         ILogger Logger { get; set; }
 

@@ -262,7 +262,7 @@ namespace Migrator.Providers
             get { return this; }
         }
 
-        public int CurrentVersion
+        public long CurrentVersion
         {
             get { return 0; }
             set { }

@@ -33,9 +33,11 @@ namespace Migrator
 			MigrationAttribute attribOfY = (MigrationAttribute) Attribute.GetCustomAttribute(y, typeof(MigrationAttribute));
 			
 			if (_ascending)
-				return attribOfX.Version - attribOfY.Version;
+				return attribOfX.Version.CompareTo(attribOfY.Version);
 			else
-				return attribOfY.Version - attribOfX.Version;
+				return attribOfY.Version.CompareTo(attribOfX.Version);
+			
+			
 		}
 	}
 }

@@ -38,32 +38,32 @@ namespace Migrator.NAnt.Loggers
 			_task.Log(Level.Error, format, args);
 		}
 		
-		public void Started(int currentVersion, int finalVersion)
+		public void Started(long currentVersion, long finalVersion)
 		{
 			LogInfo("Current version : {0}", currentVersion);
 		}
 		
-		public void MigrateUp(int version, string migrationName)
+		public void MigrateUp(long version, string migrationName)
 		{
 			LogInfo("{0} {1}", version.ToString().PadLeft(_widthFirstColumn), migrationName);
 		}
 		
-		public void MigrateDown(int version, string migrationName)
+		public void MigrateDown(long version, string migrationName)
 		{
 			MigrateUp(version, migrationName);
 		}
 		
-		public void Skipping(int version)
+		public void Skipping(long version)
 		{
 			MigrateUp(version, "<Migration not found>");
 		}
 		
-		public void RollingBack(int originalVersion)
+		public void RollingBack(long originalVersion)
 		{
 			LogInfo("Rolling back to migration {0}", originalVersion);
 		}
 		
-		public void Exception(int version, string migrationName, Exception ex)
+		public void Exception(long version, string migrationName, Exception ex)
 		{
 			LogInfo("{0} Error in migration {1} : {2}", "".PadLeft(_widthFirstColumn), version, ex.Message);
 			
@@ -78,7 +78,7 @@ namespace Migrator.NAnt.Loggers
 			}
 		}
 		
-		public void Finished(int originalVersion, int currentVersion)
+		public void Finished(long originalVersion, long currentVersion)
 		{
 			LogInfo("Migrated to version {0}", currentVersion);
 		}

@@ -18,7 +18,7 @@ namespace Migrator
 	/// </summary>
 	public class DuplicatedVersionException : Exception
 	{
-		public DuplicatedVersionException(int version)
+		public DuplicatedVersionException(long version)
 			: base(String.Format("Migration version #{0} is duplicated", version))
 		{
 		}

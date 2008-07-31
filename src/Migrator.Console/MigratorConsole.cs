@@ -93,12 +93,12 @@ namespace Migrator.MigratorConsole
 			CheckArguments();
 			
 			Migrator mig = GetMigrator();
-			int currentVersion = mig.CurrentVersion;
+			long currentVersion = mig.CurrentVersion;
 			
 			Console.WriteLine("Available migrations:");
 			foreach (Type t in mig.MigrationsTypes)
 			{
-                int v = MigrationLoader.GetMigrationVersion(t);
+                long v = MigrationLoader.GetMigrationVersion(t);
 				Console.WriteLine("{0} {1} {2}",
 				                  v == currentVersion ? "=>" : "  ",
 				                  v.ToString().PadLeft(3),

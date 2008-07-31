@@ -6,10 +6,10 @@ namespace Migrator
     {
         protected readonly ITransformationProvider _provider;
         protected ILogger _logger;
-        protected int _current;
-        protected int _original;
+        protected long _current;
+        protected long _original;
 
-        protected BaseMigrate(int current, ITransformationProvider provider, ILogger logger)
+        protected BaseMigrate(long current, ITransformationProvider provider, ILogger logger)
         {
             _provider = provider;
             _current = current;
@@ -17,7 +17,7 @@ namespace Migrator
             _logger = logger;
         }
 
-        public static BaseMigrate GetInstance(bool up, int current, ITransformationProvider provider, ILogger logger)
+        public static BaseMigrate GetInstance(bool up, long current, ITransformationProvider provider, ILogger logger)
         {
             if (up)
             {
@@ -29,26 +29,26 @@ namespace Migrator
             }
         }
 
-        public int Original
+        public long Original
         {
             get { return _original; }
         }
 
-        public virtual int Current
+        public virtual long Current
         {
             get { return _current; }
             protected set { _current = value; }
         }
 
-        public abstract int Previous { get; }
-        public abstract int Next { get; }
+        public abstract long Previous { get; }
+        public abstract long Next { get; }
 
         public void Iterate()
         {
             Current = Next;
         }
 
-        public abstract bool Continue(int targetVersion);
+        public abstract bool Continue(long targetVersion);
 
         public abstract void Migrate(Migration migration);
     }

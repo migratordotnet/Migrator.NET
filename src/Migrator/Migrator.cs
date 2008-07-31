@@ -89,7 +89,7 @@ namespace Migrator
         /// <summary>
         /// Returns the current version of the database.
         /// </summary>
-        public int CurrentVersion
+        public long CurrentVersion
         {
             get { return _provider.CurrentVersion; }
         }
@@ -113,7 +113,7 @@ namespace Migrator
         /// the <c>Down()</c> method of previous migration will be invoked.
         /// </summary>
         /// <param name="version">The version that must became the current one</param>
-        public void MigrateTo(int version)
+        public void MigrateTo(long version)
         {
 
             if (_migrationLoader.MigrationsTypes.Count == 0)

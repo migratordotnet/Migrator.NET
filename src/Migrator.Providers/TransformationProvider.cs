@@ -683,7 +683,7 @@ namespace Migrator.Providers
 		/// <remark>
 		/// This value should not be modified inside a migration.
 		/// </remark>
-		public virtual int CurrentVersion
+		public virtual long CurrentVersion
 		{
 			get
 			{
@@ -714,7 +714,7 @@ namespace Migrator.Providers
 			EnsureHasConnection();
 			if (!TableExists("SchemaInfo"))
 			{
-				AddTable("SchemaInfo", new Column("Version", DbType.Int32, ColumnProperty.PrimaryKey));
+				AddTable("SchemaInfo", new Column("Version", DbType.Int64, ColumnProperty.PrimaryKey));
 			}
 		}
 

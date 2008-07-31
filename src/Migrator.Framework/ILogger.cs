@@ -9,28 +9,28 @@ namespace Migrator.Framework
 		/// </summary>
 		/// <param name="currentVersion">Start version</param>
 		/// <param name="finalVersion">Final Version</param>
-		void Started(int currentVersion, int finalVersion);
+		void Started(long currentVersion, long finalVersion);
 
 		/// <summary>
 		/// Log that we are migrating up
 		/// </summary>
 		/// <param name="version">Version we are migrating to</param>
 		/// <param name="migrationName">Migration name</param>
-		void MigrateUp(int version, string migrationName);
+		void MigrateUp(long version, string migrationName);
 
 		/// <summary>
 		/// Log that we are migrating down
 		/// </summary>
 		/// <param name="version">Version we are migrating to</param>
 		/// <param name="migrationName">Migration name</param>
-		void MigrateDown(int version, string migrationName);
+		void MigrateDown(long version, string migrationName);
 
 		/// <summary>
 		/// Inform that a migration corresponding to the number of
 		/// version is untraceable (not found?) and will be ignored.
 		/// </summary>
 		/// <param name="version">Version we couldnt find</param>
-		void Skipping(int version);
+		void Skipping(long version);
 
 		/// <summary>
 		/// Log that we are rolling back to version
@@ -38,7 +38,7 @@ namespace Migrator.Framework
 		/// <param name="originalVersion">
 		/// version
 		/// </param>
-		void RollingBack(int originalVersion);
+		void RollingBack(long originalVersion);
 
 		/// <summary>
 		/// Log that we had an exception on a migration
@@ -46,14 +46,14 @@ namespace Migrator.Framework
 		/// <param name="version">La version de la migration qui a produire l'exception.</param>
 		/// <param name="migrationName">Le nom de la migration qui a produire l'exception.</param>
 		/// <param name="ex">L'exception lancée</param>
-		void Exception(int version, string migrationName, Exception ex);
+		void Exception(long version, string migrationName, Exception ex);
 
 		/// <summary>
 		/// Log that we have finished a migration
 		/// </summary>
 		/// <param name="originalVersion">La version intiale de la base de données</param>
 		/// <param name="currentVersion">La version actuel de la base de donnée</param>
-		void Finished(int originalVersion, int currentVersion);
+		void Finished(long originalVersion, long currentVersion);
 
 		/// <summary>
 		/// Log a message

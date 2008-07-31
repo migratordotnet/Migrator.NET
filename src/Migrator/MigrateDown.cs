@@ -7,22 +7,22 @@ namespace Migrator
     /// </summary>
     public class MigrateDown : BaseMigrate
     {
-        public MigrateDown(int current, ITransformationProvider provider, ILogger logger)
+        public MigrateDown(long current, ITransformationProvider provider, ILogger logger)
             : base(current, provider, logger)
         {
         }
 
-        public override int Previous
+        public override long Previous
         {
             get { return Current + 1; }
         }
 
-        public override int Next
+        public override long Next
         {
             get { return Current - 1; }
         }
 
-        public override bool Continue(int targetVersion)
+        public override bool Continue(long targetVersion)
         {
             return targetVersion < Current;
         }

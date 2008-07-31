@@ -46,7 +46,7 @@ namespace Migrator
         /// <summary>
         /// Returns the last version of the migrations.
         /// </summary>
-        public int LastVersion
+        public long LastVersion
         {
             get
             {
@@ -62,10 +62,10 @@ namespace Migrator
         /// <exception cref="CheckForDuplicatedVersion">CheckForDuplicatedVersion</exception>
         public void CheckForDuplicatedVersion()
         {
-            List<int> versions = new List<int>();
+            List<long> versions = new List<long>();
             foreach (Type t in _migrationsTypes)
             {
-                int version = GetMigrationVersion(t);
+                long version = GetMigrationVersion(t);
 
                 if (versions.Contains(version))
                     throw new DuplicatedVersionException(version);
@@ -103,7 +103,7 @@ namespace Migrator
         /// </summary>
         /// <param name="t">Migration type.</param>
         /// <returns>Version number sepcified in the attribute</returns>
-        public static int GetMigrationVersion(Type t)
+        public static long GetMigrationVersion(Type t)
         {
             MigrationAttribute attrib = (MigrationAttribute)
                                         Attribute.GetCustomAttribute(t, typeof(MigrationAttribute));
@@ -111,7 +111,7 @@ namespace Migrator
             return attrib.Version;
         }
 
-        public Migration GetMigration(int version)
+        public Migration GetMigration(long version)
         {
             foreach (Type t in _migrationsTypes)
             {
