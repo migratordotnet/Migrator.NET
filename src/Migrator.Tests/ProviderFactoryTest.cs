@@ -30,7 +30,7 @@ namespace Migrator.Tests
         }
 
 
-        [Test, Category("SqlServerCe")]
+        [Test, Category("SqlServerCE")]
         public void CanLoad_SqlServerCeProvider()
         {
             ITransformationProvider provider = ProviderFactory.Create("SqlServerCe",
