@@ -132,7 +132,7 @@ namespace Migrator
 
             while (migrate.Continue(version))
             {
-                Migration migration = _migrationLoader.GetMigration(migrate.Current);
+                IMigration migration = _migrationLoader.GetMigration(migrate.Current);
                 if (null == migration)
                 {
                     _logger.Skipping(migrate.Current);

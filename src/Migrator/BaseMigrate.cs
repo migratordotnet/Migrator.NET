@@ -50,6 +50,6 @@ namespace Migrator
 
         public abstract bool Continue(long targetVersion);
 
-        public abstract void Migrate(Migration migration);
+        public abstract void Migrate(IMigration migration);
     }
 }

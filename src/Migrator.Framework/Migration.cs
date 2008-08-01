@@ -65,7 +65,7 @@ namespace Migrator.Framework
     /// }
     /// </code>
     /// </example>
-    public abstract class Migration
+    public abstract class Migration : IMigration
     {
         private ITransformationProvider _transformationProvider;
 

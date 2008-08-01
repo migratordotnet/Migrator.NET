@@ -35,6 +35,7 @@
     <Compile Include="ColumnProperty.cs" />
     <Compile Include="ForeignKeyConstraint.cs" />
     <Compile Include="ILogger.cs" />
+    <Compile Include="IMigration.cs" />
     <Compile Include="ITransformationProvider.cs" />
     <Compile Include="Loggers\ConsoleWriter.cs" />
     <Compile Include="Loggers\IAttachableLogger.cs" />

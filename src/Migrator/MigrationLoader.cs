@@ -87,7 +87,7 @@ namespace Migrator
                 MigrationAttribute attrib = 
                     (MigrationAttribute)  Attribute.GetCustomAttribute(t, typeof (MigrationAttribute));
 
-                if (attrib != null && typeof (Migration).IsAssignableFrom(t) && !attrib.Ignore)
+                if (attrib != null && typeof(IMigration).IsAssignableFrom(t) && !attrib.Ignore)
                 {
                     migrations.Add(t);
                 }
@@ -111,13 +111,13 @@ namespace Migrator
             return attrib.Version;
         }
 
-        public Migration GetMigration(long version)
+        public IMigration GetMigration(long version)
         {
             foreach (Type t in _migrationsTypes)
             {
                 if (GetMigrationVersion(t) == version)
                 {
-                    Migration migration = (Migration)Activator.CreateInstance(t);
+                    IMigration migration = (IMigration)Activator.CreateInstance(t);
                     migration.Database = _provider;
                     return migration;
                 }

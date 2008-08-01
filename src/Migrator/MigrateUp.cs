@@ -29,7 +29,7 @@ namespace Migrator
             return Current <= targetVersion;
         }
 
-        public override void Migrate(Migration migration)
+        public override void Migrate(IMigration migration)
         {
             _provider.BeginTransaction();
 
