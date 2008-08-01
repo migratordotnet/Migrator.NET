@@ -11,6 +11,7 @@
 
 using System;
 using System.Configuration;
+using Migrator.Framework.Loggers;
 using Migrator.Providers.Mysql;
 using Migrator.Tests.Providers;
 using NUnit.Framework;
@@ -27,6 +28,7 @@ namespace Migrator.Tests.Providers
             if (constr == null)
                 throw new ArgumentNullException("MySqlConnectionString", "No config file");
             _provider = new MySqlTransformationProvider(new MysqlDialect(), constr);
+            // _provider.Logger = new Logger(true, new ConsoleWriter());
 
             AddDefaultTable();
         }

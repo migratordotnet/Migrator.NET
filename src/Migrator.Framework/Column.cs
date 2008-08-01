@@ -39,6 +39,13 @@ namespace Migrator.Framework
             Size = size;
         }
 
+        public Column(string name, DbType type, object defaultValue)
+        {
+            Name = name;
+            Type = type;
+            DefaultValue = defaultValue;
+        }
+
         public Column(string name, DbType type, ColumnProperty property)
         {
             Name = name;

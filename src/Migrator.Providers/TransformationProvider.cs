@@ -351,6 +351,21 @@ namespace Migrator.Providers
 			AddColumn(table, column, type, size, ColumnProperty.Null, null);
 		}
 
+        public void AddColumn(string table, string column, DbType type, object defaultValue)
+        {
+            if (ColumnExists(table, column))
+            {
+                Logger.Warn("Column {0}.{1} already exists", table, column);
+                return;
+            }
+
+            ColumnPropertiesMapper mapper =
+                _dialect.GetAndMapColumnProperties(new Column(column, type, defaultValue));
+
+            AddColumn(table, mapper.ColumnSql);
+            
+        }
+
 		/// <summary>
 		/// <see cref="TransformationProvider.AddColumn(string, string, DbType, int, ColumnProperty, object)">
 		/// AddColumn(string, string, Type, int, ColumnProperty, object)
@@ -511,7 +526,7 @@ namespace Migrator.Providers
 
 		public int ExecuteNonQuery(string sql)
 		{
-			// Console.Out.WriteLine(sql);
+            Logger.Trace(sql);
 			IDbCommand cmd = BuildCommand(sql);
 			try
 			{
@@ -543,6 +558,7 @@ namespace Migrator.Providers
 		/// <returns>A data iterator, <see cref="System.Data.IDataReader">IDataReader</see>.</returns>
 		public IDataReader ExecuteQuery(string sql)
 		{
+            Logger.Trace(sql);
 			IDbCommand cmd = BuildCommand(sql);
 			try
 			{
@@ -550,13 +566,14 @@ namespace Migrator.Providers
 			}
 			catch
 			{
-				// Logger.Warn("query failed: {0}", cmd.CommandText);
+				Logger.Warn("query failed: {0}", cmd.CommandText);
 				throw;
 			}
 		}
 
 		public object ExecuteScalar(string sql)
 		{
+            Logger.Trace(sql);
 			IDbCommand cmd = BuildCommand(sql);
 			try
 			{
@@ -564,7 +581,7 @@ namespace Migrator.Providers
 			}
 			catch
 			{
-				// Logger.Warn("Query failed: {0}", cmd.CommandText);
+				Logger.Warn("Query failed: {0}", cmd.CommandText);
 				throw;
 			}
 		}

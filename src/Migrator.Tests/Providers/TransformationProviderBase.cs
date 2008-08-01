@@ -214,6 +214,17 @@ namespace Migrator.Tests.Providers
         }
 
         [Test]
+        public void AddColumnWithDefaultButNoSize()
+        {
+            _provider.AddColumn("TestTwo", "TestWithDefault", DbType.Int32, 10);
+            Assert.IsTrue(_provider.ColumnExists("TestTwo", "TestWithDefault"));
+
+
+            _provider.AddColumn("TestTwo", "TestWithDefaultString", DbType.String, "'foo'");
+            Assert.IsTrue(_provider.ColumnExists("TestTwo", "TestWithDefaultString"));
+        }
+
+        [Test]
         public void AddBooleanColumnWithDefault()
         {
             _provider.AddColumn("TestTwo", "TestBoolean", DbType.Boolean, 0, 0, false);

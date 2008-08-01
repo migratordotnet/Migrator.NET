@@ -103,6 +103,11 @@ namespace Migrator.Providers
             // No Op
         }
 
+        public void AddColumn(string table, string column, DbType type, object defaultValue)
+        {
+            // No Op
+        }
+
         public void AddColumn(string table, string column, DbType type, int size)
         {
             // No Op
