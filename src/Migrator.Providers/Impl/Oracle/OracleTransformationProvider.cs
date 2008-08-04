@@ -16,6 +16,27 @@ namespace Migrator.Providers.Oracle
             _connection.Open();
         }
 
+        public override void AddForeignKey(string name, string primaryTable, string[] primaryColumns, string refTable,
+                                          string[] refColumns, Migrator.Framework.ForeignKeyConstraint constraint)
+        {
+            if (ConstraintExists(primaryTable, name))
+            {
+                Logger.Warn("Constraint {0} already exists", name);
+                return;
+            }
+
+            ExecuteNonQuery(
+                String.Format(
+                    "ALTER TABLE {0} ADD CONSTRAINT {1} FOREIGN KEY ({2}) REFERENCES {3} ({4})",
+                    primaryTable, name, String.Join(",", primaryColumns),
+                    refTable, String.Join(",", refColumns)));
+        }
+
+        public override void AddColumn(string table, string sqlColumn)
+        {
+            ExecuteNonQuery(String.Format("ALTER TABLE {0} ADD {1}", table, sqlColumn));
+        }
+
         public override bool ConstraintExists(string table, string name)
         {
             string sql =
