@@ -133,8 +133,7 @@ namespace Migrator.Providers
 			}
 		}
 
-
-		public virtual void AddTable(string table, string columns)
+		public virtual void AddTable(string table, string engine, string columns)
 		{
 			table = _dialect.TableNameNeedsQuote ? _dialect.Quote(table) : table;
 			string sqlCreate = String.Format("CREATE TABLE {0} ({1})", table, columns);
@@ -157,34 +156,56 @@ namespace Migrator.Providers
 		/// </example>
 		public virtual void AddTable(string name, params Column[] columns)
 		{
-			if (TableExists(name))
-			{
-				Logger.Warn("Table {0} already exists", name);
-				return;
-			}
-
-			List<string> pks = GetPrimaryKeys(columns);
-			bool compoundPrimaryKey = pks.Count > 1;
-
-			List<ColumnPropertiesMapper> columnProviders = new List<ColumnPropertiesMapper>(columns.Length);
-			foreach (Column column in columns)
-			{
-				// Remove the primary key notation if compound primary key because we'll add it back later
-				if (compoundPrimaryKey && column.IsPrimaryKey)
-					column.ColumnProperty = ColumnProperty.Unsigned | ColumnProperty.NotNull;
-
-				ColumnPropertiesMapper mapper = _dialect.GetAndMapColumnProperties(column);
-				columnProviders.Add(mapper);
-			}
-
-			string columnsAndIndexes = JoinColumnsAndIndexes(columnProviders);
-			AddTable(name, columnsAndIndexes);
-
-			if (compoundPrimaryKey)
-			{
-				AddPrimaryKey(String.Format("PK_{0}", name), name, pks.ToArray());
-			}
+            // Most databases don't have the concept of a storage engine, so default is to not use it.
+            AddTable(name, null, columns);
 		}
+
+        /// <summary>
+        /// Add a new table
+        /// </summary>
+        /// <param name="name">Table name</param>
+        /// <param name="columns">Columns</param>
+        /// <param name="engine">the database storage engine to use</param>
+        /// <example>
+        /// Adds the Test table with two columns:
+        /// <code>
+        /// Database.AddTable("Test", "INNODB",
+        ///	                  new Column("Id", typeof(int), ColumnProperty.PrimaryKey),
+        ///	                  new Column("Title", typeof(string), 100)
+        ///	                 );
+        /// </code>
+        /// </example>
+        public virtual void AddTable(string name, string engine, params Column[] columns)
+        {
+
+            if (TableExists(name))
+            {
+                Logger.Warn("Table {0} already exists", name);
+                return;
+            }
+
+            List<string> pks = GetPrimaryKeys(columns);
+            bool compoundPrimaryKey = pks.Count > 1;
+
+            List<ColumnPropertiesMapper> columnProviders = new List<ColumnPropertiesMapper>(columns.Length);
+            foreach (Column column in columns)
+            {
+                // Remove the primary key notation if compound primary key because we'll add it back later
+                if (compoundPrimaryKey && column.IsPrimaryKey)
+                    column.ColumnProperty = ColumnProperty.Unsigned | ColumnProperty.NotNull;
+
+                ColumnPropertiesMapper mapper = _dialect.GetAndMapColumnProperties(column);
+                columnProviders.Add(mapper);
+            }
+
+            string columnsAndIndexes = JoinColumnsAndIndexes(columnProviders);
+            AddTable(name, engine, columnsAndIndexes);
+
+            if (compoundPrimaryKey)
+            {
+                AddPrimaryKey(String.Format("PK_{0}", name), name, pks.ToArray());
+            }
+        }
 
 		public List<string> GetPrimaryKeys(IEnumerable<Column> columns)
 		{

@@ -1,12 +1,3 @@
-/*
- * Created by SharpDevelop.
- * User: evonz
- * Date: 7/25/2008
- * Time: 10:06 PM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-
 using System;
 using Migrator.Framework;
 using System.Collections.Generic;
@@ -25,15 +16,15 @@ namespace Migrator
             : base(availableMigrations, provider, logger)
         {
 			_current = 0;
-			if(_availableMigrations.Count > 0) {
+			if (_availableMigrations.Count > 0) {
 				_current = provider.AppliedMigrations[provider.AppliedMigrations.Count - 1];
 			}
 			_goForward = false;
         }
 		
 		public override long Next{
-			get{
-				if(_goForward){
+			get {
+				if (_goForward) {
 					return NextMigration();
 				} else {
 					return PreviousMigration();
@@ -42,8 +33,8 @@ namespace Migrator
 		}
 		
 		public override long Previous{
-			get{
-				if(_goForward){
+			get {
+				if (_goForward) {
 					return PreviousMigration();
 				} else {
 					return NextMigration();
@@ -55,7 +46,7 @@ namespace Migrator
 			// If we're going backwards and our current is less than the target, 
 			// reverse direction.  Also, start over at zero to make sure we catch
 			// any merged migrations that are less than the current target.
-			if(!_goForward && version >= Current) {
+			if (!_goForward && version >= Current) {
 				_goForward = true;
 				Current = 0;
 				this.Iterate();
@@ -71,7 +62,7 @@ namespace Migrator
             _provider.BeginTransaction();
             MigrationAttribute attr = (MigrationAttribute)Attribute.GetCustomAttribute(migration.GetType(), typeof(MigrationAttribute));
             
-            if(_provider.AppliedMigrations.Contains(attr.Version)) {
+            if (_provider.AppliedMigrations.Contains(attr.Version)) {
             	// we're removing this one
 	            _logger.MigrateDown(Current, migration.Name);
 	            migration.Down();

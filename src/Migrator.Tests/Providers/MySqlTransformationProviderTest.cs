@@ -11,6 +11,8 @@
 
 using System;
 using System.Configuration;
+using System.Data;
+using Migrator.Framework;
 using Migrator.Framework.Loggers;
 using Migrator.Providers.Mysql;
 using Migrator.Tests.Providers;
@@ -38,7 +40,16 @@ namespace Migrator.Tests.Providers
         {
             DropTestTables();
         }
-		
+
+        [Test]
+        public void AddTableWithMyISAMEngine()
+        {
+            _provider.AddTable("Test", "MyISAM",
+                               new Column("Id", DbType.Int32, ColumnProperty.NotNull),
+                               new Column("name", DbType.String, 50)
+                );
+        }
+
 		// [Test,Ignore("MySql doesn't support check constraints")]
         public override void CanAddCheckConstraint() {}
 

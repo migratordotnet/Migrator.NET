@@ -55,7 +55,7 @@ namespace Migrator.Providers.SQLite
             string[] colNames = ParseSqlForColumnNames(newColDefs);
             string colNamesSql = String.Join(",", colNames);
             
-            AddTable(table + "_temp", colDefsSql);
+            AddTable(table + "_temp", null, colDefsSql);
             ExecuteQuery(String.Format("INSERT INTO {0}_temp SELECT {1} FROM {0}", table, colNamesSql));
             RemoveTable(table);
             ExecuteQuery(String.Format("ALTER TABLE {0}_temp RENAME TO {0}", table));
