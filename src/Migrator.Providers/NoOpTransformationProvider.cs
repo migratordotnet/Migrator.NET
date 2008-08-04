@@ -1,6 +1,7 @@
 using System.Data;
 using Migrator.Framework;
 using ForeignKeyConstraint=Migrator.Framework.ForeignKeyConstraint;
+using System.Collections.Generic;
 
 namespace Migrator.Providers
 {
@@ -34,6 +35,11 @@ namespace Migrator.Providers
         }
 
         public Column[] GetColumns(string table)
+        {
+            return null;
+        }
+
+        public Column GetColumnByName(string table, string column)
         {
             return null;
         }
@@ -267,10 +273,19 @@ namespace Migrator.Providers
             get { return this; }
         }
 
-        public long CurrentVersion
+        public void MigrationApplied(long version)
         {
-            get { return 0; }
-            set { }
+        	//no op
+        }
+
+        public void MigrationUnApplied(long version)
+        {
+        	//no op
+        }
+        
+        public List<long> AppliedMigrations
+        {
+        	get { return new List<long>(); }
         }
 
         protected void CreateSchemaInfoTable()

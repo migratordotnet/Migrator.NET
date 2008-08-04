@@ -87,11 +87,11 @@ namespace Migrator
         }
 
         /// <summary>
-        /// Returns the current version of the database.
+        /// Returns the current migrations applied to the database.
         /// </summary>
-        public long CurrentVersion
+        public List<long> AppliedMigrations 
         {
-            get { return _provider.CurrentVersion; }
+            get { return _provider.AppliedMigrations; }
         }
 
         /// <summary>
@@ -122,12 +122,8 @@ namespace Migrator
                 return;
             }
 
-            if (CurrentVersion == version) return;
-            bool goingUp = CurrentVersion < version;
-
             bool firstRun = true;
-
-            BaseMigrate migrate = BaseMigrate.GetInstance(goingUp, CurrentVersion, _provider, _logger);
+            BaseMigrate migrate = BaseMigrate.GetInstance(_migrationLoader.GetAvailableMigrations(), _provider, _logger);
             Logger.Started(migrate.Original, version);
 
             while (migrate.Continue(version))
@@ -156,7 +152,6 @@ namespace Migrator
 
                     // Oho! error! We rollback changes.
                     Logger.RollingBack(migrate.Previous);
-                    _provider.CurrentVersion = migrate.Previous;
                     _provider.Rollback();
 
                     throw;

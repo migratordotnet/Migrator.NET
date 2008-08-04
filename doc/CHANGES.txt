@@ -6,6 +6,10 @@
 
 - Changed the parameter names of AddForeignKey to try and make them easier to understand
 - Made Version for MigrationAttribute non-optional
+- Changed the Migration number to a long value so datestamps could be used.
+
+- Breaking Change!: Changed the storage of versions applied to one that keeps all the versions. This
+  will help deal with branches during development.
 
 ## Version 0.7.0
 - Geoff's major refactorings fork re-merged back into the trunk

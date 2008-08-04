@@ -111,6 +111,13 @@ namespace Migrator
             return attrib.Version;
         }
 
+        public List<long> GetAvailableMigrations()
+        {
+        	//List<int> availableMigrations = new List<int>();
+            _migrationsTypes.Sort(new MigrationTypeComparer(true));
+            return _migrationsTypes.ConvertAll(new Converter<Type, long>(GetMigrationVersion));
+        }
+        
         public IMigration GetMigration(long version)
         {
             foreach (Type t in _migrationsTypes)

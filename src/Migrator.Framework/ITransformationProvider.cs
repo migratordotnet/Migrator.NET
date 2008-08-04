@@ -1,4 +1,5 @@
 using System.Data;
+using System.Collections.Generic;
 
 namespace Migrator.Framework
 {
@@ -15,9 +16,9 @@ namespace Migrator.Framework
         ITransformationProvider this[string provider] { get;}
         
         /// <summary>
-        /// The current version that the database is at.
+        /// The list of Migrations currently applied to the database.
         /// </summary>
-        long CurrentVersion { get; set; }
+        List<long> AppliedMigrations { get; }
         
         ILogger Logger { get; set; }
 
@@ -294,6 +295,14 @@ namespace Migrator.Framework
         Column[] GetColumns(string table);
         
         /// <summary>
+        /// Get information about a single column in a table
+        /// </summary>
+        /// <param name="table">The table name that you want the columns for.</param>
+        /// <param name="column">The column name for which you want information.</param>
+        /// <returns></returns>
+        Column GetColumnByName(string table, string column);
+        
+        /// <summary>
         /// Get the names of all of the tables
         /// </summary>
         /// <returns>The names of all the tables.</returns>
@@ -307,6 +316,18 @@ namespace Migrator.Framework
         /// <param name="values">The values in the same order as the columns</param>
         /// <returns></returns>
         int Insert(string table, string[] columns, string[] values);
+        
+        /// <summary>
+        /// Marks a Migration version number as having been applied
+        /// </summary>
+        /// <param name="version">The version number of the migration that was applied</param>
+        void MigrationApplied(long version);
+        
+        /// <summary>
+        /// Marks a Migration version number as having been rolled back from the database
+        /// </summary>
+        /// <param name="version">The version number of the migration that was removed</param>
+        void MigrationUnApplied(long version);
         
         /// <summary>
         /// Remove an existing column from a table

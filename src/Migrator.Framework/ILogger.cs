@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Migrator.Framework
 {
@@ -10,6 +11,13 @@ namespace Migrator.Framework
 		/// <param name="currentVersion">Start version</param>
 		/// <param name="finalVersion">Final Version</param>
 		void Started(long currentVersion, long finalVersion);
+		
+		/// <summary>
+		/// Log that we have started a migration
+		/// </summary>
+		/// <param name="currentVersion">Start list of versions</param>
+		/// <param name="finalVersion">Final Version</param>
+		void Started(List<long> currentVersion, long finalVersion);
 
 		/// <summary>
 		/// Log that we are migrating up
@@ -55,6 +63,13 @@ namespace Migrator.Framework
 		/// <param name="currentVersion">La version actuel de la base de donnée</param>
 		void Finished(long originalVersion, long currentVersion);
 
+		/// <summary>
+		/// Log that we have finished a migration
+		/// </summary>
+		/// <param name="currentVersion">List of versions with which we started</param>
+		/// <param name="finalVersion">Final Version</param>
+		void Finished(List<long> currentVersion, long finalVersion);
+		
 		/// <summary>
 		/// Log a message
 		/// </summary>

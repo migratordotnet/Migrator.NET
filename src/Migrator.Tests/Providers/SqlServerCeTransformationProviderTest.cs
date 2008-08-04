@@ -19,7 +19,7 @@ using System.IO;
 
 namespace Migrator.Tests.Providers
 {
-    [TestFixture, Category("SqlServerCE")]
+    [TestFixture, Category("SqlServerCe")]
     public class SqlServerCeTransformationProviderTest : TransformationProviderConstraintBase
     {
         [SetUp]

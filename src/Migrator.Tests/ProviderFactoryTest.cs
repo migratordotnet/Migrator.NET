@@ -30,7 +30,7 @@ namespace Migrator.Tests
         }
 
 
-        [Test, Category("SqlServerCE")]
+        [Test, Category("SqlServerCe")]
         public void CanLoad_SqlServerCeProvider()
         {
             ITransformationProvider provider = ProviderFactory.Create("SqlServerCe",
@@ -67,7 +67,7 @@ namespace Migrator.Tests
             Assert.IsNotNull(provider);
         }
 
-        [Test, Category("PostgreSQL")]
+        [Test, Category("Postgre")]
         public void CanLoad_PostgreSQLProvider()
         {
             ITransformationProvider provider = ProviderFactory.Create("PostgreSQL",

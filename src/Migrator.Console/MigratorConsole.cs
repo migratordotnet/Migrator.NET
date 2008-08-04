@@ -13,6 +13,7 @@ using System;
 using System.Reflection;
 using Migrator.Framework;
 using Migrator.Tools;
+using System.Collections.Generic;
 
 namespace Migrator.MigratorConsole
 {
@@ -93,14 +94,14 @@ namespace Migrator.MigratorConsole
 			CheckArguments();
 			
 			Migrator mig = GetMigrator();
-			long currentVersion = mig.CurrentVersion;
+			List<long> appliedMigrations = mig.AppliedMigrations;
 			
 			Console.WriteLine("Available migrations:");
 			foreach (Type t in mig.MigrationsTypes)
 			{
                 long v = MigrationLoader.GetMigrationVersion(t);
 				Console.WriteLine("{0} {1} {2}",
-				                  v == currentVersion ? "=>" : "  ",
+                                  appliedMigrations.Contains(v) ? "=>" : "  ",
 				                  v.ToString().PadLeft(3),
 				                  StringUtils.ToHumanName(t.Name)
 				                 );

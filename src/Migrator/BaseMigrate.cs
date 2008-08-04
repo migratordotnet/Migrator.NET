@@ -1,4 +1,5 @@
 using Migrator.Framework;
+using System.Collections.Generic;
 
 namespace Migrator
 {
@@ -6,32 +7,26 @@ namespace Migrator
     {
         protected readonly ITransformationProvider _provider;
         protected ILogger _logger;
+        protected List<long> _availableMigrations;
+        protected List<long> _original;
         protected long _current;
-        protected long _original;
 
-        protected BaseMigrate(long current, ITransformationProvider provider, ILogger logger)
+        protected BaseMigrate(List<long> availableMigrations, ITransformationProvider provider, ILogger logger)
         {
             _provider = provider;
-            _current = current;
-            _original = current;
+            _availableMigrations = availableMigrations;
+            _original = new List<long> (_provider.AppliedMigrations.ToArray()); //clone
             _logger = logger;
         }
 
-        public static BaseMigrate GetInstance(bool up, long current, ITransformationProvider provider, ILogger logger)
+        public static BaseMigrate GetInstance(List<long> availableMigrations, ITransformationProvider provider, ILogger logger)
         {
-            if (up)
-            {
-                return new MigrateUp(current + 1, provider, logger);
-            }
-            else
-            {
-                return new MigrateDown(current, provider, logger);
-            }
+        	return new MigrateAnywhere(availableMigrations, provider, logger);
         }
 
-        public long Original
+        public List<long> Original
         {
-            get { return _original; }
+        	get { return _original; }
         }
 
         public virtual long Current
@@ -51,5 +46,58 @@ namespace Migrator
         public abstract bool Continue(long targetVersion);
 
         public abstract void Migrate(IMigration migration);
+        
+        /// <summary>
+        /// Finds the next migration available to be applied.  Only returns
+        /// migrations that have NOT already been applied.
+        /// </summary>
+        /// <returns>The migration number of the next available Migration.</returns>
+        protected long NextMigration()
+        {
+        	// Start searching at the current index
+        	int migrationSearch = _availableMigrations.IndexOf(Current)+1;
+        	
+        	// See if we can find a migration that matches the requirement
+        	while(migrationSearch < _availableMigrations.Count 
+        	      && _provider.AppliedMigrations.Contains(_availableMigrations[migrationSearch]))
+        	{
+        		migrationSearch++;
+        	}
+        	
+        	// did we exhaust the list?
+        	if(migrationSearch == _availableMigrations.Count){
+        		// we're at the last one.  Done!
+        		return _availableMigrations[migrationSearch-1]+1;
+        	}
+        	// found one.
+        	return _availableMigrations[migrationSearch];
+        }
+        
+        /// <summary>
+        /// Finds the previous migration that has been applied.  Only returns
+        /// migrations that HAVE already been applied.
+        /// </summary>
+        /// <returns>The most recently applied Migration.</returns>
+        protected long PreviousMigration()
+        {
+        	// Start searching at the current index
+        	int migrationSearch = _availableMigrations.IndexOf(Current)-1;
+        	
+        	// See if we can find a migration that matches the requirement
+        	while(migrationSearch > -1 
+        	      && !_provider.AppliedMigrations.Contains(_availableMigrations[migrationSearch]))
+        	{
+        		migrationSearch--;
+        	}
+        	
+        	// did we exhaust the list?
+        	if(migrationSearch < 0){
+        		// we're at the first one.  Done!
+        		return 0;
+        	}
+        	
+        	// found one.
+        	return _availableMigrations[migrationSearch];
+        }
     }
 }

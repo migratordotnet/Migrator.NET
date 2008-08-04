@@ -11,7 +11,7 @@ namespace Migrator.Tests.Providers
     /// </summary>
     public class TransformationProviderBase
     {
-        protected TransformationProvider _provider;
+        protected ITransformationProvider _provider;
 		
         [TearDown]
         public virtual void TearDown()
@@ -298,22 +298,22 @@ namespace Migrator.Tests.Providers
         }
 
         [Test]
-        public void CurrentVersion()
+        public void AppliedMigrations()
         {
             Assert.IsFalse(_provider.TableExists("SchemaInfo"));
             
             // Check that a "get" call works on the first run.
-            Assert.AreEqual(0, _provider.CurrentVersion);
+            Assert.AreEqual(0, _provider.AppliedMigrations.Count);
             Assert.IsTrue(_provider.TableExists("SchemaInfo"), "No SchemaInfo table created");
             
             // Check that a "set" called after the first run works.
-            _provider.CurrentVersion = 1;
-            Assert.AreEqual(1, _provider.CurrentVersion);
+            _provider.MigrationApplied(1);
+            Assert.AreEqual(1, _provider.AppliedMigrations[0]);
             
             _provider.RemoveTable("SchemaInfo");
             // Check that a "set" call works on the first run.
-            _provider.CurrentVersion = 1;
-            Assert.AreEqual(1, _provider.CurrentVersion);
+            _provider.MigrationApplied(1);
+            Assert.AreEqual(1, _provider.AppliedMigrations[0]);
             Assert.IsTrue(_provider.TableExists("SchemaInfo"), "No SchemaInfo table created");
         }
         
@@ -325,7 +325,7 @@ namespace Migrator.Tests.Providers
         public void CommitTwice()
         {
             _provider.Commit();
-            Assert.AreEqual(0, _provider.CurrentVersion);
+            Assert.AreEqual(0, _provider.AppliedMigrations.Count);
             _provider.Commit();
         }
         

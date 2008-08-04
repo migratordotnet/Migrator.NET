@@ -60,8 +60,7 @@
     <Compile Include="Compile\ScriptEngine.cs" />
     <Compile Include="DuplicatedVersionException.cs" />
     <Compile Include="IrreversibleMigrationException.cs" />
-    <Compile Include="MigrateDown.cs" />
-    <Compile Include="MigrateUp.cs" />
+    <Compile Include="MigrateAnywhere.cs" />
     <Compile Include="MigrationComparer.cs" />
     <Compile Include="MigrationLoader.cs" />
     <Compile Include="Migrator.cs" />

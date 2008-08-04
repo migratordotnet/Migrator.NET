@@ -52,6 +52,7 @@
     <Compile Include="MigrationTestCase.cs" />
     <Compile Include="MigrationTypeComparerTest.cs" />
     <Compile Include="MigratorTest.cs" />
+    <Compile Include="MigratorTestDates.cs" />
     <Compile Include="ProviderFactoryTest.cs" />
     <Compile Include="Providers\SqlServer2005TransformationProviderTest.cs" />
     <Compile Include="Providers\MySqlTransformationProviderTest.cs" />

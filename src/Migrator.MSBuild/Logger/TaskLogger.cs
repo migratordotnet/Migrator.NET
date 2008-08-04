@@ -10,6 +10,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using ILogger=Migrator.Framework.ILogger;
@@ -44,15 +45,20 @@ namespace Migrator.MSBuild.Logger
             LogInfo("Current version : {0}", currentVersion);
         }
 
-        public void MigrateUp(long version, string migrationName)
-        {
-            LogInfo("{0} {1}", version.ToString().PadLeft(_widthFirstColumn), migrationName);
-        }
+		public void Started(List<long> currentVersions, long finalVersion)
+		{
+			LogInfo("Latest version applied : {0}.  Target version : {1}", LatestVersion(currentVersions), finalVersion);
+		}
 
-        public void MigrateDown(long version, string migrationName)
-        {
-            MigrateUp(version, migrationName);
-        }
+		public void MigrateUp(long version, string migrationName)
+		{
+			LogInfo("Applying {0}: {1}", version.ToString().PadLeft(_widthFirstColumn), migrationName);
+		}
+
+		public void MigrateDown(long version, string migrationName)
+		{
+			LogInfo("Removing {0}: {1}", version.ToString().PadLeft(_widthFirstColumn), migrationName);
+		}
 
         public void Skipping(long version)
         {
@@ -69,8 +75,14 @@ namespace Migrator.MSBuild.Logger
             LogInfo("{0} Error in migration {1} : {2}", "".PadLeft(_widthFirstColumn), version, ex.Message);
             _task.Log.LogErrorFromException(ex, true);
         }
+        
 
         public void Finished(long originalVersion, long currentVersion)
+        {
+            LogInfo("Migrated to version {0}", currentVersion);
+        }
+
+        public void Finished(List<long> originalVersion, long currentVersion)
         {
             LogInfo("Migrated to version {0}", currentVersion);
         }
@@ -89,5 +101,13 @@ namespace Migrator.MSBuild.Logger
         {
             _task.Log.LogMessage(MessageImportance.Low, "{0} {1}", "".PadLeft(_widthFirstColumn), String.Format(format, args));
         }
+		
+		private string LatestVersion(List<long> versions){
+			if(versions.Count > 0)
+			{
+				return versions[versions.Count - 1].ToString();
+			}
+			return "No migrations applied yet!";
+		}
     }
 }

@@ -47,17 +47,22 @@ namespace Migrator.Framework.Loggers
 
 		public void Started(long currentVersion, long finalVersion)
 		{
-			WriteLine("Current version : {0}", currentVersion);
+			WriteLine("Current version : {0}.  Target version : {1}", currentVersion, finalVersion);
+		}
+
+		public void Started(List<long> currentVersions, long finalVersion)
+		{
+			WriteLine("Latest version applied : {0}.  Target version : {1}", LatestVersion(currentVersions), finalVersion);
 		}
 
 		public void MigrateUp(long version, string migrationName)
 		{
-			WriteLine("{0} {1}", version.ToString().PadLeft(_widthFirstColumn), migrationName);
+			WriteLine("Applying {0}: {1}", version.ToString().PadLeft(_widthFirstColumn), migrationName);
 		}
 
 		public void MigrateDown(long version, string migrationName)
 		{
-			MigrateUp(version, migrationName);
+			WriteLine("Removing {0}: {1}", version.ToString().PadLeft(_widthFirstColumn), migrationName);
 		}
 
 		public void Skipping(long version)
@@ -90,6 +95,11 @@ namespace Migrator.Framework.Loggers
 		}
 
 		public void Finished(long originalVersion, long currentVersion)
+		{
+			WriteLine("Migrated to version {0}", currentVersion);
+		}
+
+		public void Finished(List<long> originalVersions, long currentVersion)
 		{
 			WriteLine("Migrated to version {0}", currentVersion);
 		}
@@ -133,6 +143,14 @@ namespace Migrator.Framework.Loggers
 		public static ILogger ConsoleLogger()
 		{
 			return new Logger(false, new ConsoleWriter());
+		}
+		
+		private string LatestVersion(List<long> versions){
+			if(versions.Count > 0)
+			{
+				return versions[versions.Count - 1].ToString();
+			}
+			return "No migrations applied yet!";
 		}
 	}
 }

@@ -29,6 +29,7 @@ namespace Migrator.Providers
 		private ILogger _logger;
 		protected IDbConnection _connection;
 		private IDbTransaction _transaction;
+		private List<long> _appliedMigrations;
 
 		protected readonly string _connectionString;
 		protected Dialect _dialect;
@@ -634,6 +635,11 @@ namespace Migrator.Providers
 			return ExecuteNonQuery(String.Format("INSERT INTO {0} ({1}) VALUES ({2})", table, String.Join(", ", columns), String.Join(", ", QuoteValues(values))));
 		}
 
+		public virtual int Delete(string table, string wherecolumn, string wherevalue)
+		{
+			return ExecuteNonQuery(String.Format("DELETE FROM {0} WHERE {1} = {2}", table, wherecolumn, QuoteValues(new string[]{wherevalue})[0]));
+		}
+
 		/// <summary>
 		/// Starts a transaction. Called by the migration mediator.
 		/// </summary>
@@ -692,38 +698,47 @@ namespace Migrator.Providers
 			_transaction = null;
 		}
 
-		/// <summary>
-		/// Get or set the current version of the database.
-		/// This determines if the migrator should migrate up or down
-		/// in the migration numbers.
-		/// </summary>
-		/// <remark>
-		/// This value should not be modified inside a migration.
-		/// </remark>
-		public virtual long CurrentVersion
+        /// <summary>
+        /// The list of Migrations currently applied to the database.
+        /// </summary>
+		public List<long> AppliedMigrations
 		{
 			get
 			{
-				CreateSchemaInfoTable();
-				object version = SelectScalar("version", "SchemaInfo");
-				if (version == null)
+				if(_appliedMigrations == null)
 				{
-					return 0;
+					_appliedMigrations = new List<long>();
+					CreateSchemaInfoTable();
+					using(IDataReader reader = Select("version","SchemaInfo")){
+						while(reader.Read()){
+							_appliedMigrations.Add(reader.GetInt32(0));
+						}
+					}
 				}
-				else
-				{
-					return Convert.ToInt32(version);
-				}
+				return _appliedMigrations;
 			}
-			set
-			{
-				CreateSchemaInfoTable();
-				int count = Update("SchemaInfo", new string[] { "Version" }, new string[] { value.ToString() });
-				if (count == 0)
-				{
-					Insert("SchemaInfo", new string[] { "Version" }, new string[] { value.ToString() });
-				}
-			}
+		}
+		
+		/// <summary>
+        /// Marks a Migration version number as having been applied
+        /// </summary>
+        /// <param name="version">The version number of the migration that was applied</param>
+		public void MigrationApplied(long version)
+		{
+			CreateSchemaInfoTable();
+			Insert("SchemaInfo",new string[]{"version"},new string[]{version.ToString()});
+			_appliedMigrations.Add(version);
+		}
+		
+        /// <summary>
+        /// Marks a Migration version number as having been rolled back from the database
+        /// </summary>
+        /// <param name="version">The version number of the migration that was removed</param>
+		public void MigrationUnApplied(long version)
+		{
+			CreateSchemaInfoTable();
+			Delete("SchemaInfo", "version", version.ToString());
+			_appliedMigrations.Remove(version);
 		}
 
 		protected void CreateSchemaInfoTable()
