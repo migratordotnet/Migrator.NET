@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="migratori-contrib" default="build" xmlns="http://nant.sf.net/release/0.85/nant.xsd">
+	<property name="version" value="0.8"/>
+	
+	<property name="defines" value="DOTNET2" if="${framework::get-target-framework() == 'net-2.0' or framework::get-target-framework() == 'net-3.5'}" />
+	<property name="defines" value="MONO2" if="${framework::get-target-framework() == 'mono-2.0'}" />
+	<property name="debug" value="true" />
+	
+	<!-- Paths to various parts of the build -->
+	<property name="dir.bin" value="build" />
+	<property name="dir.zip" value="${dir.bin}/zip" />
+	<property name="dir.src" value="."/>
+	<property name="dir.config" value="${dir.src}/config" />
+	<property name="dir.websrc" value="Migrator.Web" />
+	<property name="dir.web" value="build/web" />
+	<property name="dir.webbin" value="${dir.web}/bin" />
+	
+	<property name="dir.migrator" value="../build" />
+	<property name="dir.lib" value="../lib" />
+	<property name="dir.tools.ncover" value="${dir.lib}/NCover" />
+	<property name="dir.tools.nunit" value="${dir.lib}/NUnit" />
+	<property name="dir.lib.postgre" value="${dir.lib}/Npgsql/${framework::get-target-framework()}" />
+	
+	
+	<!-- Test related properties -->
+	<!-- To exclude tests, provide a comma separated set of exclude categories in your local.properties e.g. Oracle,SqlServer,Postgre -->
+	<property name="tests.exclude" value=""/>
+	<property name="tests.app.config" value="${dir.config}/app.config"/>
+	
+	<!-- Overrideable. Add your own values to a file called local.properties to have them override any above properties -->
+	<include buildfile="local.properties" failonerror="false"/>
+	
+	<!-- load the NCover NAnt tasks -->
+	<loadtasks assembly="${dir.tools.ncover}/Explorer/NCoverExplorer.NAntTasks.dll" />
+	
+	<target name="build" description="Builds all contribs" depends="prepare, build-migrator-web"/>
+
+
+	<target name="build-migrator-web" description="Builds Migrator.Web">		
+		<csc target="library" output="${dir.webbin}/Migrator.Web.dll" define="${defines}" debug="${debug}">
+			<sources>
+				<include name="${dir.config}/AssemblyInfo.cs" />
+				<include name="${dir.websrc}/**/*.cs" />
+			</sources>
+			<references>
+				<include name="System.dll" />
+				<include name="${dir.migrator}/Migrator.Framework.dll" />
+				<include name="${dir.migrator}/Migrator.dll" />
+				<include name="${dir.migrator}/Migrator.Providers.dll" />
+			</references>
+		</csc>
+		<copy todir="${dir.web}">
+			<fileset basedir="${dir.websrc}">
+				<include name="**/*.aspx"/>
+				<include name="**/*.config"/>
+			</fileset>
+		</copy>
+		<copy todir="${dir.webbin}">
+			<fileset basedir="${dir.migrator}">
+				<include name="Migrator*.dll"/>
+				<exclude name="*Test*"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="rebuild" description="Rebuilds the app from scratch" depends="clean, build" />
+	
+	<target name="prepare">
+		<mkdir dir="${dir.webbin}" />
+
+		<fileset id="SharedLibs">
+			<include name="${dir.lib}/NAnt.Core.dll" />
+			<include name="${dir.lib}/log4net.dll" />
+			<include name="${dir.lib}/MySql.Data.dll" />
+			<include name="${dir.lib}/System.Data.SQLite.DLL" />
+			<include name="${dir.lib.postgre}/Npgsql.dll" />
+			<include name="${dir.lib.postgre}/Mono.Security.dll" />
+			<include name="${dir.lib}/Oracle.DataAccess.dll" />
+			<include name="${dir.lib}/System.Data.SqlServerCe.dll" />
+		</fileset>
+		<copy todir="${dir.webbin}" flatten="true">
+			<fileset refid="SharedLibs"/>
+		</copy>
+	</target>
+	
+	<target name="clean" description="Sweep it yeah!">
+		<delete dir="${dir.bin}"/>
+		<delete dir="${dir.results}"/>
+	</target>
+	
+	<target name="zip" description="Creates a zip file of each contrib including examples, source and docs" depends="build">
+		<mkdir dir="${dir.zip}" />
+		
+		
+		<!-- for the web frontend -->
+		<property name="zipcontainer" value="${dir.zip}/migratordotnet-webfe-${version}"/>
+		<mkdir dir="${zipcontainer}" />
+		<copy todir="${zipcontainer}">
+			<fileset basedir="${dir.web}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		
+		<!-- now zip up all the contribs -->
+		<zip zipfile="migratordotnet-contribs-${version}.zip">
+			<fileset basedir="${dir.zip}">
+				<include name="**/*" />
+			</fileset>
+		</zip>
+		
+		<!-- and clean up -->
+		<delete dir="${dir.zip}"/>
+	</target>
+
+</project>

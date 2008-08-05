@@ -9,9 +9,12 @@
 - Changed the Migration number to a long value so datestamps could be used.
 - Added a SqlScriptFileLogger to log all of the SQL changes to a file (Thanks carl.lotz)
 	- Supported in MSBuild and NAnt tasks
-	
+
 - Breaking Change!: Changed the storage of versions applied to one that keeps all the versions. This
   will help deal with branches during development. (Thanks evonzee)
+
+- Added contribs for extra interesting code
+  - Added Migration.Web to show how to run migrations from a Web App directly.
 
 ## Version 0.7.0
 - Geoff's major refactorings fork re-merged back into the trunk
