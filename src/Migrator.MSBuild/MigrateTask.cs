@@ -10,10 +10,12 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Reflection;
 using Microsoft.Build.Utilities;
 using Microsoft.Build.Framework;
 using Migrator.Compile;
+using Migrator.Framework.Loggers;
 using Migrator.MSBuild.Logger;
 
 namespace Migrator.MSBuild
@@ -21,6 +23,10 @@ namespace Migrator.MSBuild
 	/// <summary>
 	/// Runs migrations on a database
 	/// </summary>
+	/// <remarks>
+	/// To script the changes applied to the database via the migrations into a file, set the <see cref="ScriptChanges"/> 
+	/// flag and provide a file to write the changes to via the <see cref="ScriptFile"/> setting.
+	/// </remarks>
 	/// <example>
     /// <Target name="Migrate" DependsOnTargets="Build">
     ///     <Migrate Provider="SqlServer"
@@ -46,6 +52,7 @@ namespace Migrator.MSBuild
 		private string _connectionString;
 		private ITaskItem[] _migrationsAssembly;
 		private bool _trace;
+	    private string _scriptFile;
 
         private string _directory;
         private string _language;
@@ -102,6 +109,26 @@ namespace Migrator.MSBuild
 			get { return _trace; }
 		}
 
+        /// <summary>
+        /// Gets value indicating whether to script the changes made to the database 
+        /// to the file indicated by <see cref="ScriptFile"/>.
+        /// </summary>
+        /// <value><c>true</c> if the changes should be scripted to a file; otherwise, <c>false</c>.</value>
+	    public bool ScriptChanges
+	    {
+            get { return !String.IsNullOrEmpty(_scriptFile); }
+	    }
+
+	    /// <summary>
+        /// Gets or sets the script file that will contain the Sql statements 
+        /// that are executed as part of the migrations.
+        /// </summary>
+	    public string ScriptFile
+	    {
+	        get { return _scriptFile; }
+	        set { _scriptFile = value; }
+	    }
+
 		public override bool Execute()
 		{
             if (! String.IsNullOrEmpty(Directory))
@@ -124,8 +151,23 @@ namespace Migrator.MSBuild
 
         private void Execute(Assembly asm)
 	    {
-	        Migrator mig = new Migrator(Provider, ConnectionString, asm, Trace, new TaskLogger(this));
+            Migrator mig = new Migrator(Provider, ConnectionString, asm, Trace, new TaskLogger(this));
+            if (ScriptChanges)
+            {
+                using (StreamWriter writer = new StreamWriter(ScriptFile))
+                {
+                    mig.Logger = new SqlScriptFileLogger(mig.Logger, writer);
+                    RunMigration(mig);
+                }
+            }
+            else
+            {
+                RunMigration(mig);
+            }
+	    }
 
+	    private void RunMigration(Migrator mig)
+	    {
 	        if (_to == -1)
 	            mig.MigrateToLastVersion();
 	        else

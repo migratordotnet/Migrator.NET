@@ -549,6 +549,7 @@ namespace Migrator.Providers
 		public int ExecuteNonQuery(string sql)
 		{
             Logger.Trace(sql);
+            Logger.ApplyingDBChange(sql);
 			IDbCommand cmd = BuildCommand(sql);
 			try
 			{

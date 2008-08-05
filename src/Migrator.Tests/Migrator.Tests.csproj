@@ -65,6 +65,7 @@
     <Compile Include="Providers\TransformationProviderConstraintBase.cs" />
     <Compile Include="ScriptEngineTests.cs" />
     <Compile Include="Tools\SchemaDumperTest.cs" />
+    <Compile Include="Tools\SqlFileLoggerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

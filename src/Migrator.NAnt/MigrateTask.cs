@@ -13,6 +13,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using Migrator.Compile;
+using Migrator.Framework.Loggers;
 using NAnt.Core;
 using NAnt.Core.Attributes;
 using Migrator.NAnt.Loggers;
@@ -41,6 +42,7 @@ namespace Migrator.NAnt
 		private string _connectionString;
 		private FileInfo _migrationsAssembly;
 		private bool _trace;
+        private string _scriptFile;
 
         private string _directory;
         private string _language;
@@ -98,6 +100,27 @@ namespace Migrator.NAnt
 			set { _trace = value; }
 			get { return _trace; }
 		}
+
+        /// <summary>
+        /// Gets value indicating whether to script the changes made to the database 
+        /// to the file indicated by <see cref="ScriptFile"/>.
+        /// </summary>
+        /// <value><c>true</c> if the changes should be scripted to a file; otherwise, <c>false</c>.</value>
+        public bool ScriptChanges
+        {
+            get { return !String.IsNullOrEmpty(_scriptFile); }
+        }
+
+        /// <summary>
+        /// Gets or sets the script file that will contain the Sql statements 
+        /// that are executed as part of the migrations.
+        /// </summary>
+        [TaskAttribute("scriptFile")]
+        public string ScriptFile
+        {
+            get { return _scriptFile; }
+            set { _scriptFile = value; }
+        }
 		
 		protected override void ExecuteTask()
 		{
@@ -117,7 +140,22 @@ namespace Migrator.NAnt
         private void Execute(Assembly asm)
         {
             Migrator mig = new Migrator(Provider, ConnectionString, asm, Trace, new TaskLogger(this));
+            if (ScriptChanges)
+            {
+                using (StreamWriter writer = new StreamWriter(ScriptFile))
+                {
+                    mig.Logger = new SqlScriptFileLogger(mig.Logger, writer);
+                    RunMigration(mig);
+                }
+            }
+            else
+            {
+                RunMigration(mig);
+            }
+        }
 
+        private void RunMigration(Migrator mig)
+        {
             if (_to == -1)
                 mig.MigrateToLastVersion();
             else

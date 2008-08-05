@@ -41,6 +41,7 @@
     <Compile Include="Loggers\IAttachableLogger.cs" />
     <Compile Include="Loggers\ILogWriter.cs" />
     <Compile Include="Loggers\Logger.cs" />
+    <Compile Include="Loggers\SqlScriptFileLogger.cs" />
     <Compile Include="Migration.cs" />
     <Compile Include="MigrationAttribute.cs" />
     <Compile Include="MigrationException.cs" />

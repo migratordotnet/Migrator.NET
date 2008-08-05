@@ -68,6 +68,11 @@ namespace Migrator.NAnt.Loggers
 		{
 			LogInfo("Rolling back to migration {0}", originalVersion);
 		}
+
+        public void ApplyingDBChange(string sql)
+        {
+            Log(sql);
+        }
 		
 		public void Exception(long version, string migrationName, Exception ex)
 		{

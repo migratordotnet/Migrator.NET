@@ -16,7 +16,7 @@ namespace Migrator.Framework.Loggers
 	/// <summary>
 	/// ILogger interface. 
 	/// Implicit in this interface is that the logger will delegate actual
-	/// logging to the <see cref="ISimpleWriter"/>(s) that have been attached
+	/// logging to the <see cref="ILogWriter"/>(s) that have been attached
 	/// </summary>
 	public interface IAttachableLogger: ILogger
 	{

@@ -24,7 +24,7 @@ namespace Migrator
         	return new MigrateAnywhere(availableMigrations, provider, logger);
         }
 
-        public List<long> Original
+        public List<long> AppliedVersions
         {
         	get { return _original; }
         }

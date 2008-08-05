@@ -61,11 +61,8 @@ namespace Migrator
         {
             _provider = provider;
             Logger = logger;
-            
-            _provider.Logger = logger;
 
             _migrationLoader = new MigrationLoader(provider, migrationAssembly, trace);
-
             _migrationLoader.CheckForDuplicatedVersion();
         }
 
@@ -100,7 +97,11 @@ namespace Migrator
         public ILogger Logger
         {
             get { return _logger; }
-            set { _logger = value; }
+            set
+            {
+                _logger = value;
+                _provider.Logger = value;
+            }
         }
 
         /// <summary>
@@ -124,7 +125,7 @@ namespace Migrator
 
             bool firstRun = true;
             BaseMigrate migrate = BaseMigrate.GetInstance(_migrationLoader.GetAvailableMigrations(), _provider, _logger);
-            Logger.Started(migrate.Original, version);
+            Logger.Started(migrate.AppliedVersions, version);
 
             while (migrate.Continue(version))
             {
@@ -160,7 +161,7 @@ namespace Migrator
                 migrate.Iterate();
             }
 
-            Logger.Finished(migrate.Original, version);
+            Logger.Finished(migrate.AppliedVersions, version);
         }
     }
 }

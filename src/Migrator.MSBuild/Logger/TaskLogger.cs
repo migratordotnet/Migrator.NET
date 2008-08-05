@@ -18,12 +18,12 @@ using ILogger=Migrator.Framework.ILogger;
 namespace Migrator.MSBuild.Logger
 {
     /// <summary>
-    /// NAnt task logger for the migration mediator
+    /// MSBuild task logger for the migration mediator
     /// </summary>
     public class TaskLogger : ILogger
     {
         private int _widthFirstColumn = 5;
-        private Task _task;
+        private readonly Task _task;
 
         public TaskLogger(Task task)
         {
@@ -70,6 +70,11 @@ namespace Migrator.MSBuild.Logger
             LogInfo("Rolling back to migration {0}", originalVersion);
         }
 
+        public void ApplyingDBChange(string sql)
+        {
+            Log(sql);
+        }
+
         public void Exception(long version, string migrationName, Exception ex)
         {
             LogInfo("{0} Error in migration {1} : {2}", "".PadLeft(_widthFirstColumn), version, ex.Message);
@@ -102,7 +107,8 @@ namespace Migrator.MSBuild.Logger
             _task.Log.LogMessage(MessageImportance.Low, "{0} {1}", "".PadLeft(_widthFirstColumn), String.Format(format, args));
         }
 		
-		private string LatestVersion(List<long> versions){
+		private string LatestVersion(List<long> versions)
+        {
 			if(versions.Count > 0)
 			{
 				return versions[versions.Count - 1].ToString();

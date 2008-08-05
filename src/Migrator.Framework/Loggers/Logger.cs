@@ -75,6 +75,11 @@ namespace Migrator.Framework.Loggers
 			WriteLine("Rolling back to migration {0}", originalVersion);
 		}
 
+        public void ApplyingDBChange(string sql)
+	    {
+	        Log(sql);
+	    }
+
 		public void Exception(long version, string migrationName, Exception ex)
 		{
 			WriteLine("{0} Error in migration {1} : {2}", "".PadLeft(_widthFirstColumn), version, ex.Message);

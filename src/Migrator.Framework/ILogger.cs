@@ -5,12 +5,6 @@ namespace Migrator.Framework
 {
 	public interface ILogger
 	{
-		/// <summary>
-		/// Log that we have started a migration
-		/// </summary>
-		/// <param name="currentVersion">Start version</param>
-		/// <param name="finalVersion">Final Version</param>
-		void Started(long currentVersion, long finalVersion);
 		
 		/// <summary>
 		/// Log that we have started a migration
@@ -48,6 +42,16 @@ namespace Migrator.Framework
 		/// </param>
 		void RollingBack(long originalVersion);
 
+        /// <summary>
+        /// Log a Sql statement that changes the schema or content of the database as part of a migration
+        /// </summary>
+        /// <remarks>
+        /// SELECT statements should not be logged using this method as they do not alter the data or schema of the
+        /// database.
+        /// </remarks>
+        /// <param name="sql">The Sql statement to log</param>
+        void ApplyingDBChange(string sql);
+
 		/// <summary>
 		/// Log that we had an exception on a migration
 		/// </summary>
@@ -55,13 +59,6 @@ namespace Migrator.Framework
 		/// <param name="migrationName">Le nom de la migration qui a produire l'exception.</param>
 		/// <param name="ex">L'exception lancée</param>
 		void Exception(long version, string migrationName, Exception ex);
-
-		/// <summary>
-		/// Log that we have finished a migration
-		/// </summary>
-		/// <param name="originalVersion">La version intiale de la base de données</param>
-		/// <param name="currentVersion">La version actuel de la base de donnée</param>
-		void Finished(long originalVersion, long currentVersion);
 
 		/// <summary>
 		/// Log that we have finished a migration
