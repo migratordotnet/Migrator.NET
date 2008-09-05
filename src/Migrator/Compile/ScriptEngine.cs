@@ -2,6 +2,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
+using Migrator.Framework;
 
 namespace Migrator.Compile
 {
@@ -75,8 +76,9 @@ namespace Migrator.Compile
         
         private string FullAssemblyPath(string assemblyName)
         {
-            string assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            return Path.Combine(Directory.GetParent(assemblyLocation).FullName, "Migrator.Framework.dll");
+            string assemblyLocation = Assembly.GetAssembly(typeof(MigrationAttribute)).Location;
+            Console.Out.WriteLine("Assembly Path: {0}", assemblyLocation);
+            return Path.Combine(Directory.GetParent(assemblyLocation).FullName, assemblyName);
         }
     }
 }

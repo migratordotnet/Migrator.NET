@@ -14,12 +14,11 @@ namespace Migrator
         public MigrateAnywhere(List<long> availableMigrations, ITransformationProvider provider, ILogger logger)
             : base(availableMigrations, provider, logger)
         {
-            _current = 0;
-            if (provider.AppliedMigrations.Count > 0)
-            {
-                _current = provider.AppliedMigrations[provider.AppliedMigrations.Count - 1];
-            }
-            _goForward = false;
+			_current = 0;
+			if (provider.AppliedMigrations.Count > 0) {
+				_current = provider.AppliedMigrations[provider.AppliedMigrations.Count - 1];
+			}
+			_goForward = false;
         }
 
         public override long Next
@@ -62,26 +61,38 @@ namespace Migrator
         public override void Migrate(IMigration migration)
         {
             _provider.BeginTransaction();
-            MigrationAttribute attr =
-                (MigrationAttribute) Attribute.GetCustomAttribute(migration.GetType(), typeof (MigrationAttribute));
-
-            if (_provider.AppliedMigrations.Contains(attr.Version))
-            {
-                // we're removing this one
-                _logger.MigrateDown(Current, migration.Name);
-                migration.Down();
-                _provider.MigrationUnApplied(attr.Version);
-                _provider.Commit();
-                migration.AfterDown();
+            MigrationAttribute attr = (MigrationAttribute)Attribute.GetCustomAttribute(migration.GetType(), typeof(MigrationAttribute));
+            
+            if (_provider.AppliedMigrations.Contains(attr.Version)) {
+            	RemoveMigration(migration, attr);
+            } else {
+            	ApplyMigration(migration, attr);
             }
-            else
+        }
+
+        private void ApplyMigration(IMigration migration, MigrationAttribute attr)
+        {
+            // we're adding this one
+            _logger.MigrateUp(Current, migration.Name);
+            if(! DryRun)
             {
-                // we're adding this one
-                _logger.MigrateUp(Current, migration.Name);
                 migration.Up();
                 _provider.MigrationApplied(attr.Version);
                 _provider.Commit();
                 migration.AfterUp();
+            }
+        }
+
+        private void RemoveMigration(IMigration migration, MigrationAttribute attr)
+        {
+            // we're removing this one
+            _logger.MigrateDown(Current, migration.Name);
+            if (! DryRun)
+            {
+                migration.Down();
+                _provider.MigrationUnApplied(attr.Version);
+                _provider.Commit();
+                migration.AfterDown();
             }
         }
     }

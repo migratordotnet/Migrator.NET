@@ -28,6 +28,7 @@ namespace Migrator.MigratorConsole
 		private string _migrationsAssembly;
 		private bool _list = false;
 		private bool _trace = false;
+		private bool _dryrun = false;
 		private string _dumpTo;
 		private int _migrateTo = -1;
 		private string[] args;
@@ -80,6 +81,9 @@ namespace Migrator.MigratorConsole
 			CheckArguments();
 			
 			Migrator mig = GetMigrator();
+            if (mig.DryRun)
+                mig.Logger.Log("********** Dry run! Not actually applying changes. **********");
+
 			if (_migrateTo == -1)
 				mig.MigrateToLastVersion();
 			else
@@ -137,6 +141,7 @@ namespace Migrator.MigratorConsole
 			Console.WriteLine("\t-{0}{1}", "list".PadRight(tab), "List migrations");
 			Console.WriteLine("\t-{0}{1}", "trace".PadRight(tab), "Show debug informations");
 			Console.WriteLine("\t-{0}{1}", "dump FILE".PadRight(tab), "Dump the database schema as migration code");
+			Console.WriteLine("\t-{0}{1}", "dryrun".PadRight(tab), "Simulation mode (don't actually apply/remove any migrations)");
 			Console.WriteLine();
 		}
 		
@@ -155,6 +160,7 @@ namespace Migrator.MigratorConsole
 			
 			Migrator migrator = new Migrator(_provider, _connectionString, asm, _trace);
 			migrator.args = args;
+		    migrator.DryRun = _dryrun;
 			return migrator;
 		}
 				
@@ -169,6 +175,10 @@ namespace Migrator.MigratorConsole
 				else if (argv[i].Equals("-trace"))
 				{
 					_trace = true;
+				}
+				else if (argv[i].Equals("-dryrun"))
+				{
+					_dryrun = true;
 				}
 				else if (argv[i].Equals("-version"))
 				{

@@ -29,6 +29,7 @@ namespace Migrator
         private readonly MigrationLoader _migrationLoader;
 
         private ILogger _logger = new Logger(false);
+        protected bool _dryrun;
         private string[] _args;
 
         public string[] args
@@ -76,7 +77,8 @@ namespace Migrator
         }
 
         /// <summary>
-        /// Run all migrations up to the latest.
+        /// Run all migrations up to the latest.  Make no changes to database if
+        /// dryrun is true.
         /// </summary>
         public void MigrateToLastVersion()
         {
@@ -104,6 +106,12 @@ namespace Migrator
             }
         }
 
+        public virtual bool DryRun
+        {
+            get { return _dryrun; }
+            set { _dryrun = value; }
+        }
+
         /// <summary>
         /// Migrate the database to a specific version.
         /// Runs all migration between the actual version and the
@@ -112,6 +120,7 @@ namespace Migrator
         /// the <c>Up()</c> method will be invoked.
         /// If <c>version</c> lower then the current version,
         /// the <c>Down()</c> method of previous migration will be invoked.
+        /// If <c>dryrun</c> is set, don't write any changes to the database.
         /// </summary>
         /// <param name="version">The version that must became the current one</param>
         public void MigrateTo(long version)
@@ -125,6 +134,7 @@ namespace Migrator
 
             bool firstRun = true;
             BaseMigrate migrate = BaseMigrate.GetInstance(_migrationLoader.GetAvailableMigrations(), _provider, _logger);
+            migrate.DryRun = DryRun;
             Logger.Started(migrate.AppliedVersions, version);
 
             while (migrate.Continue(version))

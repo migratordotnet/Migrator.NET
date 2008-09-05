@@ -42,6 +42,7 @@ namespace Migrator.NAnt
 		private string _connectionString;
 		private FileInfo _migrationsAssembly;
 		private bool _trace;
+		private bool _dryrun;
         private string _scriptFile;
 
         private string _directory;
@@ -100,6 +101,13 @@ namespace Migrator.NAnt
 			set { _trace = value; }
 			get { return _trace; }
 		}
+		
+		[TaskAttribute("dryrun")]
+		public bool DryRun
+		{
+			set { _dryrun = value; }
+			get { return _dryrun; }
+		}
 
         /// <summary>
         /// Gets value indicating whether to script the changes made to the database 
@@ -140,6 +148,7 @@ namespace Migrator.NAnt
         private void Execute(Assembly asm)
         {
             Migrator mig = new Migrator(Provider, ConnectionString, asm, Trace, new TaskLogger(this));
+            mig.DryRun = DryRun;
             if (ScriptChanges)
             {
                 using (StreamWriter writer = new StreamWriter(ScriptFile))
@@ -156,6 +165,9 @@ namespace Migrator.NAnt
 
         private void RunMigration(Migrator mig)
         {
+            if (mig.DryRun)
+                mig.Logger.Log("********** Dry run! Not actually applying changes. **********");
+
             if (_to == -1)
                 mig.MigrateToLastVersion();
             else

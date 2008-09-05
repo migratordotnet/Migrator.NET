@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-	    <MigratorTasksPath>$(MSBuildProjectDirectory)/../bin</MigratorTasksPath>
+	    <MigratorTasksPath>$(MSBuildProjectDirectory)\..\..\build</MigratorTasksPath>
 	</PropertyGroup>
 	
 	<!-- Migration-related targets, properties, etc. -->
@@ -14,7 +14,31 @@
 
         <Migrate Provider="MySql"
             Connectionstring="Data Source=localhost;Database=test;User Id=root;Password=;"
-            Directory="migrations"
+            Migrations="$(MSBuildProjectDirectory)\migrations\migrations.dll"
             To="$(SchemaVersion)"/>
+    </Target>
+
+    <Target Name="Migrate-DryRun">
+        <CreateProperty Value="-1"  Condition="'$(SchemaVersion)'==''">
+            <Output TaskParameter="Value" PropertyName="SchemaVersion"/>
+        </CreateProperty>
+
+        <Migrate Provider="MySql"
+            Connectionstring="Data Source=localhost;Database=test;User Id=root;Password=;"
+            Migrations="$(MSBuildProjectDirectory)\migrations\migrations.dll"
+            To="$(SchemaVersion)"
+            DryRun="true"/>
+    </Target>
+
+    <Target Name="Migrate-Dump">
+        <CreateProperty Value="-1"  Condition="'$(SchemaVersion)'==''">
+            <Output TaskParameter="Value" PropertyName="SchemaVersion"/>
+        </CreateProperty>
+
+        <Migrate Provider="MySql"
+            Connectionstring="Data Source=localhost;Database=test;User Id=root;Password=;"
+            Migrations="$(MSBuildProjectDirectory)\migrations\migrations.dll"
+            To="$(SchemaVersion)"
+            ScriptFile="MSBuild-migrations.sql"/>
     </Target>
 </Project>

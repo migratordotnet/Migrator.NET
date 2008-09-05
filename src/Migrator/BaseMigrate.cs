@@ -10,6 +10,7 @@ namespace Migrator
         protected List<long> _availableMigrations;
         protected List<long> _original;
         protected long _current;
+        protected bool _dryrun;
 
         protected BaseMigrate(List<long> availableMigrations, ITransformationProvider provider, ILogger logger)
         {
@@ -33,6 +34,12 @@ namespace Migrator
         {
             get { return _current; }
             protected set { _current = value; }
+        }
+
+        public virtual bool DryRun
+        {
+            get { return _dryrun; }
+            set { _dryrun = value; }
         }
 
         public abstract long Previous { get; }
