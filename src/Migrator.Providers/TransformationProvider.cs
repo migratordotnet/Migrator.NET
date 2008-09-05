@@ -426,14 +426,14 @@ namespace Migrator.Providers
 							  String.Join(",", columns)));
 		}
 
-		public virtual void AddUniqueConstraint(string name, string table, string column)
+		public virtual void AddUniqueConstraint(string name, string table, params string[] columns)
 		{
 			if (ConstraintExists(table, name))
 			{
 				Logger.Warn("Constraint {0} already exists", name);
 				return;
 			}
-			ExecuteNonQuery(String.Format("ALTER TABLE {0} ADD CONSTRAINT {1} UNIQUE({2}) ", table, name, column));
+			ExecuteNonQuery(String.Format("ALTER TABLE {0} ADD CONSTRAINT {1} UNIQUE({2}) ", table, name, string.Join(", ", columns)));
 		}
 
 		public virtual void AddCheckConstraint(string name, string table, string checkSql)

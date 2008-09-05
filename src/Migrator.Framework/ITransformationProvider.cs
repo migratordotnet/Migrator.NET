@@ -207,8 +207,8 @@ namespace Migrator.Framework
         /// </summary>
         /// <param name="name">The name of the constraint to add.</param>
         /// <param name="table">The name of the table that will get the constraint</param>
-        /// <param name="column">The name of the column that will get the constraint.</param>
-        void AddUniqueConstraint(string name, string table, string column);
+        /// <param name="columns">The name of the column or columns that will get the constraint.</param>
+        void AddUniqueConstraint(string name, string table, params string[] columns);
         
         /// <summary>
         /// Add a constraint to a table

@@ -27,6 +27,11 @@ namespace Migrator.Tests.Providers
             _provider.AddUniqueConstraint("UN_Test_TestTwo", "TestTwo", "TestId");
         }
 
+        public void AddMultipleUniqueConstraint()
+        {
+            _provider.AddUniqueConstraint("UN_Test_TestTwo", "TestTwo", "Id", "TestId");
+        }
+
         public void AddCheckConstraint()
         {
             _provider.AddCheckConstraint("CK_TestTwo_TestId", "TestTwo", "TestId>5");
@@ -62,6 +67,13 @@ namespace Migrator.Tests.Providers
         public virtual void CanAddUniqueConstraint()
         {
             AddUniqueConstraint();
+            Assert.IsTrue(_provider.ConstraintExists("TestTwo", "UN_Test_TestTwo"));
+        }
+
+        [Test]
+        public virtual void CanAddMultipleUniqueConstraint()
+        {
+            AddMultipleUniqueConstraint();
             Assert.IsTrue(_provider.ConstraintExists("TestTwo", "UN_Test_TestTwo"));
         }
 

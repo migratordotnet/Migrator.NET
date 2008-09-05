@@ -177,7 +177,7 @@ namespace Migrator.Providers
            // No Op
         }
         
-        public void AddUniqueConstraint(string name, string table, string column)
+        public void AddUniqueConstraint(string name, string table, params string[] columns)
         {
             // No Op
         }
