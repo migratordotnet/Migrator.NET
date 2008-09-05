@@ -733,7 +733,7 @@ namespace Migrator.Providers
 					CreateSchemaInfoTable();
 					using(IDataReader reader = Select("version","SchemaInfo")){
 						while(reader.Read()){
-							_appliedMigrations.Add(reader.GetInt32(0));
+							_appliedMigrations.Add(reader.GetInt64(0));
 						}
 					}
 				}
