@@ -122,6 +122,19 @@ namespace Migrator.Tests
 		{
             Assert.AreEqual("Create a table", StringUtils.ToHumanName("CreateATable"));
 		}
+
+        [Test]
+        public void MigrateUpwardFrom0()
+        {
+            _migrator.MigrateTo(3);
+
+            Assert.AreEqual(3, _upCalled.Count);
+            Assert.AreEqual(0, _downCalled.Count);
+
+            Assert.AreEqual(1, _upCalled[0]);
+            Assert.AreEqual(2, _upCalled[1]);
+            Assert.AreEqual(3, _upCalled[2]);
+        }
 		
 		#region Helper methods and classes
 
