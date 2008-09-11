@@ -21,8 +21,7 @@ namespace Migrator.NAnt.Loggers
 	/// </summary>
 	public class TaskLogger : ILogger
 	{
-		private int _widthFirstColumn = 5;
-		private Task _task;
+		private readonly Task _task;
 		
 		public TaskLogger(Task task)
 		{
@@ -51,12 +50,12 @@ namespace Migrator.NAnt.Loggers
 
 		public void MigrateUp(long version, string migrationName)
 		{
-			LogInfo("Applying {0}: {1}", version.ToString().PadLeft(_widthFirstColumn), migrationName);
+			LogInfo("Applying {0}: {1}", version.ToString(), migrationName);
 		}
 
 		public void MigrateDown(long version, string migrationName)
 		{
-			LogInfo("Removing {0}: {1}", version.ToString().PadLeft(_widthFirstColumn), migrationName);
+			LogInfo("Removing {0}: {1}", version.ToString(), migrationName);
 		}
 		
 		public void Skipping(long version)
@@ -76,20 +75,34 @@ namespace Migrator.NAnt.Loggers
 		
 		public void Exception(long version, string migrationName, Exception ex)
 		{
-			LogInfo("{0} Error in migration {1} : {2}", "".PadLeft(_widthFirstColumn), version, ex.Message);
-			
-			LogError(ex.Message);
-			LogError(ex.StackTrace);
-			Exception iex = ex.InnerException;
-			while (ex.InnerException != null)
-			{
-				LogError("Caused by: {0}", ex.InnerException);
-				LogError(ex.InnerException.StackTrace);
-				iex = iex.InnerException;
-			}
+            LogInfo("============ Error Detail ============");
+		    LogInfo("Error in migration: {0}", version);
+            LogExceptionDetails(ex);
+            LogInfo("======================================");
 		}
-		
-		public void Finished(long originalVersion, long currentVersion)
+
+        public void Exception(string message, Exception ex)
+        {
+            LogInfo("============ Error Detail ============");
+            LogInfo("Error: {0}", message);
+            LogExceptionDetails(ex);
+            LogInfo("======================================");
+        }
+
+        private void LogExceptionDetails(Exception ex)
+        {
+            LogInfo("{0}", ex.Message);
+            LogInfo("{0}", ex.StackTrace);
+            Exception iex = ex.InnerException;
+            while (iex != null)
+            {
+                LogInfo("Caused by: {0}", iex);
+                LogInfo("{0}", ex.StackTrace);
+                iex = iex.InnerException;
+            }
+        }
+
+	    public void Finished(long originalVersion, long currentVersion)
 		{
 			LogInfo("Migrated to version {0}", currentVersion);
 		}
@@ -101,20 +114,21 @@ namespace Migrator.NAnt.Loggers
 		
 		public void Log(string format, params object[] args)
 		{
-			LogInfo("{0} {1}", "".PadLeft(_widthFirstColumn), String.Format(format, args));
+            LogInfo(format, args);
 		}
 		
 		public void Warn(string format, params object[] args)
 		{
-			LogInfo("{0} [Warning] {1}", "".PadLeft(_widthFirstColumn), String.Format(format, args));
+            LogInfo("[Warning] {0}", String.Format(format, args));
 		}		
 		
 		public void Trace(string format, params object[] args)
 		{
-			_task.Log(Level.Debug, "{0} {1}", "".PadLeft(_widthFirstColumn), String.Format(format, args));
+            _task.Log(Level.Debug, format, args);
 		}	
 		
-		private string LatestVersion(List<long> versions){
+		private string LatestVersion(List<long> versions)
+        {
 			if(versions.Count > 0)
 			{
 				return versions[versions.Count - 1].ToString();

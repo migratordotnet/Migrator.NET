@@ -79,6 +79,11 @@ namespace Migrator.Framework.Loggers
             _innerLogger.Exception(version, migrationName, ex);
         }
 
+        public void Exception(string message, Exception ex)
+        {
+            _innerLogger.Exception(message, ex);
+        }
+
         public void Finished(List<long> appliedVersions, long currentVersion)
         {
             _innerLogger.Finished(appliedVersions, currentVersion);

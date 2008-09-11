@@ -11,7 +11,6 @@
 
 using System;
 using System.Collections.Generic;
-using Migrator.Framework;
 
 namespace Migrator.Framework.Loggers
 {
@@ -20,8 +19,7 @@ namespace Migrator.Framework.Loggers
 	/// </summary>
 	public class Logger : IAttachableLogger
 	{
-		private readonly int _widthFirstColumn = 5;
-		private readonly bool _trace = false;
+		private readonly bool _trace;
 		private readonly List<ILogWriter> _writers = new List<ILogWriter>();
 
 		public Logger(bool trace)
@@ -57,17 +55,17 @@ namespace Migrator.Framework.Loggers
 
 		public void MigrateUp(long version, string migrationName)
 		{
-			WriteLine("Applying {0}: {1}", version.ToString().PadLeft(_widthFirstColumn), migrationName);
+			WriteLine("Applying {0}: {1}", version.ToString(), migrationName);
 		}
 
 		public void MigrateDown(long version, string migrationName)
 		{
-			WriteLine("Removing {0}: {1}", version.ToString().PadLeft(_widthFirstColumn), migrationName);
+			WriteLine("Removing {0}: {1}", version.ToString(), migrationName);
 		}
 
 		public void Skipping(long version)
 		{
-			WriteLine("{0} {1}", version.ToString().PadLeft(_widthFirstColumn), "<Migration not found>");
+			WriteLine("{0} {1}", version.ToString(), "<Migration not found>");
 		}
 
 		public void RollingBack(long originalVersion)
@@ -82,24 +80,34 @@ namespace Migrator.Framework.Loggers
 
 		public void Exception(long version, string migrationName, Exception ex)
 		{
-			WriteLine("{0} Error in migration {1} : {2}", "".PadLeft(_widthFirstColumn), version, ex.Message);
-			if (_trace)
-			{
-				WriteLine("========= Error detail =========");
-				WriteLine(ex.ToString());
-				WriteLine(ex.StackTrace);
-				Exception iex = ex.InnerException;
-				while (iex != null)
-				{
-					WriteLine("Caused by: {0}", iex);
-					WriteLine(ex.StackTrace);
-					iex = iex.InnerException;
-				}
-				WriteLine("======================================");
-			}
+            WriteLine("============ Error Detail ============");
+            WriteLine("Error in migration: {0}", version);
+            LogExceptionDetails(ex);
+            WriteLine("======================================");
 		}
 
-		public void Finished(long originalVersion, long currentVersion)
+        public void Exception(string message, Exception ex)
+        {
+            WriteLine("============ Error Detail ============");
+            WriteLine("Error: {0}", message);
+            LogExceptionDetails(ex);
+            WriteLine("======================================");
+        }
+
+	    private void LogExceptionDetails(Exception ex)
+	    {
+	        WriteLine("{0}", ex.Message);
+            WriteLine("{0}", ex.StackTrace);
+	        Exception iex = ex.InnerException;
+	        while (iex != null)
+	        {
+	            WriteLine("Caused by: {0}", iex);
+                WriteLine("{0}", ex.StackTrace);
+	            iex = iex.InnerException;
+	        }
+	    }
+
+	    public void Finished(long originalVersion, long currentVersion)
 		{
 			WriteLine("Migrated to version {0}", currentVersion);
 		}
@@ -111,13 +119,12 @@ namespace Migrator.Framework.Loggers
 
 		public void Log(string format, params object[] args)
 		{
-			Write("{0} ", "".PadLeft(_widthFirstColumn));
 			WriteLine(format, args);
 		}
 
 		public void Warn(string format, params object[] args)
 		{
-			Write("{0} Warning! : ", "".PadLeft(_widthFirstColumn));
+			Write("Warning! : ");
 			WriteLine(format, args);
 		}
 
@@ -150,8 +157,9 @@ namespace Migrator.Framework.Loggers
 			return new Logger(false, new ConsoleWriter());
 		}
 		
-		private string LatestVersion(List<long> versions){
-			if(versions.Count > 0)
+		private string LatestVersion(List<long> versions)
+        {
+			if (versions.Count > 0)
 			{
 				return versions[versions.Count - 1].ToString();
 			}

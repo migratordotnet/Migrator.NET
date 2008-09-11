@@ -9,8 +9,6 @@
 //under the License.
 #endregion
 
-using Migrator.Framework;
-
 namespace Migrator.Framework.Loggers
 {
 	/// <summary>

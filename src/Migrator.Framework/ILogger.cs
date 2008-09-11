@@ -5,7 +5,6 @@ namespace Migrator.Framework
 {
 	public interface ILogger
 	{
-		
 		/// <summary>
 		/// Log that we have started a migration
 		/// </summary>
@@ -55,10 +54,17 @@ namespace Migrator.Framework
 		/// <summary>
 		/// Log that we had an exception on a migration
 		/// </summary>
-		/// <param name="version">La version de la migration qui a produire l'exception.</param>
-		/// <param name="migrationName">Le nom de la migration qui a produire l'exception.</param>
-		/// <param name="ex">L'exception lancée</param>
+		/// <param name="version">The version of the migration that caused the exception.</param>
+		/// <param name="migrationName">The name of the migration that caused the exception.</param>
+		/// <param name="ex">The exception itself</param>
 		void Exception(long version, string migrationName, Exception ex);
+
+        /// <summary>
+        /// Log that we had an exception on a migration
+        /// </summary>
+        /// <param name="message">An informative message to show to the user.</param>
+        /// <param name="ex">The exception itself</param>
+        void Exception(string message, Exception ex);
 
 		/// <summary>
 		/// Log that we have finished a migration
@@ -70,22 +76,22 @@ namespace Migrator.Framework
 		/// <summary>
 		/// Log a message
 		/// </summary>
-		/// <param name="format">Le format ("{0}, blbla {1}") ou la chaîne à afficher.</param>
-		/// <param name="args">Les paramètres dans le cas d'un format au premier paramètre.</param>
+		/// <param name="format">The format string ("{0}, blabla {1}").</param>
+		/// <param name="args">Parameters to apply to the format string.</param>
 		void Log(string format, params object[] args);
 
 		/// <summary>
 		/// Log a Warning
 		/// </summary>
-		/// <param name="format">Le format ("{0}, blbla {1}") ou la chaîne à afficher.</param>
-		/// <param name="args">Les paramètres dans le cas d'un format au premier paramètre.</param>
+        /// <param name="format">The format string ("{0}, blabla {1}").</param>
+        /// <param name="args">Parameters to apply to the format string.</param>
 		void Warn(string format, params object[] args);
 
 		/// <summary>
 		/// Log a Trace Message
 		/// </summary>
-		/// <param name="format">Le format ("{0}, blbla {1}") ou la chaîne à afficher.</param>
-		/// <param name="args">Les paramètres dans le cas d'un format au premier paramètre.</param>
+        /// <param name="format">The format string ("{0}, blabla {1}").</param>
+        /// <param name="args">Parameters to apply to the format string.</param>
 		void Trace(string format, params object[] args);
 	}
 }

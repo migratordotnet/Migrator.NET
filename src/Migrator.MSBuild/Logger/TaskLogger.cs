@@ -22,7 +22,6 @@ namespace Migrator.MSBuild.Logger
     /// </summary>
     public class TaskLogger : ILogger
     {
-        private int _widthFirstColumn = 5;
         private readonly Task _task;
 
         public TaskLogger(Task task)
@@ -52,12 +51,12 @@ namespace Migrator.MSBuild.Logger
 
 		public void MigrateUp(long version, string migrationName)
 		{
-			LogInfo("Applying {0}: {1}", version.ToString().PadLeft(_widthFirstColumn), migrationName);
+			LogInfo("Applying {0}: {1}", version.ToString(), migrationName);
 		}
 
 		public void MigrateDown(long version, string migrationName)
 		{
-			LogInfo("Removing {0}: {1}", version.ToString().PadLeft(_widthFirstColumn), migrationName);
+			LogInfo("Removing {0}: {1}", version.ToString(), migrationName);
 		}
 
         public void Skipping(long version)
@@ -77,10 +76,19 @@ namespace Migrator.MSBuild.Logger
 
         public void Exception(long version, string migrationName, Exception ex)
         {
-            LogInfo("{0} Error in migration {1} : {2}", "".PadLeft(_widthFirstColumn), version, ex.Message);
+            LogInfo("============ Error Detail ============");
+            LogInfo("Error in migration: {0}", version);
             _task.Log.LogErrorFromException(ex, true);
+            LogInfo("======================================");
         }
-        
+
+        public void Exception(string message, Exception ex)
+        {
+            LogInfo("============ Error Detail ============");
+            LogInfo("Error: {0}", message);
+            _task.Log.LogErrorFromException(ex, true);
+            LogInfo("======================================");
+        }
 
         public void Finished(long originalVersion, long currentVersion)
         {
@@ -94,17 +102,17 @@ namespace Migrator.MSBuild.Logger
 
         public void Log(string format, params object[] args)
         {
-            LogInfo("{0} {1}", "".PadLeft(_widthFirstColumn), String.Format(format, args));
+            LogInfo(format, args);
         }
 
         public void Warn(string format, params object[] args)
         {
-            _task.Log.LogWarning("{0} [Warning] {1}", "".PadLeft(_widthFirstColumn), String.Format(format, args));
+            _task.Log.LogWarning("[Warning] {0}", String.Format(format, args));
         }
 
         public void Trace(string format, params object[] args)
         {
-            _task.Log.LogMessage(MessageImportance.Low, "{0} {1}", "".PadLeft(_widthFirstColumn), String.Format(format, args));
+            _task.Log.LogMessage(MessageImportance.Low, format, args);
         }
 		
 		private string LatestVersion(List<long> versions)
