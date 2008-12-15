@@ -25,37 +25,37 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator", "src\Migrator\Mi
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Framework", "src\Migrator.Framework\Migrator.Framework.csproj", "{5270F048-E580-486C-B14C-E5B9F6E539D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Framework", "src\Migrator.Framework\Migrator.Framework-vs2005.csproj", "{5270F048-E580-486C-B14C-E5B9F6E539D4}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Providers", "src\Migrator.Providers\Migrator.Providers.csproj", "{D58C68E4-D789-40F7-9078-C9F587D4363C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Providers", "src\Migrator.Providers\Migrator.Providers-vs2005.csproj", "{D58C68E4-D789-40F7-9078-C9F587D4363C}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Console", "src\Migrator.Console\Migrator.Console.csproj", "{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Console", "src\Migrator.Console\Migrator.Console-vs2005.csproj", "{FBE3A83A-D0F8-4D72-AF8D-9EF772569A31}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.MSBuild", "src\Migrator.MSBuild\Migrator.MSBuild.csproj", "{A145FFA9-5FE6-4636-93B8-0C110D132BF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.MSBuild", "src\Migrator.MSBuild\Migrator.MSBuild-vs2005.csproj", "{A145FFA9-5FE6-4636-93B8-0C110D132BF3}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.NAnt", "src\Migrator.NAnt\Migrator.NAnt.csproj", "{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.NAnt", "src\Migrator.NAnt\Migrator.NAnt-vs2005.csproj", "{CDD39DB7-C9C0-4ECA-AD36-1B4D0BF59101}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Tests", "src\Migrator.Tests\Migrator.Tests.csproj", "{882B6A93-67B8-45BF-8636-5796B1B1CBF8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator.Tests", "src\Migrator.Tests\Migrator.Tests-vs2005.csproj", "{882B6A93-67B8-45BF-8636-5796B1B1CBF8}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
