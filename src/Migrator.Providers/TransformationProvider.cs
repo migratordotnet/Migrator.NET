@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Migrator.Framework;
+using Migrator.Framework.SchemaBuilder;
 using ForeignKeyConstraint = Migrator.Framework.ForeignKeyConstraint;
 using Migrator.Framework.Loggers;
 
@@ -796,6 +797,12 @@ namespace Migrator.Providers
 		{
 			return Array.ConvertAll<string, string>(values,
 				delegate(string val) { return String.Format("'{0}'", val); });
+		}
+
+		public void ExecuteSchemaBuilder(SchemaBuilder builder)
+		{
+			foreach (ISchemaBuilderExpression expr in builder.Expressions)
+				expr.Create(this);
 		}
 	}
 }

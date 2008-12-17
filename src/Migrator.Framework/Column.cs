@@ -18,7 +18,7 @@ namespace Migrator.Framework
     /// <summary>
     /// Represents a table column.
     /// </summary>
-    public class Column
+    public class Column : IColumn
     {
         private string _name;
         private DbType _type;
@@ -26,7 +26,12 @@ namespace Migrator.Framework
         private ColumnProperty _property;
         private object _defaultValue;
 
-        public Column(string name, DbType type)
+		public Column(string name)
+		{
+			Name = name;
+		}
+
+    	public Column(string name, DbType type)
         {
             Name = name;
             Type = type;
@@ -39,14 +44,14 @@ namespace Migrator.Framework
             Size = size;
         }
 
-        public Column(string name, DbType type, object defaultValue)
-        {
-            Name = name;
-            Type = type;
-            DefaultValue = defaultValue;
-        }
+		public Column(string name, DbType type, object defaultValue)
+		{
+			Name = name;
+			Type = type;
+			DefaultValue = defaultValue;
+		}
 
-        public Column(string name, DbType type, ColumnProperty property)
+    	public Column(string name, DbType type, ColumnProperty property)
         {
             Name = name;
             Type = type;

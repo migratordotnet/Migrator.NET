@@ -312,5 +312,10 @@ namespace Migrator.Providers
         {
             return null;
         }
+
+        public void ExecuteSchemaBuilder(Migrator.Framework.SchemaBuilder.SchemaBuilder schemaBuilder)
+        {
+            // No Op
+        }
     }
 }

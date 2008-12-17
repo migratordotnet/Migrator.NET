@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5270F048-E580-486C-B14C-E5B9F6E539D4}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -39,6 +39,7 @@
     <Compile Include="Column.cs" />
     <Compile Include="ColumnProperty.cs" />
     <Compile Include="ForeignKeyConstraint.cs" />
+    <Compile Include="IColumn.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="IMigration.cs" />
     <Compile Include="ITransformationProvider.cs" />
@@ -50,6 +51,18 @@
     <Compile Include="Migration.cs" />
     <Compile Include="MigrationAttribute.cs" />
     <Compile Include="MigrationException.cs" />
+    <Compile Include="SchemaBuilder\AddColumnExpression.cs" />
+    <Compile Include="SchemaBuilder\AddTableExpression.cs" />
+    <Compile Include="SchemaBuilder\DeleteTableExpression.cs" />
+    <Compile Include="SchemaBuilder\FluentColumn.cs" />
+    <Compile Include="SchemaBuilder\ForeignKey.cs" />
+    <Compile Include="SchemaBuilder\IColumnOptions.cs" />
+    <Compile Include="SchemaBuilder\IDeleteTableOptions.cs" />
+    <Compile Include="SchemaBuilder\IFluentColumn.cs" />
+    <Compile Include="SchemaBuilder\IForeignKeyOptions.cs" />
+    <Compile Include="SchemaBuilder\ISchemaBuilderExpression.cs" />
+    <Compile Include="SchemaBuilder\RenameTableExpression.cs" />
+    <Compile Include="SchemaBuilder\SchemaBuilder.cs" />
     <Compile Include="StringUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

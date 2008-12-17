@@ -13,9 +13,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using Migrator.Framework;
+using Migrator.Providers;
 
 namespace Migrator
 {
@@ -29,13 +29,14 @@ namespace Migrator
         static ProviderFactory()
         {
             
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            string fullPath = Path.Combine(directory, "Migrator.Providers.dll");
-            if (fullPath.StartsWith("file:\\"))
-                fullPath = fullPath.Substring(6);
-            else if (fullPath.StartsWith("file:"))
-                fullPath = fullPath.Substring(5);
-            providerAssembly = Assembly.LoadFrom(fullPath);
+            //string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            //string fullPath = Path.Combine(directory, "Migrator.Providers.dll");
+            //if (fullPath.StartsWith("file:\\"))
+            //    fullPath = fullPath.Substring(6);
+            //else if (fullPath.StartsWith("file:"))
+            //    fullPath = fullPath.Substring(5);
+            providerAssembly = Assembly.GetAssembly(typeof(TransformationProvider));
+            //providerAssembly = Assembly.LoadFrom("Migrator.Providers.dll");
             LoadDialects();
         }
 
