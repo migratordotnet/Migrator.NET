@@ -323,7 +323,25 @@ namespace Migrator.Framework
         /// <param name="values">The values in the same order as the columns</param>
         /// <returns></returns>
         int Insert(string table, string[] columns, string[] values);
-        
+
+        /// <summary>
+        /// Delete data from a table
+        /// </summary>
+        /// <param name="table">The table that will have the data deleted</param>
+        /// <param name="columns">The names of the columns used in a where clause</param>
+        /// <param name="values">The values in the same order as the columns</param>
+        /// <returns></returns>
+        int Delete(string table, string[] columns, string[] values);
+
+        /// <summary>
+        /// Delete data from a table
+        /// </summary>
+        /// <param name="table">The table that will have the data deleted</param>
+        /// <param name="whereColumn">The name of the column used in a where clause</param>
+        /// <param name="whereValue">The value for the where clause</param>
+        /// <returns></returns>
+        int Delete(string table, string whereColumn, string whereValue);
+
         /// <summary>
         /// Marks a Migration version number as having been applied
         /// </summary>

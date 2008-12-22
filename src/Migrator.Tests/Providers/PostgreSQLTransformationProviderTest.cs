@@ -1,7 +1,6 @@
 using System;
 using System.Configuration;
 using Migrator.Providers.PostgreSQL;
-using Migrator.Tests.Providers;
 using NUnit.Framework;
 
 namespace Migrator.Tests.Providers

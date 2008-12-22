@@ -13,9 +13,7 @@ using System;
 using System.Configuration;
 using System.Data;
 using Migrator.Framework;
-using Migrator.Framework.Loggers;
 using Migrator.Providers.Mysql;
-using Migrator.Tests.Providers;
 using NUnit.Framework;
 
 namespace Migrator.Tests.Providers

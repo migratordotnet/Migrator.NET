@@ -13,7 +13,6 @@ using System;
 using System.Configuration;
 using System.Data.SqlServerCe;
 using Migrator.Providers.SqlServer;
-using Migrator.Tests.Providers;
 using NUnit.Framework;
 using System.IO;
 

@@ -637,30 +637,42 @@ namespace Migrator.Providers
 
 		public virtual int Update(string table, string[] columns, string[] values, string where)
 		{
-			values = QuoteValues(values);
-			string[] namesAndValues = new string[columns.Length];
-			for (int i = 0; i < columns.Length; i++)
-			{
-				namesAndValues[i] = String.Format("{0}={1}", columns[i], values[i]);
-			}
+            string namesAndValues = JoinColumnsAndValues(columns, values);
 
-			string query = "UPDATE {0} SET {1}";
+		    string query = "UPDATE {0} SET {1}";
 			if (!String.IsNullOrEmpty(where))
 			{
 				query += " WHERE " + where;
 			}
 
-			return ExecuteNonQuery(String.Format(query, table, String.Join(", ", namesAndValues)));
+			return ExecuteNonQuery(String.Format(query, table, namesAndValues));
 		}
 
-		public virtual int Insert(string table, string[] columns, string[] values)
+	    public virtual int Insert(string table, string[] columns, string[] values)
 		{
 			return ExecuteNonQuery(String.Format("INSERT INTO {0} ({1}) VALUES ({2})", table, String.Join(", ", columns), String.Join(", ", QuoteValues(values))));
 		}
 
+        public virtual int Delete(string table)
+        {
+            return Delete(table, (string[])null, (string[]) null);
+        }
+
+        public virtual int Delete(string table, string[] columns, string[] values)
+        {
+            if (null == columns || null == values)
+            {
+                return ExecuteNonQuery(String.Format("DELETE FROM {0}", table));
+            }
+            else
+            {
+                return ExecuteNonQuery(String.Format("DELETE FROM {0} WHERE ({1})", table, JoinColumnsAndValues(columns, values)));
+            }
+        }
+
 		public virtual int Delete(string table, string wherecolumn, string wherevalue)
 		{
-			return ExecuteNonQuery(String.Format("DELETE FROM {0} WHERE {1} = {2}", table, wherecolumn, QuoteValues(new string[]{wherevalue})[0]));
+			return ExecuteNonQuery(String.Format("DELETE FROM {0} WHERE {1} = {2}", table, wherecolumn, QuoteValues(wherevalue)));
 		}
 
 		/// <summary>
@@ -793,16 +805,35 @@ namespace Migrator.Providers
 			return BuildCommand(null);
 		}
 
-		public virtual string[] QuoteValues(string[] values)
-		{
-			return Array.ConvertAll<string, string>(values,
-				delegate(string val) { return String.Format("'{0}'", val); });
-		}
+
 
 		public void ExecuteSchemaBuilder(SchemaBuilder builder)
 		{
 			foreach (ISchemaBuilderExpression expr in builder.Expressions)
 				expr.Create(this);
 		}
+
+        public virtual string QuoteValues(string values)
+        {
+            return QuoteValues(new string[] {values})[0];
+        }
+
+        public virtual string[] QuoteValues(string[] values)
+        {
+            return Array.ConvertAll<string, string>(values,
+                delegate(string val) { return String.Format("'{0}'", val); });
+        }
+
+        public string JoinColumnsAndValues(string[] columns, string[] values)
+        {
+            string[] quotedValues = QuoteValues(values);
+            string[] namesAndValues = new string[columns.Length];
+            for (int i = 0; i < columns.Length; i++)
+            {
+                namesAndValues[i] = String.Format("{0}={1}", columns[i], quotedValues[i]);
+            }
+
+            return String.Join(", ", namesAndValues);
+        }
 	}
 }

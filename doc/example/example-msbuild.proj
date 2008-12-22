@@ -41,4 +41,17 @@
             To="$(SchemaVersion)"
             ScriptFile="MSBuild-migrations.sql"/>
     </Target>
+
+    <Target Name="Migrate-DryRun2">
+        <CreateProperty Value="-1"  Condition="'$(SchemaVersion)'==''">
+            <Output TaskParameter="Value" PropertyName="SchemaVersion"/>
+        </CreateProperty>
+
+        <Migrate Provider="MySql"
+            Connectionstring="Data Source=localhost;Database=test;User Id=root;Password=;"
+            Directory="$(MSBuildProjectDirectory)\migrations\"
+            To="$(SchemaVersion)"
+            DryRun="true"/>
+    </Target>
+
 </Project>

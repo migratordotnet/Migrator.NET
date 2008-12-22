@@ -253,6 +253,16 @@ namespace Migrator.Providers
             return 0;
         }
 
+        public int Delete(string table, string[] columns, string[] columnValues)
+        {
+            return 0;
+        }
+
+        public int Delete(string table, string column, string value)
+        {
+            return 0;
+        }
+
         public void BeginTransaction()
         {
             // No Op

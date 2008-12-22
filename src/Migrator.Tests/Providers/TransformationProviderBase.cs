@@ -1,7 +1,6 @@
 using System;
 using System.Data;
 using Migrator.Framework;
-using Migrator.Providers;
 using NUnit.Framework;
 
 namespace Migrator.Tests.Providers
@@ -329,7 +328,7 @@ namespace Migrator.Tests.Providers
             _provider.Commit();
         }
         
-      [Test]
+        [Test]
         public void InsertData()
         {
             _provider.Insert("TestTwo", new string[] { "TestId" }, new string[] { "1" });
@@ -340,6 +339,34 @@ namespace Migrator.Tests.Providers
 
                 Assert.IsTrue(Array.Exists(vals, delegate(int val){ return val == 1; }));
                 Assert.IsTrue(Array.Exists(vals, delegate(int val){ return val == 2; }));
+            }
+        }
+
+        [Test]
+        public void DeleteData()
+        {
+            InsertData();
+            _provider.Delete("TestTwo", "TestId", "1");
+
+            using (IDataReader reader = _provider.Select("TestId", "TestTwo"))
+            {
+                Assert.IsTrue(reader.Read());
+                Assert.AreEqual(2, Convert.ToInt32(reader[0]));
+                Assert.IsFalse(reader.Read());
+            }
+        }
+
+        [Test]
+        public void DeleteDataWithArrays()
+        {
+            InsertData();
+            _provider.Delete("TestTwo", new string[] {"TestId"}, new string[] {"1"});
+
+            using (IDataReader reader = _provider.Select("TestId", "TestTwo"))
+            {
+                Assert.IsTrue(reader.Read());
+                Assert.AreEqual(2, Convert.ToInt32(reader[0]));
+                Assert.IsFalse(reader.Read());
             }
         }
 

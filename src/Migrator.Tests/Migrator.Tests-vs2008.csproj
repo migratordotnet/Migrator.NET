@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{882B6A93-67B8-45BF-8636-5796B1B1CBF8}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -74,6 +74,7 @@
     <Compile Include="MigratorTest.cs" />
     <Compile Include="MigratorTestDates.cs" />
     <Compile Include="ProviderFactoryTest.cs" />
+    <Compile Include="Providers\GenericProviderTests.cs" />
     <Compile Include="Providers\SqlServer2005TransformationProviderTest.cs" />
     <Compile Include="Providers\MySqlTransformationProviderTest.cs" />
     <Compile Include="Providers\OracleTransformationProviderTest.cs" />

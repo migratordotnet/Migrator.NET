@@ -12,7 +12,6 @@
 using System;
 using System.Configuration;
 using Migrator.Providers.SqlServer;
-using Migrator.Tests.Providers;
 using NUnit.Framework;
 
 namespace Migrator.Tests.Providers
