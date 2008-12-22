@@ -805,8 +805,6 @@ namespace Migrator.Providers
 			return BuildCommand(null);
 		}
 
-
-
 		public void ExecuteSchemaBuilder(SchemaBuilder builder)
 		{
 			foreach (ISchemaBuilderExpression expr in builder.Expressions)
@@ -821,7 +819,7 @@ namespace Migrator.Providers
         public virtual string[] QuoteValues(string[] values)
         {
             return Array.ConvertAll<string, string>(values,
-                delegate(string val) { return String.Format("'{0}'", val); });
+				delegate(string val) { return String.Format("'{0}'", val.Replace("'", "''")); });
         }
 
         public string JoinColumnsAndValues(string[] columns, string[] values)

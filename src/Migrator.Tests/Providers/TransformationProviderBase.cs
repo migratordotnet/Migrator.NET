@@ -343,6 +343,19 @@ namespace Migrator.Tests.Providers
         }
 
         [Test]
+        public void CanInsertDataWithSingleQuotes()
+        {
+            AddTable();
+            _provider.Insert("Test", new string[] {"Id", "Title"}, new string[] {"1", "Muad'Dib"});
+            using (IDataReader reader = _provider.Select("Title", "Test"))
+            {
+                Assert.IsTrue(reader.Read());
+                Assert.AreEqual("Muad'Dib", reader.GetString(0));
+                Assert.IsFalse(reader.Read());
+            }
+        }
+
+        [Test]
         public void DeleteData()
         {
             InsertData();
