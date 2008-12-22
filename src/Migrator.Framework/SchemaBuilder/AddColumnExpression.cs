@@ -11,8 +11,6 @@
 
 #endregion
 
-using Migrator.Framework;
-
 namespace Migrator.Framework.SchemaBuilder
 {
 	public class AddColumnExpression : ISchemaBuilderExpression

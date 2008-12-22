@@ -11,8 +11,6 @@
 
 #endregion
 
-using Migrator.Framework.SchemaBuilder;
-
 namespace Migrator.Framework.SchemaBuilder
 {
 	public interface IFluentColumn : IColumn

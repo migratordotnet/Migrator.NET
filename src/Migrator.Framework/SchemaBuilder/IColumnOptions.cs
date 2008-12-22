@@ -1,5 +1,4 @@
 using System.Data;
-using Migrator.Framework.SchemaBuilder;
 
 namespace Migrator.Framework.SchemaBuilder
 {

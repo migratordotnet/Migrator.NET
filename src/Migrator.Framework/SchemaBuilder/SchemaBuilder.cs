@@ -14,8 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Migrator.Framework;
-using ForeignKeyConstraint=Migrator.Framework.ForeignKeyConstraint;
 
 namespace Migrator.Framework.SchemaBuilder
 {
