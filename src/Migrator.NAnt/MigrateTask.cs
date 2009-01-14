@@ -37,7 +37,7 @@ namespace Migrator.NAnt
 	[TaskName("migrate")]
 	public class MigrateTask : Task
 	{
-		private int _to = -1; // To last revision
+		private long _to = -1; // To last revision
 		private string _provider;
 		private string _connectionString;
 		private FileInfo _migrationsAssembly;
@@ -89,7 +89,7 @@ namespace Migrator.NAnt
 
 		
 		[TaskAttribute("to")]
-		public int To
+		public long To
 		{
 			set { _to = value; }
 			get { return _to; }
