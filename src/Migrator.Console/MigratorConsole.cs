@@ -30,7 +30,7 @@ namespace Migrator.MigratorConsole
 		private bool _trace = false;
 		private bool _dryrun = false;
 		private string _dumpTo;
-		private int _migrateTo = -1;
+		private long _migrateTo = -1;
 		private string[] args;
 		
 		/// <summary>
@@ -182,7 +182,7 @@ namespace Migrator.MigratorConsole
 				}
 				else if (argv[i].Equals("-version"))
 				{
-					_migrateTo = int.Parse(argv[i+1]);
+					_migrateTo = long.Parse(argv[i+1]);
 					i++;
 				}
 				else if (argv[i].Equals("-dump"))
