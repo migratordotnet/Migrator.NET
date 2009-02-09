@@ -47,7 +47,7 @@ namespace Migrator.MSBuild
     /// </example>
 	public class Migrate : Task
 	{
-		private int _to = -1; // To last revision
+		private long _to = -1; // To last revision
 		private string _provider;
 		private string _connectionString;
 		private ITaskItem[] _migrationsAssembly;
@@ -98,7 +98,7 @@ namespace Migrator.MSBuild
             get { return _language; }
         }
 
-		public int To
+		public long To
 		{
 			set { _to = value; }
 			get { return _to; }
