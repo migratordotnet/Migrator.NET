@@ -819,7 +819,12 @@ namespace Migrator.Providers
         public virtual string[] QuoteValues(string[] values)
         {
             return Array.ConvertAll<string, string>(values,
-				delegate(string val) { return String.Format("'{0}'", val.Replace("'", "''")); });
+				      delegate(string val) {
+				        if (null == val)
+				          return "null";
+				        else
+				          return String.Format("'{0}'", val.Replace("'", "''")); 
+				  });
         }
 
         public string JoinColumnsAndValues(string[] columns, string[] values)
