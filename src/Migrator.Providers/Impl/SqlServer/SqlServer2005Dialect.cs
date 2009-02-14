@@ -10,7 +10,7 @@ namespace Migrator.Providers.SqlServer
             RegisterColumnType(DbType.AnsiString, 2147483647, "VARCHAR(MAX)");
             RegisterColumnType(DbType.Binary, 2147483647, "VARBINARY(MAX)");
             RegisterColumnType(DbType.String, 1073741823, "NVARCHAR(MAX)");
-            RegisterColumnType(DbType.Xml, 1073741823, "XML");
+            RegisterColumnType(DbType.Xml, "XML");
         }
 
         public override Type TransformationProvider { get { return typeof (SqlServerTransformationProvider); } }

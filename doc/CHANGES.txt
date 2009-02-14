@@ -13,6 +13,7 @@
 
 - Breaking Change!: Changed the storage of versions applied to one that keeps all the versions. This
   will help deal with branches during development. (Thanks evonzee)
+  You will need to update your SchemaInfo table by inserting a row for all previously applied versions.
 
 - Added contribs for extra interesting code
   - Added Migration.Web to show how to run migrations from a Web App directly.
