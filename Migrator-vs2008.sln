@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extras", "Extras", "{02B014
 		doc\CHANGES.txt = doc\CHANGES.txt
 		default.build = default.build
 		local.properties-example = local.properties-example
+		src\MigratorDotNet.snk = src\MigratorDotNet.snk
 		doc\README.txt = doc\README.txt
 		doc\TODO.txt = doc\TODO.txt
 	EndProjectSection

@@ -13,6 +13,8 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>MigratorDotNet.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,6 +46,7 @@
   <ItemGroup>
     <None Include="example-build.proj" />
     <None Include="Migrator.Targets" />
+    <None Include="MigratorDotNet.snk" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Migrator\Migrator-vs2008.csproj">
