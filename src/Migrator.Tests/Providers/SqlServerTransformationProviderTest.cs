@@ -58,5 +58,23 @@ namespace Migrator.Tests.Providers
             _provider.AddColumn("TestTwo", "BlobColumn", DbType.Byte);
             Assert.IsTrue(_provider.ColumnExists("TestTwo", "BlobColumn"));
         }
+
+        [Test]
+        public void TableExistsShouldWorkWithTableNamesWithBracket()
+        {
+            Assert.IsTrue(_provider.TableExists("[TestTwo]"));            
+        }
+
+        [Test]
+        public void TableExistsShouldWorkWithSchemaNameAndTableName()
+        {
+            Assert.IsTrue(_provider.TableExists("dbo.TestTwo"));
+        }
+        
+        [Test]
+        public void TableExistsShouldWorkWithBracketsAndSchemaNameAndTableName()
+        {
+            Assert.IsTrue(_provider.TableExists("[dbo].[TestTwo]"));
+        }
     }
 }

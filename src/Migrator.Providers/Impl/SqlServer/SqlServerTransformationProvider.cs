@@ -67,12 +67,38 @@ namespace Migrator.Providers.SqlServer
 
 		public override bool TableExists(string table)
 		{
+            string tableWithoutBrackets = this.RemoveBrackets(table);
+            string schemaName = GetSchemaName(tableWithoutBrackets);
+            string tableName = this.GetTableName(tableWithoutBrackets);		    
 			using (IDataReader reader =
-				ExecuteQuery(String.Format("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='{0}'", table)))
+				ExecuteQuery(String.Format("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA ='{0}' AND TABLE_NAME='{1}'", schemaName,tableName)))
 			{
 				return reader.Read();
 			}
 		}
+
+        protected string GetSchemaName(string longTableName)
+        {
+            var splitTable = this.SplitTableName(longTableName);
+            return splitTable.Length > 1 ? splitTable[0] : "dbo";
+        }
+
+        protected string[] SplitTableName(string longTableName)
+        {            
+            return longTableName.Split('.');
+            
+        }
+
+        protected string GetTableName(string longTableName)
+        {
+            var splitTable = this.SplitTableName(longTableName);
+            return splitTable.Length > 1 ? splitTable[1] : longTableName;
+        }
+
+        protected string RemoveBrackets(string stringWithBrackets)
+        {
+            return stringWithBrackets.Replace("[", "").Replace("]", "");
+        }
 
         public override void RemoveColumn(string table, string column)
         {
