@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using System.Collections.Generic;
 
@@ -6,7 +7,7 @@ namespace Migrator.Framework
     /// <summary>
     /// The main interface to use in Migrations to make changes on a database schema.
     /// </summary>
-    public interface ITransformationProvider
+    public interface ITransformationProvider : IDisposable
     {
         
         /// <summary>

@@ -327,5 +327,10 @@ namespace Migrator.Providers
         {
             // No Op
         }
+
+        public void Dispose()
+        {
+            //No Op
+        }
     }
 }

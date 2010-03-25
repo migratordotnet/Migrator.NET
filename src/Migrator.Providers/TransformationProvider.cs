@@ -838,5 +838,13 @@ namespace Migrator.Providers
 
             return String.Join(", ", namesAndValues);
         }
+
+        public void Dispose()
+        {
+            if (_connection != null && _connection.State == ConnectionState.Open)
+            {
+                _connection.Close();
+            }
+        }
 	}
 }
