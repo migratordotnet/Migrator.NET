@@ -551,28 +551,29 @@ namespace Migrator.Providers
 		{
             Logger.Trace(sql);
             Logger.ApplyingDBChange(sql);
-			IDbCommand cmd = BuildCommand(sql);
-			try
-			{
-				return cmd.ExecuteNonQuery();
-			}
-			catch (Exception ex)
-			{
-				Logger.Warn(ex.Message);
-				throw;
-			}
-		}
+            using (IDbCommand cmd = BuildCommand(sql))
+            {
+                try
+                {
+                    return cmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn(ex.Message);
+                    throw;
+                }
+            }		}
 
 		private IDbCommand BuildCommand(string sql)
 		{
-			IDbCommand cmd = _connection.CreateCommand();
-			cmd.CommandText = sql;
-			cmd.CommandType = CommandType.Text;
-			if (_transaction != null)
-			{
-				cmd.Transaction = _transaction;
-			}
-			return cmd;
+		    IDbCommand cmd = _connection.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.CommandType = CommandType.Text;
+            if (_transaction != null)
+            {
+                cmd.Transaction = _transaction;
+            }
+            return cmd;
 		}
 
 		/// <summary>
@@ -583,32 +584,34 @@ namespace Migrator.Providers
 		public IDataReader ExecuteQuery(string sql)
 		{
             Logger.Trace(sql);
-			IDbCommand cmd = BuildCommand(sql);
-			try
-			{
-				return cmd.ExecuteReader();
-			}
-			catch
-			{
-				Logger.Warn("query failed: {0}", cmd.CommandText);
-				throw;
-			}
-		}
+            using (IDbCommand cmd = BuildCommand(sql))
+            {
+                try
+                {
+                    return cmd.ExecuteReader();
+                }
+                catch
+                {
+                    Logger.Warn("query failed: {0}", cmd.CommandText);
+                    throw;
+                }
+            }		}
 
 		public object ExecuteScalar(string sql)
 		{
             Logger.Trace(sql);
-			IDbCommand cmd = BuildCommand(sql);
-			try
-			{
-				return cmd.ExecuteScalar();
-			}
-			catch
-			{
-				Logger.Warn("Query failed: {0}", cmd.CommandText);
-				throw;
-			}
-		}
+            using (IDbCommand cmd = BuildCommand(sql))
+            {
+                try
+                {
+                    return cmd.ExecuteScalar();
+                }
+                catch
+                {
+                    Logger.Warn("Query failed: {0}", cmd.CommandText);
+                    throw;
+                }
+            }		}
 
 		public IDataReader Select(string what, string from)
 		{
