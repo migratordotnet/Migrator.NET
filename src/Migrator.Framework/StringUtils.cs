@@ -13,7 +13,10 @@ namespace Migrator.Framework
         /// <returns></returns>
         public static string ToHumanName(string className)
         {
-            string name = Regex.Replace(className, "([A-Z])", " $1").Substring(1);
+            string name = Regex.Replace(className, "^[_0-9]*|[_0-9]*$", "");
+              
+            name = Regex.Replace(name, "([A-Z])", " $1").Substring(1);
+
             return name.Substring(0, 1).ToUpper() + name.Substring(1).ToLower();
         }
 
