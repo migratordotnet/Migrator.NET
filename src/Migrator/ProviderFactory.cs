@@ -25,29 +25,22 @@ namespace Migrator
     public class ProviderFactory
     {
         private static readonly Assembly providerAssembly;
-        private static readonly Dictionary<String, object> dialects = new Dictionary<string, object>();
+        private static readonly Dictionary<string, Dialect> dialects = new Dictionary<string, Dialect>();
+
         static ProviderFactory()
         {
-            
-            //string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            //string fullPath = Path.Combine(directory, "Migrator.Providers.dll");
-            //if (fullPath.StartsWith("file:\\"))
-            //    fullPath = fullPath.Substring(6);
-            //else if (fullPath.StartsWith("file:"))
-            //    fullPath = fullPath.Substring(5);
             providerAssembly = Assembly.GetAssembly(typeof(TransformationProvider));
-            //providerAssembly = Assembly.LoadFrom("Migrator.Providers.dll");
             LoadDialects();
         }
 
         public static ITransformationProvider Create(string providerName, string connectionString)
         {
-            object dialectInstance = DialectForProvider(providerName);
-            MethodInfo mi = dialectInstance.GetType().GetMethod("NewProviderForDialect", new Type[] {typeof (String)});
-            return (ITransformationProvider)mi.Invoke(dialectInstance, new object[] { connectionString });
+            var dialectInstance = DialectForProvider(providerName);
+
+            return dialectInstance.NewProviderForDialect( connectionString );
         }
 
-        public static object DialectForProvider(string providerName)
+        public static Dialect DialectForProvider(string providerName)
         {
             if (String.IsNullOrEmpty(providerName))
                 return null;
@@ -62,12 +55,12 @@ namespace Migrator
 
         public static void LoadDialects()
         {
-            Type dialectType = providerAssembly.GetType("Migrator.Providers.Dialect");
+            Type dialectType = typeof (Dialect);
             foreach (Type t in providerAssembly.GetTypes())
             {
                 if (t.IsSubclassOf(dialectType))
                 {
-                    dialects.Add(t.FullName, Activator.CreateInstance(t, null));
+                    dialects.Add(t.FullName, (Dialect) Activator.CreateInstance(t, null));
                 }
             }
         }
