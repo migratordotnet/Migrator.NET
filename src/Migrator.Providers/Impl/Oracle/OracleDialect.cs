@@ -41,7 +41,9 @@ namespace Migrator.Providers.Oracle
 	        RegisterProperty(ColumnProperty.Null, String.Empty);
         }
 
-        public override Type TransformationProvider { get { return typeof(OracleTransformationProvider); } }
-
-    }
+		public override ITransformationProvider GetTransformationProvider(Dialect dialect, string connectionString)
+		{
+			return new OracleTransformationProvider(dialect, connectionString);
+		}
+	}
 }

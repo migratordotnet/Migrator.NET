@@ -38,8 +38,11 @@ namespace Migrator.Providers.PostgreSQL
             RegisterProperty(ColumnProperty.Identity, "serial");
         }
 
-        public override Type TransformationProvider { get { return typeof(PostgreSQLTransformationProvider); } }
-        
+		public override ITransformationProvider GetTransformationProvider(Dialect dialect, string connectionString)
+		{
+			return new PostgreSQLTransformationProvider(dialect, connectionString);
+		}
+
         public override bool TableNameNeedsQuote
         {
             get { return false; }

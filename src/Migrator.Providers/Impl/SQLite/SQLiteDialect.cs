@@ -34,7 +34,10 @@ namespace Migrator.Providers.SQLite
             RegisterProperty(ColumnProperty.Identity, "AUTOINCREMENT");
         }
 
-        public override Type TransformationProvider { get { return typeof(SQLiteTransformationProvider); } }
+		public override ITransformationProvider GetTransformationProvider(Dialect dialect, string connectionString)
+		{
+			return new SQLiteTransformationProvider(dialect, connectionString);
+		}
         
         public override bool NeedsNotNullForIdentity
         {

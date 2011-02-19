@@ -22,11 +22,11 @@ namespace Migrator.Providers
             RegisterProperty(ColumnProperty.PrimaryKey, "PRIMARY KEY");
         }
 
-        public abstract Type TransformationProvider { get; }
+		public abstract ITransformationProvider GetTransformationProvider(Dialect dialect, string connectionString);
 
         public ITransformationProvider NewProviderForDialect(string connectionString)
         {
-            return (ITransformationProvider) Activator.CreateInstance(TransformationProvider, this, connectionString);
+            return GetTransformationProvider(this, connectionString);
         }
         
         /// <summary>
