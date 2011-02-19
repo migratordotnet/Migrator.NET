@@ -37,7 +37,7 @@ namespace Migrator.Compile
         {
             string[] files = GetFilesRecursive(directory);
             Console.Out.WriteLine("Compiling:");
-            Array.ForEach(files, delegate(String file) { Console.Out.WriteLine(file); });
+            Array.ForEach(files, file => Console.Out.WriteLine(file));
 
             return Compile(files);
         }
@@ -103,7 +103,7 @@ namespace Migrator.Compile
             if (null != extraReferencedAssemblies && extraReferencedAssemblies.Length > 0)
             {
                 Array.ForEach(extraReferencedAssemblies,
-                              delegate(String assemb) { parms.ReferencedAssemblies.Add(assemb); });
+                              assembly => parms.ReferencedAssemblies.Add(assembly));
             }
             return parms;
         }
