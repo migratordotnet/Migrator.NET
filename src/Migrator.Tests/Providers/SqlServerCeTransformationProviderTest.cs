@@ -61,11 +61,10 @@ namespace Migrator.Tests.Providers
           connection.Dispose();
           engine = null;
           connection = null;
-          string file = Regex.Match(constr, "Data Source=(.*)").Groups[1].Value;
-          if (File.Exists(file)) File.Delete(file);
+          SqlCeEngineTestContainer.RemoveDataSource(constr);
         }
 
-        // [Test,Ignore("SqlServerCe doesn't support check constraints")]
+      // [Test,Ignore("SqlServerCe doesn't support check constraints")]
 		public override void CanAddCheckConstraint() { }
 
 		// [Test,Ignore("SqlServerCe doesn't support table renaming")]

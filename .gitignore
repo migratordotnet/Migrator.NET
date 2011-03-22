@@ -1,6 +1,7 @@
 *.orig
 *.suo
 *.user
+*.*~
 bin/
 obj/
 _ReSharper*/

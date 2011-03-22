@@ -33,6 +33,11 @@ namespace Migrator.Tests.Providers
       connection.Dispose();
       engine = null;
       connection = null;
+      RemoveDataSource(constr);
+    }
+
+    public static void RemoveDataSource(string constr)
+    {
       string file = Regex.Match(constr, "Data Source=(.*)").Groups[1].Value;
       if (File.Exists(file)) File.Delete(file);
     }

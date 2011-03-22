@@ -40,6 +40,7 @@
     <DefineConstants>TRACE;DEBUG;DOTNET2</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -79,6 +80,7 @@
     <Compile Include="MigratorTestDates.cs" />
     <Compile Include="ProviderFactoryTest.cs" />
     <Compile Include="Providers\GenericProviderTests.cs" />
+    <Compile Include="Providers\SqlCeEngineTestContainer.cs" />
     <Compile Include="Providers\SqlServer2005TransformationProviderTest.cs" />
     <Compile Include="Providers\MySqlTransformationProviderTest.cs" />
     <Compile Include="Providers\OracleTransformationProviderTest.cs" />
@@ -88,6 +90,7 @@
     <Compile Include="Providers\SqlServerTransformationProviderTest.cs" />
     <Compile Include="Providers\TransformationProviderBase.cs" />
     <Compile Include="Providers\TransformationProviderConstraintBase.cs" />
+    <Compile Include="SchemaBuilderTests.cs" />
     <Compile Include="ScriptEngineTests.cs" />
     <Compile Include="Tools\SchemaDumperTest.cs" />
     <Compile Include="Tools\SqlFileLoggerTest.cs" />
