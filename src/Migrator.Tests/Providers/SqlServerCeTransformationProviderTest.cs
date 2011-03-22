@@ -12,6 +12,7 @@
 using System;
 using System.Configuration;
 using System.Data.SqlServerCe;
+using System.Text.RegularExpressions;
 using Migrator.Providers.SqlServer;
 using NUnit.Framework;
 using System.IO;
@@ -21,11 +22,15 @@ namespace Migrator.Tests.Providers
     [TestFixture, Category("SqlServerCe")]
     public class SqlServerCeTransformationProviderTest : TransformationProviderConstraintBase
     {
+      private SqlCeConnection connection;
+      private SqlCeEngine engine;
+      private string constr;
+
         [SetUp]
         public void SetUp()
         {
 
-            string constr = ConfigurationManager.AppSettings["SqlServerCeConnectionString"];
+            constr = ConfigurationManager.AppSettings["SqlServerCeConnectionString"];
             if (constr == null)
                 throw new ArgumentNullException("SqlServerCeConnectionString", "No config file");
 
@@ -39,12 +44,25 @@ namespace Migrator.Tests.Providers
 
         private void EnsureDatabase(string constr)
         {
-            SqlCeConnection connection = new SqlCeConnection(constr);
+            if (null==connection) connection = new SqlCeConnection(constr);
+            if (null==engine) engine = new SqlCeEngine(constr);
+
             if (!File.Exists(connection.Database))
             {
-                SqlCeEngine engine = new SqlCeEngine(constr);
                 engine.CreateDatabase();
             }
+        }
+        [TearDown]
+        public override void TearDown()
+        {
+          base.TearDown();
+          _provider.Dispose();
+          engine.Dispose();
+          connection.Dispose();
+          engine = null;
+          connection = null;
+          string file = Regex.Match(constr, "Data Source=(.*)").Groups[1].Value;
+          if (File.Exists(file)) File.Delete(file);
         }
 
         // [Test,Ignore("SqlServerCe doesn't support check constraints")]

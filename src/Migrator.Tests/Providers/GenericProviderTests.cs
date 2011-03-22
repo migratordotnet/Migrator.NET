@@ -29,5 +29,10 @@ namespace Migrator.Tests.Providers
         {
             return false;
         }
+
+		public override bool IndexExists(string table, string name)
+		{
+			return false;
+		}
     }
 }

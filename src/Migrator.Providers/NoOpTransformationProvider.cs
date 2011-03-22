@@ -54,6 +54,11 @@ namespace Migrator.Providers
             // No Op
         }
         
+		public void RemoveIndex(string table, string name)
+		{
+			// No Op
+		}
+
         public void AddTable(string name, params Column[] columns)
         {
             // No Op
@@ -187,11 +192,21 @@ namespace Migrator.Providers
             // No Op
         }
 
+		public void AddIndex(string name, string table, params string[] columns)
+		{
+			// No Op
+		}
+
         public bool ConstraintExists(string table, string name)
         {
             return false;
         }
         
+		public bool IndexExists(string table, string name)
+		{
+			return false;
+		}
+
         public void ChangeColumn(string table, Column column)
         {
             // No Op

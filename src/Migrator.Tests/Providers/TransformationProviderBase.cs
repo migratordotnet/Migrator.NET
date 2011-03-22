@@ -8,7 +8,7 @@ namespace Migrator.Tests.Providers
   /// <summary>
   /// Base class for Provider tests for all non-constraint oriented tests.
   /// </summary>
-  public class TransformationProviderBase
+  public abstract class TransformationProviderBase
   {
     protected ITransformationProvider _provider;
 
@@ -60,6 +60,14 @@ namespace Migrator.Tests.Providers
       new Column("bigstring", DbType.String, 50000)
       );
     }
+
+    [Test]
+	public void CanCreateTableWithGuidAsPrimaryKey()
+	{
+		_provider.AddTable("GuidTest",
+			new Column("Id", DbType.Guid, ColumnProperty.PrimaryKey));
+		_provider.RemoveTable("GuidTest");
+	}
 
     [Test]
     public void TableExistsWorks() 
@@ -295,6 +303,27 @@ namespace Migrator.Tests.Providers
     {
       Assert.IsTrue(_provider.TableExists("TestTwo"));
     }
+
+    [Test]
+	public void AddIndex()
+	{
+		string indexName = "test_index";
+		
+		Assert.IsFalse(_provider.IndexExists("TestTwo", indexName));
+		_provider.AddIndex(indexName, "TestTwo", "Id", "TestId" );
+		Assert.IsTrue(_provider.IndexExists("TestTwo", indexName));
+	}
+
+	[Test]
+	public void RemoveIndex()
+	{
+		string indexName = "test_index";
+
+		Assert.IsFalse(_provider.IndexExists("TestTwo", indexName));
+		_provider.AddIndex(indexName, "TestTwo", "Id", "TestId");
+		_provider.RemoveIndex("TestTwo", indexName);
+		Assert.IsFalse(_provider.IndexExists("TestTwo", indexName));
+	}
 
     [Test]
     public void AppliedMigrations()
