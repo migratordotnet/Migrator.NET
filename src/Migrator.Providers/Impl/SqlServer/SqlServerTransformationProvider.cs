@@ -19,6 +19,79 @@ using Migrator.Framework;
 
 namespace Migrator.Providers.SqlServer
 {
+	/// <summary>
+	/// Simple mapping
+	/// </summary>
+	public class SqlServerDataTypes
+	{
+	    /// <summary>
+	    /// http://msdn.microsoft.com/en-us/library/cc716729.aspx
+	    /// </summary>
+	    private static readonly object[][] Mapping = new[]
+	                                                         {
+	                                                             new object[] {"uniqueidentifier", typeof (Guid), DbType.Guid},
+	                                                             new object[] {"int", typeof (Int32), DbType.Int32},
+	                                                             new object[] {"float", typeof (double), DbType.Double},
+	                                                             new object[] {"smallint", typeof (Int16), DbType.Int16},
+	                                                             new object[] {"tinyint", typeof (Byte), DbType.Byte},
+	                                                             new object[] {"decimal", typeof (Decimal), DbType.Decimal},
+	                                                             new object[] {"numeric", typeof (Decimal), DbType.Decimal},
+	                                                             new object[] {"real", typeof (Single), DbType.Single},
+	                                                             new object[] {"bigint", typeof (Int64), DbType.Int64},
+	                                                             new object[] {"bit", typeof (Boolean), DbType.Boolean},
+	                                                             new object[] {"nvarchar", typeof (String), DbType.String},
+	                                                             new object[] {"varchar", typeof (String), DbType.AnsiString},
+	                                                             new object[] {"nchar", typeof (String), DbType.StringFixedLength},
+	                                                             new object[] {"ntext", typeof (String), DbType.String},
+	                                                             new object[] {"text", typeof (String), DbType.AnsiString},
+	                                                             new object[] {"char", typeof (String), DbType.StringFixedLength},//Or ansistring fixed length
+	                                                             new object[] {"datetime", typeof (DateTime), DbType.DateTime},
+	                                                             new object[] {"datetime2", typeof (DateTime), DbType.DateTime2},
+	                                                             new object[] {"smalldatetime", typeof (DateTime), DbType.DateTime},
+	                                                             new object[] {"rowversion", typeof (Byte[]), DbType.Binary},
+	                                                             new object[] {"timestamp", typeof (Byte[]), DbType.Binary},
+	                                                             new object[] {"xml", typeof (System.Xml.XmlElement), DbType.Xml},
+	                                                         };
+
+
+	    private readonly Dictionary<string, Type> _mappingDictionary;
+	    private readonly Dictionary<string, DbType> _mappingDbTypeDictionary;
+
+	    public SqlServerDataTypes()
+	    {
+	        _mappingDictionary = new Dictionary<string, Type>(Mapping.Length);
+	        _mappingDbTypeDictionary = new Dictionary<string, DbType>(Mapping.Length);
+	        for (int i = 0; i < Mapping.Length; i++)
+	        {
+	            _mappingDictionary.Add((string)Mapping[i][0], (Type)Mapping[i][1]);
+	            _mappingDbTypeDictionary.Add((string)Mapping[i][0], (DbType)Mapping[i][2]);
+	        }
+	    }
+
+	    public Type GetDataType(string columnType)
+	    {
+	        if (!_mappingDictionary.ContainsKey(columnType))
+	            throw new Exception(string.Format("Well, couldnt find the right type:{0}",
+	                                              columnType));
+	        return _mappingDictionary[columnType];
+	    }
+
+	    public Type GetDataTypeNullable(string columnType)
+	    {
+	        if (!_mappingDictionary.ContainsKey(columnType))
+	            return null;
+	        return _mappingDictionary[columnType];
+	    }
+
+
+	    public DbType GetDbType(string columnType)
+	    {
+	        if (!_mappingDbTypeDictionary.ContainsKey(columnType))
+	            throw new Exception(string.Format("Well, couldnt find the right type:{0}",
+	                                              columnType));
+	        return _mappingDbTypeDictionary[columnType];
+	    }
+	}
     /// <summary>
     /// Migration transformations provider for Microsoft SQL Server.
     /// </summary>
@@ -47,6 +120,16 @@ namespace Migrator.Providers.SqlServer
                 return reader.Read();
             }
         }
+
+		public override bool IndexExists(string table, string name)
+		{
+			using (IDataReader reader =
+				ExecuteQuery(string.Format("SELECT top 1 * FROM sys.indexes WHERE object_id = OBJECT_ID('{0}') AND name = '{1}'", table, name)))
+			{
+				return reader.Read();
+			}
+		}
+
 
         public override void AddColumn(string table, string sqlColumn)
         {
@@ -123,6 +206,16 @@ namespace Migrator.Providers.SqlServer
             if (TableExists(oldName))
                 ExecuteNonQuery(String.Format("EXEC sp_rename {0}, {1}", oldName, newName));
         }
+
+		public override void RemoveIndex(string table, string name)
+		{
+			if (TableExists(table) && IndexExists(table, name))
+			{
+				table = _dialect.TableNameNeedsQuote ? _dialect.Quote(table) : table;
+				name = _dialect.ConstraintNameNeedsQuote ? _dialect.Quote(name) : name;
+				ExecuteNonQuery(String.Format("DROP INDEX {0} ON {1}", name, table));
+			}
+		}
 
         // Deletes all constraints linked to a column. Sql Server
         // doesn't seems to do this.

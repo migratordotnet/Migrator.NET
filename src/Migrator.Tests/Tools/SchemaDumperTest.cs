@@ -33,4 +33,22 @@ namespace Migrator.Tests.Tools
 			Assert.IsNotNull(output);
 		}
 	}
+    [TestFixture, Category("SqlServer2005")]
+    public class SchemaDumperSqlServerTest
+    {
+        [Test]
+        public void Dump()
+        {
+
+            string constr = ConfigurationManager.AppSettings["SqlServerConnectionString"];
+
+            if (constr == null)
+                throw new ArgumentNullException("SqlServerConnectionString", "No config file");
+
+            SchemaDumper dumper = new SchemaDumper("SqlServer", constr);
+            string output = dumper.Dump();
+
+            Assert.IsNotNull(output);
+        }
+    }
 }
