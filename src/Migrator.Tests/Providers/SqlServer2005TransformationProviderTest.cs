@@ -31,5 +31,10 @@ namespace Migrator.Tests.Providers
 
             AddDefaultTable();
         }
+        [TearDown]
+        public override void TearDown()
+        {
+          base.TearDown();
+        }
     }
 }
