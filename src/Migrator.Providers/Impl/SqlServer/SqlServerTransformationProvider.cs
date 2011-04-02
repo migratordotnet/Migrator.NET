@@ -141,8 +141,12 @@ namespace Migrator.Providers.SqlServer
 			if (!TableExists(table))
 				return false;
 
+      string tableWithoutBrackets = this.RemoveBrackets(table);
+      string schemaName = GetSchemaName(tableWithoutBrackets);
+      string tableName = this.GetTableName(tableWithoutBrackets);		    
+
 			using (IDataReader reader =
-				ExecuteQuery(String.Format("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='{0}' AND COLUMN_NAME='{1}'", table, column)))
+				ExecuteQuery(String.Format("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '{2}' AND TABLE_NAME='{0}' AND COLUMN_NAME='{1}'", tableName, column, schemaName)))
 			{
 				return reader.Read();
 			}
@@ -150,9 +154,9 @@ namespace Migrator.Providers.SqlServer
 
 		public override bool TableExists(string table)
 		{
-            string tableWithoutBrackets = this.RemoveBrackets(table);
-            string schemaName = GetSchemaName(tableWithoutBrackets);
-            string tableName = this.GetTableName(tableWithoutBrackets);		    
+      string tableWithoutBrackets = this.RemoveBrackets(table);
+      string schemaName = GetSchemaName(tableWithoutBrackets);
+      string tableName = this.GetTableName(tableWithoutBrackets);		    
 			using (IDataReader reader =
 				ExecuteQuery(String.Format("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA ='{0}' AND TABLE_NAME='{1}'", schemaName,tableName)))
 			{

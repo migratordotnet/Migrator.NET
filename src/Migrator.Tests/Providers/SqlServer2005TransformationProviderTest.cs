@@ -11,6 +11,7 @@
 
 using System;
 using System.Configuration;
+using System.Data;
 using Migrator.Providers.SqlServer;
 using NUnit.Framework;
 
@@ -35,6 +36,26 @@ namespace Migrator.Tests.Providers
         public override void TearDown()
         {
           base.TearDown();
+        }
+        [Test]
+        public void RemoveDboColumnWithDefault()
+        {
+          AddDboColumnWithDefault();
+          _provider.RemoveColumn("dbo.TestTwo", "TestWithDefault");
+          Assert.IsFalse(_provider.ColumnExists("dbo.TestTwo", "TestWithDefault"));
+        }
+
+        [Test]
+        public void AddDboColumnWithDefault()
+        {
+          _provider.AddColumn("dbo.TestTwo", "TestWithDefault", DbType.Int32, 50, 0, 10);
+          Assert.IsTrue(_provider.ColumnExists("dbo.TestTwo", "TestWithDefault"));
+        }
+        [Test]
+        public void ColumnExistsDbo()
+        {
+          _provider.AddColumn("TestTwo", "TestWithDefault", DbType.Int32, 50, 0, 10);
+          Assert.IsTrue(_provider.ColumnExists("dbo.TestTwo", "TestWithDefault"));
         }
     }
 }
