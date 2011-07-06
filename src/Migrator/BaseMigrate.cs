@@ -9,20 +9,28 @@ namespace Migrator
         protected ILogger _logger;
         protected List<long> _availableMigrations;
         protected List<long> _original;
+        protected string _scope;
         protected long _current;
         protected bool _dryrun;
 
-        protected BaseMigrate(List<long> availableMigrations, ITransformationProvider provider, ILogger logger)
+        protected BaseMigrate(string scope, List<long> availableMigrations, ITransformationProvider provider, ILogger logger)
         {
             _provider = provider;
             _availableMigrations = availableMigrations;
-            _original = new List<long> (_provider.AppliedMigrations.ToArray()); //clone
+            _scope = scope;
+            _original = new List<long>(); //clone
+            foreach (var appliedMigration in _provider.AppliedMigrations)
+            {
+                if (scope == appliedMigration.Key)
+                    _original.Add(appliedMigration.Value);
+            }
+            _original.Sort();
             _logger = logger;
         }
 
-        public static BaseMigrate GetInstance(List<long> availableMigrations, ITransformationProvider provider, ILogger logger)
+        public static BaseMigrate GetInstance(string scope, List<long> availableMigrations, ITransformationProvider provider, ILogger logger)
         {
-        	return new MigrateAnywhere(availableMigrations, provider, logger);
+        	return new MigrateAnywhere(scope, availableMigrations, provider, logger);
         }
 
         public List<long> AppliedVersions
@@ -65,8 +73,8 @@ namespace Migrator
         	int migrationSearch = _availableMigrations.IndexOf(Current)+1;
         	
         	// See if we can find a migration that matches the requirement
-        	while(migrationSearch < _availableMigrations.Count 
-        	      && _provider.AppliedMigrations.Contains(_availableMigrations[migrationSearch]))
+        	while(migrationSearch < _availableMigrations.Count
+                  && AppliedMigrationsContains(_availableMigrations[migrationSearch]))
         	{
         		migrationSearch++;
         	}
@@ -91,8 +99,8 @@ namespace Migrator
         	int migrationSearch = _availableMigrations.IndexOf(Current)-1;
         	
         	// See if we can find a migration that matches the requirement
-        	while(migrationSearch > -1 
-        	      && !_provider.AppliedMigrations.Contains(_availableMigrations[migrationSearch]))
+        	while(migrationSearch > -1
+                  && !AppliedMigrationsContains(_availableMigrations[migrationSearch]))
         	{
         		migrationSearch--;
         	}
@@ -105,6 +113,16 @@ namespace Migrator
         	
         	// found one.
         	return _availableMigrations[migrationSearch];
+        }
+
+        private bool AppliedMigrationsContains(long version)
+        {
+            foreach (var appliedMigration in _provider.AppliedMigrations)
+            {
+                if (appliedMigration.Key == _scope && appliedMigration.Value == version)
+                    return true;
+            }
+            return false;
         }
     }
 }

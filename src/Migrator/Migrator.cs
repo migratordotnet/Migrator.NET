@@ -80,15 +80,38 @@ namespace Migrator
         /// Run all migrations up to the latest.  Make no changes to database if
         /// dryrun is true.
         /// </summary>
-        public void MigrateToLastVersion()
+        public void MigrateToLastVersion(string scope)
         {
-            MigrateTo(_migrationLoader.LastVersion);
+            foreach (var version in _migrationLoader.LastVersions)
+            {
+                if (version.Key != scope)
+                    continue;
+                MigrateTo(version.Key, version.Value);
+                break;
+            }
+        }
+
+        public IEnumerable<string> Scopes
+        {
+            get
+            {
+                foreach (var version in _migrationLoader.LastVersions)
+                    yield return version.Key;
+            }
+        }
+
+        public void MigrateAllScopesToLastVersion()
+        {
+            foreach (var version in _migrationLoader.LastVersions)
+            {
+                MigrateTo(version.Key, version.Value);
+            }
         }
 
         /// <summary>
         /// Returns the current migrations applied to the database.
         /// </summary>
-        public List<long> AppliedMigrations 
+        public List<KeyValuePair<string, long>> AppliedMigrations 
         {
             get { return _provider.AppliedMigrations; }
         }
@@ -122,8 +145,9 @@ namespace Migrator
         /// the <c>Down()</c> method of previous migration will be invoked.
         /// If <c>dryrun</c> is set, don't write any changes to the database.
         /// </summary>
+        /// <param name="scope">Scope of versions</param>
         /// <param name="version">The version that must became the current one</param>
-        public void MigrateTo(long version)
+        public void MigrateTo(string scope, long version)
         {
 
             if (_migrationLoader.MigrationsTypes.Count == 0)
@@ -133,13 +157,13 @@ namespace Migrator
             }
 
             bool firstRun = true;
-            BaseMigrate migrate = BaseMigrate.GetInstance(_migrationLoader.GetAvailableMigrations(), _provider, _logger);
+            BaseMigrate migrate = BaseMigrate.GetInstance(scope, _migrationLoader.GetAvailableMigrations(scope), _provider, _logger);
             migrate.DryRun = DryRun;
             Logger.Started(migrate.AppliedVersions, version);
 
             while (migrate.Continue(version))
             {
-                IMigration migration = _migrationLoader.GetMigration(migrate.Current);
+                IMigration migration = _migrationLoader.GetMigration(scope, migrate.Current);
                 if (null == migration)
                 {
                     _logger.Skipping(migrate.Current);

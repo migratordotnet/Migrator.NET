@@ -30,7 +30,7 @@ namespace Migrator.Providers
 		private ILogger _logger;
 		protected IDbConnection _connection;
 		private IDbTransaction _transaction;
-		private List<long> _appliedMigrations;
+        private List<KeyValuePair<string, long>> _appliedMigrations;
 
 		protected readonly string _connectionString;
 		protected Dialect _dialect;
@@ -739,52 +739,74 @@ namespace Migrator.Providers
         /// <summary>
         /// The list of Migrations currently applied to the database.
         /// </summary>
-		public List<long> AppliedMigrations
+        public List<KeyValuePair<string, long>> AppliedMigrations
 		{
 			get
 			{
 				if(_appliedMigrations == null)
 				{
-					_appliedMigrations = new List<long>();
+                    _appliedMigrations = new List<KeyValuePair<string, long>>();
 					CreateSchemaInfoTable();
-					using(IDataReader reader = Select("version","SchemaInfo")){
+                    using (IDataReader reader = Select("*", ProviderGlobalSettings.TableSchemaInfo))
+                    {
 						while(reader.Read()){
-                            _appliedMigrations.Add(Convert.ToInt64(reader.GetValue(0)));
+                            _appliedMigrations.Add(new KeyValuePair<string, long>(Convert.ToString(reader.GetValue(0)), Convert.ToInt64(reader.GetValue(1))));
 						}
 					}
 				}
 				return _appliedMigrations;
 			}
 		}
-		
-		/// <summary>
-        /// Marks a Migration version number as having been applied
-        /// </summary>
-        /// <param name="version">The version number of the migration that was applied</param>
-		public void MigrationApplied(long version)
+
+	    /// <summary>
+	    /// Marks a Migration version number as having been applied
+	    /// </summary>
+	    /// <param name="version">The version number of the migration that was applied</param>
+        /// <param name="scope">Scope of migrations</param>
+	    public void MigrationApplied(long version, string scope)
 		{
 			CreateSchemaInfoTable();
-			Insert("SchemaInfo",new string[]{"version"},new string[]{version.ToString()});
-			_appliedMigrations.Add(version);
+	        var scopeFixed = FixScope(scope);
+            Insert(ProviderGlobalSettings.TableSchemaInfo, new string[] { ProviderGlobalSettings.ColumnScope, ProviderGlobalSettings.ColumnVersion }, new string[] { scopeFixed, version.ToString() });
+            _appliedMigrations.Add(new KeyValuePair<string, long>(scopeFixed, version));
 		}
-		
-        /// <summary>
-        /// Marks a Migration version number as having been rolled back from the database
-        /// </summary>
-        /// <param name="version">The version number of the migration that was removed</param>
-		public void MigrationUnApplied(long version)
+
+	    /// <summary>
+	    /// Marks a Migration version number as having been rolled back from the database
+	    /// </summary>
+	    /// <param name="version">The version number of the migration that was removed</param>
+	    /// <param name="scope">Scope of migrations</param>
+	    public void MigrationUnApplied(long version, string scope)
 		{
 			CreateSchemaInfoTable();
-			Delete("SchemaInfo", "version", version.ToString());
-			_appliedMigrations.Remove(version);
+            var scopeFixed = FixScope(scope);
+            Delete(ProviderGlobalSettings.TableSchemaInfo, new string[] { ProviderGlobalSettings.ColumnScope, ProviderGlobalSettings.ColumnVersion }, new string[] { scopeFixed, version.ToString() });
+	        KeyValuePair<string, long>? toDelete = null;
+	        foreach (var appliedMigration in _appliedMigrations)
+	        {
+                if (appliedMigration.Value == version && appliedMigration.Key.CompareTo(scopeFixed) == 0)
+                {
+                    toDelete = appliedMigration;
+                    break;
+                }
+	        }
+            if (toDelete.HasValue)
+                _appliedMigrations.Remove(toDelete.Value);
 		}
+
+        private static string FixScope(string scope)
+        {
+            return (String.IsNullOrEmpty(scope) || scope.Length != 32) ? ProviderGlobalSettings.GlobalScopeId : scope;
+        }
 
 		protected void CreateSchemaInfoTable()
 		{
 			EnsureHasConnection();
-			if (!TableExists("SchemaInfo"))
+            if (!TableExists(ProviderGlobalSettings.TableSchemaInfo))
 			{
-				AddTable("SchemaInfo", new Column("Version", DbType.Int64, ColumnProperty.PrimaryKey));
+                AddTable(ProviderGlobalSettings.TableSchemaInfo,
+                    new Column(ProviderGlobalSettings.ColumnScope, DbType.StringFixedLength, 32, ColumnProperty.Indexed),
+                    new Column(ProviderGlobalSettings.ColumnVersion, DbType.Int64, ColumnProperty.Indexed));
 			}
 		}
 

@@ -283,19 +283,19 @@ namespace Migrator.Providers
             get { return this; }
         }
 
-        public void MigrationApplied(long version)
+        public void MigrationApplied(long version, string scope = null)
         {
         	//no op
         }
 
-        public void MigrationUnApplied(long version)
+        public void MigrationUnApplied(long version, string scope = null)
         {
         	//no op
         }
-        
-        public List<long> AppliedMigrations
+
+        public List<KeyValuePair<string, long>> AppliedMigrations
         {
-        	get { return new List<long>(); }
+            get { return new List<KeyValuePair<string, long>>(); }
         }
 
         protected void CreateSchemaInfoTable()

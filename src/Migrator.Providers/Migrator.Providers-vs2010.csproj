@@ -107,6 +107,7 @@
     <Compile Include="Impl\SQLite\SQLiteTransformationProvider.cs" />
     <Compile Include="Impl\SqlServer\SqlServerDialect.cs" />
     <Compile Include="Impl\SqlServer\SqlServerTransformationProvider.cs" />
+    <Compile Include="ProviderGlobalSettings.cs" />
     <Compile Include="TransformationProvider.cs" />
     <Compile Include="TypeNames.cs" />
   </ItemGroup>

@@ -31,13 +31,28 @@ namespace Migrator
 		{
 			MigrationAttribute attribOfX = (MigrationAttribute) Attribute.GetCustomAttribute(x, typeof(MigrationAttribute));
 			MigrationAttribute attribOfY = (MigrationAttribute) Attribute.GetCustomAttribute(y, typeof(MigrationAttribute));
-			
-			if (_ascending)
-				return attribOfX.Version.CompareTo(attribOfY.Version);
-			else
-				return attribOfY.Version.CompareTo(attribOfX.Version);
-			
-			
+
+            var vX = attribOfX.GetVersion(x);
+            var vY = attribOfY.GetVersion(y);
+
+            var c = vX.Key.CompareTo(vY.Key);
+
+            if (_ascending)
+            {
+                if (c != 0)
+                    return c;
+            }
+            else
+            {
+                if (c != 0)
+                    return -c;
+            }
+
+            return _ascending
+                       ? attribOfX.Version.CompareTo(attribOfY.Version)
+                       : attribOfY.Version.CompareTo(attribOfX.Version);
+
+
 		}
 	}
 }
