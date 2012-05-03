@@ -134,6 +134,15 @@ namespace Migrator.Providers
 			}
 		}
 
+		public virtual void RemoveIndex(string table, string name)
+		{
+			if (TableExists(table) && IndexExists(table, name))
+			{
+				name = _dialect.ConstraintNameNeedsQuote ? _dialect.Quote(name) : name;
+				ExecuteNonQuery(String.Format("DROP INDEX {0}", name));
+			}
+		}
+
 		public virtual void AddTable(string table, string engine, string columns)
 		{
 			table = _dialect.TableNameNeedsQuote ? _dialect.Quote(table) : table;
@@ -447,6 +456,16 @@ namespace Migrator.Providers
 			ExecuteNonQuery(String.Format("ALTER TABLE {0} ADD CONSTRAINT {1} CHECK ({2}) ", table, name, checkSql));
 		}
 
+		public virtual void AddIndex(string name, string table, params string[] columns)
+		{
+			if (IndexExists(table, name))
+			{
+				Logger.Warn("Index {0} already exists", name);
+				return;
+			}
+			ExecuteNonQuery(String.Format("CREATE INDEX {0} ON {1} ({2}) ", name, table, string.Join(", ", columns)));
+		}
+
 		/// <summary>
 		/// Guesses the name of the foreign key and add it
 		/// </summary>
@@ -547,6 +566,8 @@ namespace Migrator.Providers
 			return ConstraintExists(table, name);
 		}
 
+		public abstract bool IndexExists(string table, string name);
+
 		public int ExecuteNonQuery(string sql)
 		{
             Logger.Trace(sql);
@@ -562,7 +583,8 @@ namespace Migrator.Providers
                     Logger.Warn(ex.Message);
                     throw;
                 }
-            }		}
+            }
+		}
 
 		private IDbCommand BuildCommand(string sql)
 		{
@@ -595,7 +617,8 @@ namespace Migrator.Providers
                     Logger.Warn("query failed: {0}", cmd.CommandText);
                     throw;
                 }
-            }		}
+            }
+		}
 
 		public object ExecuteScalar(string sql)
 		{
@@ -611,7 +634,8 @@ namespace Migrator.Providers
                     Logger.Warn("Query failed: {0}", cmd.CommandText);
                     throw;
                 }
-            }		}
+            }
+		}
 
 		public IDataReader Select(string what, string from)
 		{

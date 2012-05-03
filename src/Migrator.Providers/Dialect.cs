@@ -12,6 +12,7 @@ namespace Migrator.Providers
     public abstract class Dialect 
     {
         private readonly Dictionary<ColumnProperty, string> propertyMap = new Dictionary<ColumnProperty, string>();
+		private readonly List<DbType> unsignedCompatibleTypes = new List<DbType>();
         private readonly TypeNames typeNames = new TypeNames();
         
         protected Dialect()
@@ -105,6 +106,25 @@ namespace Migrator.Providers
 
             return GetTypeName(type);
         }
+        
+		/// <summary>
+		/// Subclasses register which DbTypes are unsigned-compatible (ie, available in signed and unsigned variants)
+		/// </summary>
+		/// <param name="type"></param>
+		protected void RegisterUnsignedCompatible(DbType type)
+		{
+			unsignedCompatibleTypes.Add(type);
+		}
+
+		/// <summary>
+		/// Determine if a particular database type has an unsigned variant
+		/// </summary>
+		/// <param name="type">The DbType</param>
+		/// <returns>True if the database type has an unsigned variant, otherwise false</returns>
+		public bool IsUnsignedCompatible(DbType type)
+		{
+			return unsignedCompatibleTypes.Contains(type);
+		}
         
         public void RegisterProperty(ColumnProperty property, string sql)
         {

@@ -36,6 +36,14 @@ namespace Migrator.Providers.Mysql
             }
         }
 
+		public override void RemoveIndex(string table, string name)
+		{
+			if (IndexExists(table, name))
+			{
+				ExecuteNonQuery(String.Format("DROP INDEX {1} ON {0}", table, _dialect.Quote(name)));
+			}
+		}
+
         public override bool ConstraintExists(string table, string name)
         {
             if (!TableExists(table)) 
@@ -61,6 +69,11 @@ namespace Migrator.Providers.Mysql
         {
             return ConstraintExists(table, "PRIMARY");
         }
+
+		public override bool IndexExists(string table, string name)
+		{
+			return ConstraintExists(table, name);
+		}
 
         // XXX: Using INFORMATION_SCHEMA.COLUMNS should work, but it was causing trouble, so I used the MySQL specific thing.
         public override Column[] GetColumns(string table)

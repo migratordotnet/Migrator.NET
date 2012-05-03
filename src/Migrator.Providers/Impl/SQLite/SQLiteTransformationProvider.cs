@@ -108,6 +108,15 @@ namespace Migrator.Providers.SQLite
             return false;
         }
 
+		public override bool IndexExists(string table, string name)
+		{
+			using (IDataReader reader =
+				ExecuteQuery(String.Format("SELECT name FROM sqlite_master WHERE type='index' and name='{0}'", name)))
+			{
+				return reader.Read();
+			}
+		}
+
         public override string[] GetTables()
         {
             List<string> tables = new List<string>();

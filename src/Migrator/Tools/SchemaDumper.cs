@@ -9,6 +9,8 @@
 //under the License.
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.IO;
 using Migrator.Framework;
 
@@ -37,10 +39,13 @@ namespace Migrator.Tools
 			foreach (string table in _provider.GetTables())
 			{
 				writer.WriteLine("\t\tDatabase.AddTable(\"{0}\",", table);
+				var columnLines = new List<string>();
 				foreach (Column column in _provider.GetColumns(table))
 				{
-					writer.WriteLine("\t\t\tnew Column(\"{0}\", typeof({1})),", column.Name, column.Type);
+					columnLines.Add(string.Format("\t\t\tnew Column(\"{0}\", DbType.{1}, {2}, (ColumnProperty){3})", 
+						column.Name, column.Type, column.Size, (int)column.ColumnProperty));
 				}
+				writer.WriteLine(string.Join(string.Format(",{0}", Environment.NewLine), columnLines.ToArray()));
 				writer.WriteLine("\t\t);");
 			}
 			

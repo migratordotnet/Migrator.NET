@@ -1,6 +1,8 @@
 using System;
 using System.Configuration;
+using System.Data.SqlServerCe;
 using Migrator.Framework;
+using Migrator.Tests.Providers;
 using NUnit.Framework;
 
 namespace Migrator.Tests
@@ -33,14 +35,21 @@ namespace Migrator.Tests
         [Test, Category("SqlServerCe")]
         public void CanLoad_SqlServerCeProvider()
         {
-            ITransformationProvider provider = ProviderFactory.Create("SqlServerCe",
-                                                                      ConfigurationManager.AppSettings[
-                                                                          "SqlServerCeConnectionString"]);
-            Assert.IsNotNull(provider);
+          string constr = ConfigurationManager.AppSettings[
+            "SqlServerCeConnectionString"];
+          using (SqlCeEngineTestContainer engine = new SqlCeEngineTestContainer(constr))
+          {
+            engine.EnsureTemporaryDatabase();
+            using (ITransformationProvider provider = ProviderFactory.Create("SqlServerCe", constr))
+            {
+              Assert.IsNotNull(provider);
+            }
+          }
+          
         }
 
 
-        [Test, Category("SqlServer2005")]
+      [Test, Category("SqlServer2005")]
         public void CanLoad_SqlServer2005Provider()
         {
             ITransformationProvider provider = ProviderFactory.Create("SqlServer2005",

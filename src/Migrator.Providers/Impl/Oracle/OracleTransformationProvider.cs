@@ -48,6 +48,17 @@ namespace Migrator.Providers.Oracle
             return Convert.ToInt32(scalar) == 1;
         }
 
+		public override bool IndexExists(string table, string name)
+		{
+			string sql =
+				string.Format(
+					"SELECT COUNT(index_name) FROM user_indexes WHERE lower(index_name) = '{0}' AND lower(table_name) = '{1}'",
+					name.ToLower(), table.ToLower());
+			Logger.Log(sql);
+			object scalar = ExecuteScalar(sql);
+			return Convert.ToInt32(scalar) == 1;
+		}
+
         public override bool ColumnExists(string table, string column)
         {
             if (!TableExists(table))

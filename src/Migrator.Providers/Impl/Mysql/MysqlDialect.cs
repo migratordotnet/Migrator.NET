@@ -46,6 +46,13 @@ namespace Migrator.Providers.Mysql
 			
             RegisterProperty(ColumnProperty.Unsigned, "UNSIGNED");
             RegisterProperty(ColumnProperty.Identity, "AUTO_INCREMENT");
+
+			RegisterUnsignedCompatible(DbType.Int16);
+			RegisterUnsignedCompatible(DbType.Int32);
+			RegisterUnsignedCompatible(DbType.Int64);
+			RegisterUnsignedCompatible(DbType.Decimal);
+			RegisterUnsignedCompatible(DbType.Double);
+			RegisterUnsignedCompatible(DbType.Single);
         }
 
 		public override ITransformationProvider GetTransformationProvider(Dialect dialect, string connectionString)
