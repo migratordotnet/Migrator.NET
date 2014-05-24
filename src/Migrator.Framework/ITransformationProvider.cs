@@ -18,7 +18,7 @@ namespace Migrator.Framework
         /// <summary>
         /// The list of Migrations currently applied to the database.
         /// </summary>
-        List<long> AppliedMigrations { get; }
+        List<KeyValuePair<string, long>> AppliedMigrations { get; }
         
         ILogger Logger { get; set; }
 
@@ -347,13 +347,15 @@ namespace Migrator.Framework
         /// Marks a Migration version number as having been applied
         /// </summary>
         /// <param name="version">The version number of the migration that was applied</param>
-        void MigrationApplied(long version);
+        /// <param name="scope">Scope of migrations</param>
+        void MigrationApplied(long version, string scope);
         
         /// <summary>
         /// Marks a Migration version number as having been rolled back from the database
         /// </summary>
         /// <param name="version">The version number of the migration that was removed</param>
-        void MigrationUnApplied(long version);
+        /// <param name="scope">Scope of migrations</param>
+        void MigrationUnApplied(long version, string scope);
         
         /// <summary>
         /// Remove an existing column from a table

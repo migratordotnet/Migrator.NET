@@ -11,12 +11,18 @@ namespace Migrator
     {
         private bool _goForward;
 
-        public MigrateAnywhere(List<long> availableMigrations, ITransformationProvider provider, ILogger logger)
-            : base(availableMigrations, provider, logger)
+        public MigrateAnywhere(string scope, List<long> availableMigrations, ITransformationProvider provider, ILogger logger)
+            : base(scope, availableMigrations, provider, logger)
         {
 			_current = 0;
 			if (provider.AppliedMigrations.Count > 0) {
-				_current = provider.AppliedMigrations[provider.AppliedMigrations.Count - 1];
+			    foreach (var appliedMigration in provider.AppliedMigrations)
+			    {
+                    if (appliedMigration.Key != scope)
+                        continue;
+                    if (_current < appliedMigration.Value)
+                        _current = appliedMigration.Value;
+			    }
 			}
 			_goForward = false;
         }
@@ -62,8 +68,19 @@ namespace Migrator
         {
             _provider.BeginTransaction();
             MigrationAttribute attr = (MigrationAttribute)Attribute.GetCustomAttribute(migration.GetType(), typeof(MigrationAttribute));
-            
-            if (_provider.AppliedMigrations.Contains(attr.Version)) {
+
+            var v = attr.GetVersion(migration.GetType());
+            var contains = false;
+
+            foreach (var appliedMigration in _provider.AppliedMigrations)
+            {
+                if (appliedMigration.Key != v.Key || appliedMigration.Value != v.Value) continue;
+                contains = true;
+                break;
+            }
+
+            if (contains)
+            {
             	RemoveMigration(migration, attr);
             } else {
             	ApplyMigration(migration, attr);
@@ -77,7 +94,8 @@ namespace Migrator
             if(! DryRun)
             {
                 migration.Up();
-                _provider.MigrationApplied(attr.Version);
+                var v = attr.GetVersion(migration.GetType());
+                _provider.MigrationApplied(v.Value, v.Key);
                 _provider.Commit();
                 migration.AfterUp();
             }
@@ -90,7 +108,8 @@ namespace Migrator
             if (! DryRun)
             {
                 migration.Down();
-                _provider.MigrationUnApplied(attr.Version);
+                var v = attr.GetVersion(migration.GetType());
+                _provider.MigrationUnApplied(v.Value, v.Key);
                 _provider.Commit();
                 migration.AfterDown();
             }

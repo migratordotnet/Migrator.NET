@@ -46,13 +46,20 @@ namespace Migrator
         /// <summary>
         /// Returns the last version of the migrations.
         /// </summary>
-        public long LastVersion
+        public IEnumerable<KeyValuePair<string, long>> LastVersions
         {
             get
             {
+                var list = new Dictionary<string, long>();
                 if (_migrationsTypes.Count == 0)
-                    return 0;
-                return GetMigrationVersion(_migrationsTypes[_migrationsTypes.Count - 1]);
+                    return list;
+                foreach (var type in _migrationsTypes)
+                {
+                    var v = GetMigrationVersion(type);
+                    if (!list.ContainsKey(v.Key) || list[v.Key] < v.Value)
+                        list[v.Key] = v.Value;
+                }
+                return list;
             }
         }
 
@@ -62,13 +69,13 @@ namespace Migrator
         /// <exception cref="CheckForDuplicatedVersion">CheckForDuplicatedVersion</exception>
         public void CheckForDuplicatedVersion()
         {
-            List<long> versions = new List<long>();
+            var versions = new List<KeyValuePair<string, long>>();
             foreach (Type t in _migrationsTypes)
             {
-                long version = GetMigrationVersion(t);
+                var version = GetMigrationVersion(t);
 
                 if (versions.Contains(version))
-                    throw new DuplicatedVersionException(version);
+                    throw new DuplicatedVersionException(version.Value);
 
                 versions.Add(version);
             }
@@ -103,26 +110,38 @@ namespace Migrator
         /// </summary>
         /// <param name="t">Migration type.</param>
         /// <returns>Version number sepcified in the attribute</returns>
-        public static long GetMigrationVersion(Type t)
+        public static KeyValuePair<string, long> GetMigrationVersion(Type t)
         {
-            MigrationAttribute attrib = (MigrationAttribute)
-                                        Attribute.GetCustomAttribute(t, typeof(MigrationAttribute));
-
-            return attrib.Version;
+            var attrib = (MigrationAttribute)
+                         Attribute.GetCustomAttribute(t, typeof (MigrationAttribute));
+            return attrib.GetVersion(t);
         }
 
-        public List<long> GetAvailableMigrations()
+        public List<KeyValuePair<string, long>> GetAvailableMigrations()
         {
         	//List<int> availableMigrations = new List<int>();
             _migrationsTypes.Sort(new MigrationTypeComparer(true));
-            return _migrationsTypes.ConvertAll(new Converter<Type, long>(GetMigrationVersion));
+            return _migrationsTypes.ConvertAll(GetMigrationVersion);
         }
-        
-        public IMigration GetMigration(long version)
+
+        public List<long> GetAvailableMigrations(string scope)
+        {
+            var all = GetAvailableMigrations();
+            var list = new List<long>();
+            foreach (var keyValuePair in all)
+            {
+                if (keyValuePair.Key == scope)
+                    list.Add(keyValuePair.Value);
+            }
+            return list;
+        }
+
+        public IMigration GetMigration(string scope, long version)
         {
             foreach (Type t in _migrationsTypes)
             {
-                if (GetMigrationVersion(t) == version)
+                var v = GetMigrationVersion(t);
+                if (v.Key == scope && v.Value == version)
                 {
                     IMigration migration = (IMigration)Activator.CreateInstance(t);
                     migration.Database = _provider;
